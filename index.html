@@ -436,13 +436,14 @@
                 <h2 class="titulo-secao">Contato</h2>
                 
                 <div class="flex flex-col gap-16 w-full max-w-[600px]">
-                    <form action="https://formspree.io/f/mzdyewrp" method="POST" class="flex flex-col gap-8 w-full">
-                        <input type="text" name="name" placeholder="NOME" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <input type="email" name="email" placeholder="EMAIL" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <textarea name="message" placeholder="MENSAGEM" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
-                        <button class="font-['Oswald'] text-[12px] tracking-[4px] border border-white p-4 hover:bg-white hover:text-black transition uppercase w-max mt-4">
+                    <form id="contact-form" action="https://formspree.io/f/mzdyewrp" method="POST" class="flex flex-col gap-8 w-full">
+                        <input type="text" name="name" required placeholder="NOME" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
+                        <input type="email" name="email" required placeholder="EMAIL" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
+                        <textarea name="message" required placeholder="MENSAGEM" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
+                        <button type="submit" class="font-['Oswald'] text-[12px] tracking-[4px] border border-white p-4 hover:bg-white hover:text-black transition uppercase w-max mt-4">
                             Enviar
                         </button>
+                        <p id="form-status" class="hidden font-['Oswald'] tracking-[2px] text-sm mt-2 text-[#d9d9d9]"></p>
                     </form>
 
                     <div class="flex flex-col gap-6 w-full">
@@ -693,6 +694,48 @@
             triggerTransition(() => {
                 view.classList.remove('active');
                 mainScroll.style.overflowY = 'auto';
+            });
+        }
+
+        const contactForm = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
+
+        if(contactForm) {
+            contactForm.addEventListener('submit', async function(e) {
+                e.preventDefault(); 
+                
+                const btn = contactForm.querySelector('button[type="submit"]');
+                const originalBtnText = btn.innerText;
+                btn.innerText = 'ENVIANDO...'; 
+                
+                const data = new FormData(contactForm);
+                
+                try {
+                    const response = await fetch(contactForm.action, {
+                        method: contactForm.method,
+                        body: data,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        formStatus.innerText = "Obrigado pelo contato, assim que possível estarei entrando em contato!";
+                        formStatus.classList.remove('hidden');
+                        formStatus.style.color = '#4ade80'; 
+                        contactForm.reset(); 
+                    } else {
+                        formStatus.innerText = "Oops! Ocorreu um erro ao enviar sua mensagem.";
+                        formStatus.classList.remove('hidden');
+                        formStatus.style.color = '#f87171'; 
+                    }
+                } catch (error) {
+                    formStatus.innerText = "Oops! Ocorreu um erro ao enviar sua mensagem.";
+                    formStatus.classList.remove('hidden');
+                    formStatus.style.color = '#f87171';
+                } finally {
+                    btn.innerText = originalBtnText; 
+                }
             });
         }
     </script>
