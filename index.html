@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zniack | Editor de Vídeo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;400&family=Raleway:wght@100&family=Roboto:wght@100;300;400;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: 'Skyer';
+            src: url('skyer.otf') format('opentype'), 
+                 url('skyer.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --bg-color: #252525;
+            --text-main: #d9d9d9;
+            --text-light: #f3f3f3;
+            --text-sub: #e3e3e3;
+            --plyr-color-main: #ffffff;
+            --plyr-video-background: #1a1a1a;
+            --plyr-menu-background: #252525;
+            --plyr-menu-color: #d9d9d9;
+        }
+
+        .plyr__poster {
+            background-size: cover !important;
+            background-position: center !important;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden; 
+        }
+
+        .noise::after {
+            content: "";
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.01;
+            pointer-events: none;
+            z-index: 9998;
+            animation: noiseAnim 0.2s steps(2) infinite;
+        }
+
+        @keyframes noiseAnim {
+            0% { transform: translate(0, 0); }
+            10% { transform: translate(-1%, -1%); }
+            20% { transform: translate(1%, 1%); }
+            30% { transform: translate(-2%, 1%); }
+            40% { transform: translate(2%, -1%); }
+            50% { transform: translate(-1%, 2%); }
+            60% { transform: translate(1%, -2%); }
+            70% { transform: translate(2%, 2%); }
+            80% { transform: translate(-2%, -2%); }
+            90% { transform: translate(1%, 1%); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .snap-container {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y proximity; 
+            scroll-behavior: smooth;
+            position: relative; 
+        }
+
+        .snap-container::-webkit-scrollbar {
+            display: none;
+        }
+        .snap-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        section {
+            min-height: 100vh; 
+            scroll-snap-align: start;
+            padding: 20vh 10%; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        #capa {
+            height: 100vh;
+            min-height: 100vh;
+            padding: 0;
+            justify-content: flex-end; 
+        }
+
+        .capa-img-full {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 0;
+        }
+
+        .banner-nav {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            padding: 30px 10%;
+            background: linear-gradient(to top, rgba(37,37,37,1) 0%, rgba(37,37,37,0) 100%);
+            display: flex;
+            gap: 3rem;
+        }
+
+        .header-sticky {
+            position: fixed;
+            top: -100px; left: 0;
+            width: 100%;
+            padding: 30px 10%;
+            z-index: 100;
+            background: rgba(37, 37, 37, 0.95);
+            backdrop-filter: blur(10px);
+            transition: top 0.4s ease, opacity 0.4s ease;
+            display: flex;
+            gap: 3rem;
+        }
+
+        .header-sticky.visible {
+            top: 0;
+        }
+
+        #transition-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .titulo-secao {
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 7px;
+            color: white;
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: 200;
+            margin: 0 0 50px 0;
+            text-align: left;
+        }
+
+        .texto-corpo {
+            color: var(--text-main);
+            font-size: 14px;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .comentario-trabalho {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 100;
+            color: var(--text-sub);
+            font-size: 14px;
+            text-align: left;
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        .nome-foto {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 200; 
+            font-size: 18px;
+            color: var(--text-light);
+            letter-spacing: 2px;
+            margin-top: 20px;
+        }
+
+        .signature {
+            font-family: 'Skyer', 'Syncopate', sans-serif; 
+            font-size: 14px; 
+            color: var(--text-light);
+            font-weight: 400;
+            margin-top: 4px; 
+            opacity: 0.8;
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+        }
+
+        .list-item { 
+            font-family: 'Roboto', sans-serif;
+            list-style: none;
+            font-weight: 100; 
+            color: var(--text-sub); 
+            margin-bottom: 40px; 
+            text-align: left;
+            font-size: 14px;
+        }
+        
+        .list-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .list-item b { 
+            font-family: 'Oswald', sans-serif;
+            font-weight: 400; 
+            color: rgba(255, 255, 255, 0.7); 
+            display: block; 
+            text-transform: uppercase; 
+            font-size: 14px; 
+            letter-spacing: 4px; 
+            margin-bottom: 8px;
+        }
+
+        .portfolio-box {
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        .portfolio-box:hover {
+            border-color: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.02);
+            transform: translateX(10px); 
+        }
+
+        /* MODAL FIXO E ABSOLUTO PARA RESOLVER O BUG DO SCROLL */
+        .portfolio-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 9999; /* Fica por cima de tudo */
+            overflow-y: auto;
+            padding: 10vh 10%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .portfolio-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .portfolio-modal::-webkit-scrollbar {
+            display: none;
+        }
+
+        .btn-voltar-sticky {
+            position: sticky;
+            top: 20px; 
+            z-index: 50; 
+            background: rgba(37, 37, 37, 0.8);
+            backdrop-filter: blur(5px);
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+            width: max-content;
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, transform;
+        }
+        .fade-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            #capa {
+                min-height: 80vh; 
+                height: 80vh;
+            }
+            .capa-img-full {
+                object-fit: cover; 
+                object-position: center 20%; 
+            }
+
+            .banner-nav, .header-sticky {
+                gap: 15px; 
+                padding: 20px 5%; 
+                justify-content: center; 
+                flex-wrap: wrap; 
+            }
+            .nav-link {
+                font-size: 11px !important; 
+                letter-spacing: 3px !important; 
+            }
+            section {
+                padding: 15vh 5%; 
+            }
+            .portfolio-modal {
+                padding: 5vh 5%;
+            }
+            .nome-foto {
+                margin-top: 15px;
+            }
+        }
+        
+    </style>
+</head>
+<body class="noise">
+
+    <div id="transition-overlay"></div>
+
+    <header id="sticky-header" class="header-sticky">
+        <a href="#sobre" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
+        <a href="#trabalho" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
+        <a href="#portfolio" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
+        <a href="#contato" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
+    </header>
+
+    <main class="snap-container" id="main-scroll">
+        
+        <section id="capa">
+            <img src="capa.jpg" alt="Banner Zniack" class="capa-img-full">
+            
+            <nav class="banner-nav">
+                <a href="#sobre" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
+                <a href="#trabalho" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
+                <a href="#portfolio" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
+                <a href="#contato" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
+            </nav>
+        </section>
+
+        <section id="sobre">
+            <div class="flex flex-col md:flex-row gap-12 items-start w-full fade-up"> 
+                
+                <div class="w-full max-w-[600px]">
+                    <h2 class="titulo-secao">Quem sou eu</h2>
+                    <div class="texto-corpo">
+                        Editor de vídeo com <span class="font-black text-white">3+ anos</span> de experiência com foco em operações de alta demanda. Com mais de <span class="font-black text-white">600 vídeos</span> entregues, minha prioridade é a agilidade e a constância, proporcionando um fluxo de trabalho sem atritos e totalmente alinhado ao seu ritmo de publicação.
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center flex-none mt-8 md:mt-0 w-full md:w-auto">
+                    <div class="w-full aspect-[4/5] md:w-[280px] md:h-[340px] bg-[#1a1a1a] border border-white/10 overflow-hidden flex items-center justify-center text-white/30 text-xs">
+                        <img src="main.jpg" alt="Felipe Souza" class="w-full h-full object-cover object-center grayscale hover:grayscale-0 transition duration-500">
+                    </div>
+                    <span class="nome-foto">Felipe Souza</span>
+                    <span class="signature">Zniack</span>
+                </div>
+                
+            </div>
+        </section>
+
+        <section id="trabalho">
+            <div class="w-full fade-up">
+                <h2 class="titulo-secao" style="margin-bottom: 25px;">Como trabalho</h2>
+                
+                <p class="comentario-trabalho mb-16">
+                    Após o briefing e alinhamento, assumo a gestão da pós-produção.
+                </p>
+                
+                <div class="flex flex-col gap-2 max-w-[600px]">
+                    <div class="list-item">
+                        <b>Organização</b>
+                        Download e estruturação técnica dos arquivos brutos e assets.
+                    </div>
+                    <div class="list-item">
+                        <b>Decupagem</b>
+                        Limpeza do bruto com remoção de erros, silêncios e vícios de linguagem.
+                    </div>
+                    <div class="list-item">
+                        <b>Curadoria de Mídia</b>
+                        Busca e seleção de b-rolls, inserts e mídias de apoio.
+                    </div>
+                    <div class="list-item">
+                        <b>Edição</b>
+                        Montagem narrativa.
+                    </div>
+                    <div class="list-item">
+                        <b>Lettering</b>
+                        Aplicação de textos e identidade visual.
+                    </div>
+                    <div class="list-item">
+                        <b>Sonorização</b>
+                        Tratamento de áudio, mixagem de SFX e escolha de trilha sonora.
+                    </div>
+                    <div class="list-item">
+                        <b>Finalização</b>
+                        Aplicação de VFX e Color Grading.
+                    </div>
+                    <div class="list-item">
+                        <b>Revisão</b>
+                        Renderização e conferência técnica final.
+                    </div>
+                </div>
+
+                <p class="comentario-trabalho mt-16">
+                    Entendo que cada projeto exige uma abordagem específica. Em trailers, por exemplo, a escolha e montagem da trilha sonora é a primeira etapa para garantir o ritmo necessário à narrativa.
+                </p>
+            </div>
+        </section>
+
+        <section id="portfolio">
+            <div class="w-full relative fade-up">
+                <h2 class="titulo-secao portfolio-title">Portfolio</h2>
+                
+                <div id="portfolio-grid" class="flex flex-col gap-6 w-full max-w-[400px]">
+                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Vídeos Diários')">
+                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">VÍDEOS DIÁRIOS</span>
+                    </div>
+                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Highlights')">
+                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">HIGHLIGHTS</span>
+                    </div>
+                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Mini Documentários')">
+                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">MINI DOCUMENTÁRIOS</span>
+                    </div>
+                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Aberturas')">
+                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">ABERTURAS</span>
+                    </div>
+                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Institucionais')">
+                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">INSTITUCIONAIS</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato">
+            <div class="w-full fade-up">
+                <h2 class="titulo-secao">Contato</h2>
+                
+                <div class="flex flex-col gap-16 w-full max-w-[600px]">
+                    <form action="https://formspree.io/f/xkasdjfk" method="POST" class="flex flex-col gap-8 w-full">
+                        <input type="text" name="name" placeholder="NOME" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
+                        <input type="email" name="email" placeholder="EMAIL" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
+                        <textarea name="message" placeholder="MENSAGEM" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
+                        <button class="font-['Oswald'] text-[12px] tracking-[4px] border border-white p-4 hover:bg-white hover:text-black transition uppercase w-max mt-4">
+                            Enviar
+                        </button>
+                    </form>
+
+                    <div class="flex flex-col gap-6 w-full">
+                        <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase">Informações de contato</h4>
+                        
+                        <div class="flex flex-col gap-4">
+                            <div class="flex items-center gap-4 text-[#d9d9d9] font-thin text-sm">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                contato@zniack.com
+                            </div>
+                            <div class="flex items-center gap-4 text-[#d9d9d9] font-thin text-sm">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                +55 64 99211-2376
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="portfolio-view" class="portfolio-modal">
+        <button onclick="closeCategory()" class="btn-voltar-sticky font-['Oswald'] text-[12px] tracking-[3px] text-white/80 hover:text-white hover:bg-white/10 transition uppercase flex items-center gap-2">
+            <span>&larr;</span> Voltar para Portfólio
+        </button>
+        
+        <h3 id="category-title" class="font-['Oswald'] tracking-[5px] text-white text-lg uppercase mb-4 mt-8">TITULO</h3>
+        
+        <p id="category-desc" class="font-['Roboto'] font-thin text-[14px] text-[#e3e3e3] mb-8 w-full max-w-[600px] text-left"></p>
+        
+        <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[800px] pb-32">
+        </div>
+    </div>
+
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    
+    <script>
+        const mainScroll = document.getElementById('main-scroll');
+        const stickyHeader = document.getElementById('sticky-header');
+        const bannerNav = document.querySelector('.banner-nav');
+        
+        const view = document.getElementById('portfolio-view');
+        const titleElement = document.getElementById('category-title');
+        const descElement = document.getElementById('category-desc');
+        const contentArea = document.getElementById('portfolio-content-area');
+
+        const descricoesPortfolio = {
+            'Vídeos Diários': 'Vídeos recebidos, editados e entregues em menos de 24 horas.',
+            'Highlights': 'Vídeos dinâmicos de melhores momentos.',
+            'Mini Documentários': 'Vídeos com foco em narrativa.',
+            'Aberturas': 'Aberturas épicas para campeonatos e eventos.',
+            'Institucionais': 'Vídeos corporativos e comunicação de marca.'
+        };
+        
+        const fadeObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: mainScroll,
+            threshold: 0.15 
+        });
+
+        document.querySelectorAll('.fade-up').forEach(element => {
+            fadeObserver.observe(element);
+        });
+
+        mainScroll.addEventListener('scroll', () => {
+            const bannerRect = bannerNav.getBoundingClientRect();
+            if (bannerRect.bottom <= 0) {
+                stickyHeader.classList.add('visible');
+            } else {
+                stickyHeader.classList.remove('visible');
+            }
+        });
+
+        function triggerTransition(callback) {
+            const overlay = document.getElementById('transition-overlay');
+            overlay.style.display = 'block';
+            
+            requestAnimationFrame(() => {
+                overlay.style.opacity = '1'; 
+                setTimeout(() => {
+                    callback(); 
+                    overlay.style.opacity = '0'; 
+                    setTimeout(() => {
+                        overlay.style.display = 'none'; 
+                    }, 300); 
+                }, 300); 
+            });
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                // Se o modal estiver aberto, fecha ele sem animação
+                if (view.classList.contains('active')) {
+                    view.classList.remove('active');
+                    mainScroll.style.overflowY = 'auto';
+                }
+
+                triggerTransition(() => {
+                    mainScroll.scrollTo({
+                        top: targetSection.offsetTop,
+                        behavior: 'auto'
+                    });
+                });
+            });
+        });
+
+        function toggleSubCategory(id, element) {
+            const container = document.getElementById(id);
+            const indicator = element.querySelector('.indicator');
+            
+            if (container.classList.contains('hidden')) {
+                container.classList.remove('hidden');
+                container.classList.add('flex');
+                indicator.innerText = 'FECHAR';
+            } else {
+                container.classList.add('hidden');
+                container.classList.remove('flex');
+                indicator.innerText = 'ABRIR';
+            }
+        }
+
+        function openCategory(name) {
+            triggerTransition(() => {
+                titleElement.innerText = name;
+                descElement.innerText = descricoesPortfolio[name] || ''; 
+                
+                // TRAVA O SCROLL DO FUNDO (SITE NÃO SE MOVE MAIS)
+                mainScroll.style.overflowY = 'hidden';
+
+                if (name === 'Vídeos Diários') {
+                    contentArea.innerHTML = `
+                        <div class="flex flex-col w-full border-b border-white/5 pb-4">
+                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-reviews', this)">
+                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Reviews</h4>
+                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
+                            </div>
+                            <div id="cat-reviews" class="hidden flex-col gap-8 w-full mt-8">
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="QrmMlRYB4Lo"></div>
+                                </div>
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="wELUjsyy5-8"></div>
+                                </div>
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="82Ah3XW5Jg4"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col w-full border-b border-white/5 pb-4">
+                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-comentados', this)">
+                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Comentados</h4>
+                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
+                            </div>
+                            <div id="cat-comentados" class="hidden flex-col gap-8 w-full mt-8">
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="ll3UYdXXhlE"></div>
+                                </div>
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="Oacodzw29CE"></div>
+                                </div>
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="fsh1epoyZI8"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col w-full border-b border-white/5 pb-4">
+                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-noticias', this)">
+                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Notícias</h4>
+                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
+                            </div>
+                            <div id="cat-noticias" class="hidden flex-col gap-8 w-full mt-8">
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="d0d43qkOE7A"></div>
+                                </div>
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="AkrpKrpF3dc"></div>
+                                </div>
+                                <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="X7dJqS8XHNw"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (name === 'Highlights') {
+                    contentArea.innerHTML = `
+                        <div class="flex flex-col gap-8 w-full">
+                            <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="ewiL53kmyPI"></div>
+                            </div>
+                            <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="f-2xznYjToI"></div>
+                            </div>
+                        </div>
+                    `;
+                } else if (name === 'Mini Documentários') {
+                    contentArea.innerHTML = `
+                        <div class="flex flex-col gap-8 w-full">
+                            <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="yiK_Z7XGyBA"></div>
+                            </div>
+                        </div>
+                    `;
+                } else if (name === 'Aberturas') {
+                    contentArea.innerHTML = `
+                        <div class="flex flex-col gap-8 w-full">
+                            <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="G4qpobpXdKo"></div>
+                            </div>
+                        </div>
+                    `;
+                } else if (name === 'Institucionais') {
+                    contentArea.innerHTML = `
+                        <div class="flex flex-col gap-8 w-full">
+                            <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="4minjPUiGdI"></div>
+                            </div>
+                            <div class="w-full aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden">
+                                <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="O03qeBRocIs"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // ABRE A TELA DO MODAL
+                view.scrollTop = 0;
+                view.classList.add('active');
+
+                setTimeout(() => {
+                    const players = Array.from(document.querySelectorAll('.js-player')).map(p => new Plyr(p, {
+                        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+                        youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
+                    }));
+                }, 50);
+            });
+        }
+
+        function closeCategory() {
+            triggerTransition(() => {
+                // FECHA A TELA DO MODAL
+                view.classList.remove('active');
+                
+                // DESTRAVA O SCROLL DO FUNDO (EXATAMENTE ONDE ESTAVA)
+                mainScroll.style.overflowY = 'auto';
+            });
+        }
+    </script>
+</body>
+</html>
