@@ -155,7 +155,38 @@
 
         .portfolio-layout-container { display: flex; flex-direction: column; width: 100%; }
 
-        .category-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
+        /* ─── category-nav: sticky + mesmo blur da header ─── */
+        .category-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 14px 0 16px;
+        }
+
+        .category-nav::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -10%; width: 120%; height: 100%;
+            z-index: -1;
+            backdrop-filter: blur(0px) saturate(1);
+            -webkit-backdrop-filter: blur(0px) saturate(1);
+            background-color: transparent;
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+            pointer-events: none;
+            transition: backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, background-color 0.4s ease;
+        }
+
+        .category-nav.is-stuck::before {
+            backdrop-filter: blur(4.5px) saturate(0.8);
+            -webkit-backdrop-filter: blur(4.5px) saturate(0.8);
+            background-color: rgba(37, 37, 37, 0.6);
+        }
+        /* ─────────────────────────────────────────────────── */
 
         .category-nav-btn {
             font-family: 'Oswald', sans-serif;
@@ -421,6 +452,34 @@
         let currentPlayers     = [];
         let lastScrollPosition = 0;
 
+        // ─── Sentinel observer para blur da category-nav ───
+        let categoryNavStickyObs = null;
+
+        function initCategoryNavSticky() {
+            const nav = document.getElementById('category-nav');
+            if (!nav) return;
+
+            // Remove sentinel antigo se existir
+            const old = document.getElementById('category-nav-sentinel');
+            if (old) old.remove();
+
+            // Desconecta observer anterior
+            if (categoryNavStickyObs) { categoryNavStickyObs.disconnect(); categoryNavStickyObs = null; }
+
+            // Cria sentinel de 1px logo antes da nav
+            const sentinel = document.createElement('div');
+            sentinel.id = 'category-nav-sentinel';
+            sentinel.style.cssText = 'height:1px;margin-bottom:-1px;pointer-events:none;flex-shrink:0;';
+            nav.parentNode.insertBefore(sentinel, nav);
+
+            categoryNavStickyObs = new IntersectionObserver(([entry]) => {
+                nav.classList.toggle('is-stuck', !entry.isIntersecting);
+            }, { root: view, threshold: 0 });
+
+            categoryNavStickyObs.observe(sentinel);
+        }
+        // ───────────────────────────────────────────────────
+
         function updateHeaderBlur() {
             const isModalActive = view.classList.contains('active');
             
@@ -477,7 +536,6 @@
         const carouselData = {
             'analises-vol':   ['wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk','3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro','nUKCw5Ejyao','0FwPnvvsKkE'],
             'comentados-vol': ['Oacodzw29CE', '9EGPFtDVG3s','qxumGqBVclY','Hps6cf-9Ld4','7wYKFmQ7TMc','OhN7CmFrkrM','OIMWARx6nZA','K-HN5rFeDv8','ZZAvKcMFano','wfrHj0L9ccc','E60hFmhy4hk'],
-            // ID 'AkrpKrpF3dc' inserido aqui no array do carrossel:
             'noticias-vol':   ['AkrpKrpF3dc', 'VNNOvzWHpw8','kMDkKOBXsxg','xfEOq0u8d8k','4XrtZ5SD-jI','mxD0WFRvt7k','KErRxCP2fP0','zPP-6cOafdQ','_z1GkNuudqU','QOziuqM_FQA','xYxGu5smFOg'],
             'highlights-vol': ['KAKM9mEqtoc','w2WLKVPCNxY','kT3T1T7pbXU','GICsA2s6cDc','Rc3IYyWu2wE','v_ELfeP2WxY','6NpgsBK8JPI','ILaJ6TaO1X0','2E97i-ChJVI','BsCDkg0lMek'],
             'aberturas-vol':  ['7f7FDHkQjuQ']
@@ -946,7 +1004,6 @@
                 updateHeaderBlur(); 
 
                 if(name==='Vídeos Diários'){
-                    // Código atualizado na subcategoria Notícias: Deixado apenas o d0d43qkOE7A inline com comentário e movido o AkrpKrpF3dc para o carrossel.
                     contentArea.innerHTML=
                         buildSubCategory('analises','Análises',
                             buildInlineVideo('csh7Z3dcb0g','Triagem e edição de 5 horas de material bruto não catalogado em uma janela de 7 horas para entrega. O processo envolveu a catalogação e a montagem em fluxo contínuo, garantindo a agilidade e a coesão do conteúdo.')+
@@ -978,7 +1035,11 @@
                 }
 
                 view.scrollTop=0; view.classList.add('active');
-                setTimeout(initCarousels,50);
+                setTimeout(initCarousels, 50);
+
+                // ─── Inicia o observer do blur da category-nav ───
+                setTimeout(initCategoryNavSticky, 80);
+                // ─────────────────────────────────────────────────
             });
         }
 
