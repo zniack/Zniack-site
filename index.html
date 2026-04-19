@@ -5,32 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>zniack | Editor de Vídeo Alta Demanda</title>
     
-    <meta name="description" content="Felipe Souza (zniack) - Editor de vídeo com 3+ anos de experiência e mais de 800 projetos entregues. Foco em operações de alta demanda, documentários, highlights, institucionais, vsl e vídeos diários.">
-    <meta name="keywords" content="editor de vídeo, edição de vídeo, videomaker, documentários, highlights, edição para youtube, Felipe Souza, zniack, alta demanda">
-    <meta name="author" content="Felipe Souza">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://zniack.com/">
-    <meta property="og:title" content="zniack | Editor de Vídeo Alta Demanda">
-    <meta property="og:description" content="Editor de vídeo com 3+ anos de experiência e mais de 800 projetos entregues, com foco em operações de alta demanda.">
-    <meta property="og:image" content="https://zniack.com/capa.jpg">
-    
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://zniack.com/">
-    <meta property="twitter:title" content="zniack | Editor de Vídeo Alta Demanda">
-    <meta property="twitter:description" content="Editor de vídeo com 3+ anos de experiência e mais de 800 projetos entregues, com foco em operações de alta demanda.">
-    <meta property="twitter:image" content="https://zniack.com/capa.jpg">
-
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;400&family=Raleway:wght@100&family=Roboto:wght@100;300;400;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @font-face {
             font-family: 'Skyer';
-            src: url('skyer.otf') format('opentype'), 
-                 url('skyer.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
+            src: url('skyer.otf') format('opentype'), url('skyer.ttf') format('truetype');
+            font-weight: normal; font-style: normal;
         }
 
         :root {
@@ -38,439 +20,84 @@
             --text-main: #d9d9d9;
             --text-light: #f3f3f3;
             --text-sub: #e3e3e3;
-            --plyr-color-main: #ffffff;
-            --plyr-video-background: #1a1a1a;
-            --plyr-menu-background: #252525;
-            --plyr-menu-color: #d9d9d9;
-        }
-
-        .plyr__poster {
-            background-size: cover !important;
-            background-position: center !important;
-        }
-
-        .plyr__control--overlaid {
-            display: none !important;
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--bg-color);
-            color: white;
-            font-family: 'Roboto', sans-serif;
-            overflow-x: hidden; 
-            scroll-behavior: smooth;
+            color: white; font-family: 'Roboto', sans-serif;
+            overflow-x: hidden; scroll-behavior: smooth;
         }
 
         .noise::after {
-            content: "";
-            position: fixed;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
+            content: ""; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.01;
-            pointer-events: none;
-            z-index: 9998;
-            animation: noiseAnim 0.2s steps(2) infinite;
+            opacity: 0.01; pointer-events: none; z-index: 9998; animation: noiseAnim 0.2s steps(2) infinite;
         }
-
         @keyframes noiseAnim {
             0% { transform: translate(0, 0); }
             10% { transform: translate(-1%, -1%); }
-            20% { transform: translate(1%, 1%); }
-            30% { transform: translate(-2%, 1%); }
-            40% { transform: translate(2%, -1%); }
-            50% { transform: translate(-1%, 2%); }
-            60% { transform: translate(1%, -2%); }
-            70% { transform: translate(2%, 2%); }
-            80% { transform: translate(-2%, -2%); }
-            90% { transform: translate(1%, 1%); }
             100% { transform: translate(0, 0); }
         }
 
-        .snap-container {
-            position: relative; 
-        }
-
-        section {
-            min-height: 100vh; 
-            padding: 20vh 10%; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            position: relative;
-        }
-
-        #capa {
-            height: 100vh;
-            min-height: 100vh;
-            padding: 0;
-            justify-content: flex-end; /* Mobile padrão: Embaixo */
-        }
-
-        .capa-img-full {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            z-index: 0;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        .banner-nav {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            padding: 30px 10%;
-            background: linear-gradient(to top, rgba(37,37,37,1) 0%, rgba(37,37,37,0) 100%);
-            display: flex;
-            gap: 3rem;
-        }
-
+        /* AJUSTE 1: Header sempre visível e fixo */
         .header-sticky {
             position: fixed;
-            top: -100px; left: 0;
+            top: 0; left: 0;
             width: 100%;
             padding: 30px 10%;
             z-index: 100;
-            background: rgba(37, 37, 37, 0.95);
+            background: rgba(37, 37, 37, 0.8);
             backdrop-filter: blur(10px);
-            transition: top 0.4s ease, opacity 0.4s ease;
             display: flex;
             gap: 3rem;
+            transition: background 0.3s ease;
         }
 
-        .header-sticky.visible { top: 0; }
-
-        #transition-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color);
-            z-index: 10000;
-            opacity: 0;
-            transition: opacity 0.2s ease-in-out;
+        section {
+            min-height: 100vh; padding: 20vh 10%; 
+            display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
         }
 
-        .titulo-secao {
-            font-family: 'Oswald', sans-serif;
-            letter-spacing: 7px;
-            color: white;
-            font-size: 18px;
-            text-transform: uppercase;
-            font-weight: 200;
-            margin: 0 0 50px 0;
-            text-align: left;
-        }
-
-        .texto-corpo {
-            color: var(--text-main);
-            font-size: 14px;
-            line-height: 1.8;
-            margin: 0;
-        }
-
-        .comentario-trabalho {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 100;
-            color: var(--text-sub);
-            font-size: 15px;
-            text-align: left;
-            max-width: 600px;
-            line-height: 1.8;
-        }
-
-        .nome-foto {
-            font-family: 'Oswald', sans-serif;
-            font-weight: 200; 
-            font-size: 18px;
-            color: var(--text-light);
-            letter-spacing: 2px;
-            margin-top: 20px;
-        }
-
-        .signature {
-            font-family: 'Skyer', 'Syncopate', sans-serif; 
-            font-size: 14px; 
-            color: var(--text-light);
-            font-weight: 400;
-            margin-top: 4px; 
-            opacity: 0.8;
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-        }
-
-        .list-item { 
-            font-family: 'Roboto', sans-serif;
-            list-style: none;
-            font-weight: 100; 
-            color: var(--text-sub); 
-            margin-bottom: 40px; 
-            text-align: left;
-            font-size: 14px;
-        }
-        .list-item:last-child { margin-bottom: 0; }
-
-        .list-item b { 
-            font-family: 'Oswald', sans-serif;
-            font-weight: 400; 
-            color: rgba(255, 255, 255, 0.7); 
-            display: block; 
-            text-transform: uppercase; 
-            font-size: 14px; 
-            letter-spacing: 4px; 
-            margin-bottom: 8px;
-        }
-
-        .portfolio-box {
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
-        }
-        .portfolio-box:hover {
-            border-color: rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.02);
-            transform: translateX(10px); 
-        }
+        #capa { height: 100vh; padding: 0; justify-content: center; }
+        .capa-img-full { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0; transition: opacity 1s ease; }
 
         .portfolio-modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: var(--bg-color);
-            z-index: 90; 
-            overflow-y: auto;
-            padding: 120px 10% 10vh 10%;
-            opacity: 0;
-            visibility: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: var(--bg-color); z-index: 90; 
+            overflow-y: auto; padding: 120px 10% 10vh 10%;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
         }
         .portfolio-modal.active { opacity: 1; visibility: visible; }
-        .portfolio-modal::-webkit-scrollbar { display: none; }
 
-        .portfolio-layout-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        /* ── NAV DE CATEGORIAS (TOPO) ── */
-        .category-nav {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 30px;
-        }
-
+        .category-nav { display: flex; gap: 8px; margin-bottom: 30px; flex-wrap: wrap; }
         .category-nav-btn {
-            font-family: 'Oswald', sans-serif;
-            font-size: 10px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.3);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 6px 14px;
-            cursor: pointer;
-            transition: color 0.2s ease, border-color 0.2s ease;
-            background: none;
+            font-family: 'Oswald', sans-serif; font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+            color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.08); padding: 6px 14px;
+            cursor: pointer; transition: all 0.2s ease; background: none;
         }
-        .category-nav-btn:hover {
-            color: rgba(255,255,255,0.7);
-            border-color: rgba(255,255,255,0.2);
-        }
-        .category-nav-btn.active-cat {
-            color: white;
-            border-color: rgba(255,255,255,0.4);
-        }
+        .category-nav-btn.active-cat { color: white; border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
 
-        /* AJUSTE 1: Header no topo esquerdo estritamente no Desktop */
-        @media (min-width: 769px) {
-            #capa {
-                justify-content: flex-start; /* Alinha ao topo */
-                padding-top: 100px;
-            }
-            .banner-nav {
-                background: none; /* Remove a sombra inferior */
-                padding-top: 0;
-            }
-        }
-
-        .fade-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            will-change: opacity, transform;
-        }
+        .fade-up { opacity: 0; transform: translateY(30px); transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
         .fade-up.is-visible { opacity: 1; transform: translateY(0); }
 
-        .vitrine-section {
-            margin-top: 56px;
-            width: 100%;
-        }
-
-        .vitrine-label {
-            font-family: 'Oswald', sans-serif;
-            font-size: 11px;
-            letter-spacing: 5px;
-            color: rgba(255, 255, 255, 0.6); 
-            text-transform: uppercase;
-            margin-bottom: 18px;
-        }
-
-        .carousel-wrapper {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            padding: 10px 0;
-            overflow-anchor: none;
-            min-height: 200px; 
-            display: flex;
-            align-items: center;
-            contain: layout; 
-        }
-
-        .carousel-track {
-            display: flex;
-            gap: 15px; 
-            align-items: center; 
-            width: max-content;
-            will-change: transform;
-            overflow-anchor: none;
-            height: 180px; 
-        }
-
+        /* Carousel Styles */
+        .carousel-wrapper { position: relative; width: 100%; overflow: hidden; min-height: 200px; display: flex; align-items: center; }
+        .carousel-track { display: flex; gap: 15px; align-items: center; width: max-content; will-change: transform; height: 180px; }
         .carousel-item {
-            flex: 0 0 auto;
-            width: 140px; 
-            height: 79px; 
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 4px;
-            overflow: hidden;
-            cursor: pointer;
-            opacity: 0.7; 
-            transition: border-color 0.4s ease;
-            will-change: width, height, opacity, transform;
-            transform: translateZ(0); 
-            backface-visibility: hidden;
+            flex: 0 0 auto; width: 140px; height: 79px; position: relative;
+            border: 1px solid rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden;
+            cursor: pointer; opacity: 0.7; transition: all 0.4s ease;
         }
+        .carousel-item.active { width: 320px; height: 180px; opacity: 1; border-color: rgba(255,255,255,0.3); }
+        .carousel-item img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
-        .carousel-item:hover {
-            opacity: 1;
-            border-color: rgba(255,255,255,0.15);
-        }
-
-        .carousel-item.active {
-            width: 320px;
-            height: 180px;
-            opacity: 1;
-            border-color: rgba(255,255,255,0.3);
-        }
-
-        .carousel-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            pointer-events: none;
-        }
-
-        .carousel-play {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            background: rgba(0,0,0,0.15);
-        }
-        .carousel-item:hover .carousel-play,
-        .carousel-item.active .carousel-play { 
-            opacity: 1; 
-        }
-        
-        .carousel-play svg {
-            width: 32px;
-            height: 32px;
-            fill: rgba(255,255,255,0.9);
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
-        }
-
-        #video-lightbox {
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            background: rgba(8,8,8,0.96);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-        #video-lightbox.active { opacity: 1; visibility: visible; }
-
-        .lightbox-inner {
-            width: 90%;
-            max-width: 860px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: -38px;
-            right: 0;
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.4);
-            font-family: 'Oswald', sans-serif;
-            font-size: 11px;
-            letter-spacing: 4px;
-            cursor: pointer;
-            transition: color 0.2s;
-            text-transform: uppercase;
-            padding: 0;
-        }
-        .lightbox-close:hover { color: white; }
-
-        .lightbox-player-wrap {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #0a0a0a;
-        }
-
-        #portfolio-content-area {
-            padding-bottom: 35vh; 
-        }
+        #transition-overlay { display: none; position: fixed; inset: 0; background: var(--bg-color); z-index: 10000; opacity: 0; transition: opacity 0.2s ease; }
 
         @media (max-width: 768px) {
-            #capa { min-height: 80vh; height: 80vh; }
-            .capa-img-full { object-fit: cover; object-position: center 20%; }
-            .banner-nav, .header-sticky {
-                gap: 15px; padding: 20px 5%;
-                justify-content: center; flex-wrap: wrap;
-            }
-            .nav-link { font-size: 11px !important; letter-spacing: 3px !important; }
-            section { padding: 15vh 5%; }
-            .portfolio-modal { padding: 100px 5% 5vh 5%; }
-            .nome-foto { margin-top: 15px; }
-            
-            .carousel-wrapper { min-height: 155px; contain: layout; }
-            .carousel-track { height: 135px; }
+            .header-sticky { gap: 1rem; padding: 20px 5%; justify-content: center; font-size: 12px; }
             .carousel-item { width: 110px; height: 62px; }
             .carousel-item.active { width: 240px; height: 135px; }
-
-            .category-nav { gap: 6px; }
-            .category-nav-btn { font-size: 9px; padding: 5px 10px; letter-spacing: 2px; }
         }
     </style>
 </head>
@@ -479,590 +106,67 @@
     <div id="transition-overlay"></div>
 
     <header id="sticky-header" class="header-sticky">
-        <a href="#sobre" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
-        <a href="#trabalho" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
-        <a href="#portfolio" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
-        <a href="#contato" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
+        <a href="#sobre" class="nav-link font-['Oswald'] tracking-[4px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
+        <a href="#trabalho" class="nav-link font-['Oswald'] tracking-[4px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
+        <a href="#portfolio" class="nav-link font-['Oswald'] tracking-[4px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
+        <a href="#contato" class="nav-link font-['Oswald'] tracking-[4px] uppercase text-white/70 hover:text-white transition">Contato</a>
     </header>
 
-    <main class="snap-container" id="main-scroll">
-        
+    <main class="snap-container">
         <section id="capa">
-            <img src="capa.jpg" alt="Zniack - Portfólio de Edição de Vídeo e Alta Demanda" class="capa-img-full">
-            <nav class="banner-nav">
-                <a href="#sobre" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
-                <a href="#trabalho" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
-                <a href="#portfolio" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
-                <a href="#contato" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
-            </nav>
+            <img src="capa.jpg" alt="Zniack" class="capa-img-full">
         </section>
 
         <section id="sobre">
-            <div class="flex flex-col md:flex-row gap-12 items-start w-full fade-up"> 
-                <div class="w-full max-w-[600px]">
-                    <h2 class="titulo-secao">Quem sou eu</h2>
-                    <div class="texto-corpo">
-                        Editor de vídeo com <span class="text-white">3+ anos</span> de experiência, focado em operações de alta demanda. São mais de <span class="text-white">800 vídeos finalizados</span>, mantendo um ritmo de entrega constante que se ajusta à complexidade de cada projeto.
-                    </div>
-                </div>
-                <div class="flex flex-col items-center flex-none mt-8 md:mt-0 w-full md:w-auto">
-                    <div class="w-full aspect-[4/5] md:w-[280px] md:h-[340px] bg-[#1a1a1a] border border-white/10 overflow-hidden flex items-center justify-center text-white/30 text-xs relative">
-                        <img src="main.jpg" id="perfil-img" alt="Felipe Souza Zniack - Editor de Vídeo Profissional" class="w-full h-full object-cover object-center saturate-[.0] hover:saturate-100 transition-all duration-700 cursor-pointer opacity-0">
-                    </div>
-                    <span class="nome-foto">Felipe Souza</span>
-                    <span class="signature">Zniack</span>
-                </div>
-            </div>
-        </section>
-
-        <section id="trabalho">
-            <div class="w-full fade-up">
-                <h2 class="titulo-secao" style="margin-bottom: 25px;">Como trabalho</h2>
-                <p class="comentario-trabalho mb-16">Após o briefing e alinhamento, assumo a gestão da pós-produção.</p>
-                <div class="flex flex-col gap-2 max-w-[600px]">
-                    <div class="list-item"><b>Organização</b>Download e estruturação dos arquivos brutos e assets.</div>
-                    <div class="list-item"><b>Decupagem</b>Limpeza do material, removendo erros, pausas desnecessárias e vícios de linguagem.</div>
-                    <div class="list-item"><b>Curadoria de Mídia</b>Busca e seleção de b-rolls, inserts e mídias de apoio.</div>
-                    <div class="list-item"><b>Edição</b>Construção da narrativa, ritmo e pacing.</div>
-                    <div class="list-item"><b>Lettering</b>Aplicação de textos e elementos alinhados à identidade visual.</div>
-                    <div class="list-item"><b>Sonorização</b>Tratamento de áudio, inserção e mixagem de SFX e trilha sonora.</div>
-                    <div class="list-item"><b>Finalização</b>Aplicação de VFX e color grading.</div>
-                    <div class="list-item"><b>Entrega</b>Renderização, conferência técnica final, aprovação e entrega.</div>
-                </div>
-                <p class="comentario-trabalho mt-16">Entendo que cada tipo de projeto exige uma abordagem específica. Em trailers, por exemplo, a trilha frequentemente orienta a construção do ritmo e da narrativa desde as etapas iniciais.</p>
+            <div class="fade-up">
+                <h2 class="font-['Oswald'] text-lg tracking-[7px] mb-8">QUEM SOU EU</h2>
+                <p class="text-white/70 max-w-xl leading-relaxed">Editor de vídeo com 3+ anos de experiência, focado em operações de alta demanda e 800+ projetos entregues.</p>
             </div>
         </section>
 
         <section id="portfolio">
-            <div class="w-full relative fade-up">
-                <h2 class="titulo-secao portfolio-title">Portfolio</h2>
-                <div id="portfolio-grid" class="flex flex-col gap-6 w-full max-w-[400px]">
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Vídeos Diários')">
-                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">VÍDEOS DIÁRIOS</span>
-                    </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Highlights')">
-                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">HIGHLIGHTS</span>
-                    </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Mini Documentários')">
-                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">MINI DOCUMENTÁRIOS</span>
-                    </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Aberturas')">
-                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">ABERTURAS</span>
-                    </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Institucionais')">
-                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">INSTITUCIONAIS</span>
-                    </div>
+            <div class="fade-up">
+                <h2 class="font-['Oswald'] text-lg tracking-[7px] mb-8">PORTFOLIO</h2>
+                <div class="flex flex-col gap-4">
+                    <button onclick="openCategory('Vídeos Diários')" class="text-left font-['Oswald'] tracking-[4px] py-4 border-b border-white/10 hover:pl-4 transition-all">VÍDEOS DIÁRIOS</button>
+                    <button onclick="openCategory('Highlights')" class="text-left font-['Oswald'] tracking-[4px] py-4 border-b border-white/10 hover:pl-4 transition-all">HIGHLIGHTS</button>
                 </div>
             </div>
         </section>
-
-        <section id="contato">
-            <div class="w-full fade-up">
-                <h2 class="titulo-secao">Contato</h2>
-                <div class="flex flex-col gap-16 w-full max-w-[600px]">
-                    <form id="contact-form" action="https://formspree.io/f/mzdyewrp" method="POST" class="flex flex-col gap-8 w-full">
-                        <input type="text" name="name" required placeholder="NOME" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <input type="email" name="email" required placeholder="EMAIL" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <textarea name="message" required placeholder="MENSAGEM" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
-                        <button type="submit" class="font-['Oswald'] text-[12px] tracking-[4px] border border-white p-4 hover:bg-white hover:text-black transition uppercase w-max mt-4">Enviar</button>
-                        <p id="form-status" class="hidden font-['Oswald'] tracking-[2px] text-sm mt-2 text-[#d9d9d9]"></p>
-                    </form>
-                    <div class="flex flex-col gap-6 w-full">
-                        <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase">Informações de contato</h4>
-                        <div class="flex flex-col gap-4">
-                            <div class="flex items-center gap-4 text-[#d9d9d9] font-thin text-sm">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                contato@zniack.com
-                            </div>
-                            <div class="flex items-center gap-4 text-[#d9d9d9] font-thin text-sm">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                                +55 64 99211-2376
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        
+        <section id="contato" class="h-screen">
+             <h2 class="font-['Oswald'] text-lg tracking-[7px] mb-8">CONTATO</h2>
         </section>
-
     </main>
 
     <div id="portfolio-view" class="portfolio-modal">
-        <div class="portfolio-layout-container">
-            
-            <div class="category-nav" id="category-nav">
-                <button class="category-nav-btn" onclick="openCategory('Vídeos Diários')">Vídeos Diários</button>
-                <button class="category-nav-btn" onclick="openCategory('Highlights')">Highlights</button>
-                <button class="category-nav-btn" onclick="openCategory('Mini Documentários')">Mini Documentários</button>
-                <button class="category-nav-btn" onclick="openCategory('Aberturas')">Aberturas</button>
-                <button class="category-nav-btn" onclick="openCategory('Institucionais')">Institucionais</button>
-            </div>
-
-            <div class="portfolio-content-wrapper">
-                <p id="category-desc" class="font-['Roboto'] font-thin text-[15px] text-[#e3e3e3] mb-8 w-full max-w-[600px] text-left"></p>
-                <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px]"></div>
-            </div>
-
+        <div class="category-nav" id="category-nav">
+            <button class="category-nav-btn" onclick="openCategory('Vídeos Diários')">Vídeos Diários</button>
+            <button class="category-nav-btn" onclick="openCategory('Highlights')">Highlights</button>
         </div>
-    </div>
-
-    <div id="video-lightbox">
-        <div class="lightbox-inner">
-            <button class="lightbox-close" onclick="closeLightbox()">&#x2715; Fechar</button>
-            <div class="lightbox-player-wrap" id="lightbox-player-wrap"></div>
-            <p id="lightbox-desc" class="font-['Roboto'] font-thin text-[13px] text-[#e3e3e3] mt-4 text-center hidden"></p>
-        </div>
+        <div id="portfolio-content-area"></div>
     </div>
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-
     <script>
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-        window.addEventListener('load', () => {
-            window.scrollTo(0, 0);
-        });
-
-        const mainScroll   = document.getElementById('main-scroll');
         const stickyHeader = document.getElementById('sticky-header');
-        const bannerNav    = document.querySelector('.banner-nav');
-        const view         = document.getElementById('portfolio-view');
-        const descElement  = document.getElementById('category-desc');
-        const contentArea  = document.getElementById('portfolio-content-area');
-
-        let currentPlayers = [];
-        let lastScrollPosition = 0; 
-
-        const carouselData = {
-            'analises-vol': [
-                'wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk',
-                '3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro',
-                'nUKCw5Ejyao','0FwPnvvsKkE'
-            ],
-            'comentados-vol': [
-                '9EGPFtDVG3s','qxumGqBVclY','Hps6cf-9Ld4','7wYKFmQ7TMc',
-                'OhN7CmFrkrM','OIMWARx6nZA','K-HN5rFeDv8',
-                'ZZAvKcMFano','wfrHj0L9ccc','E60hFmhy4hk'
-            ],
-            'noticias-vol': [
-                'VNNOvzWHpw8','kMDkKOBXsxg','xfEOq0u8d8k','4XrtZ5SD-jI',
-                'mxD0WFRvt7k','KErRxCP2fP0','zPP-6cOafdQ','_z1GkNuudqU',
-                'QOziuqM_FQA','xYxGu5smFOg'
-            ],
-            'highlights-vol': [
-                'KAKM9mEqtoc','w2WLKVPCNxY','kT3T1T7pbXU','GICsA2s6cDc',
-                'Rc3IYyWu2wE','v_ELfeP2WxY','6NpgsBK8JPI','ILaJ6TaO1X0',
-                '2E97i-ChJVI','BsCDkg0lMek'
-            ],
-            'aberturas-vol': [
-                '7f7FDHkQjuQ' 
-            ]
-        };
-
-        const descricoesPortfolio = {
-            'Vídeos Diários': 'Vídeos recebidos, editados e entregues em menos de 24 horas.',
-            'Highlights': 'Vídeos dinâmicos de melhores momentos.',
-            'Mini Documentários': 'Vídeos com foco em narrativa.',
-            'Aberturas': 'Aberturas para campeonatos e eventos.',
-            'Institucionais': 'Vídeos corporativos e comunicação de marca.'
-        };
-
+        const view = document.getElementById('portfolio-view');
+        const contentArea = document.getElementById('portfolio-content-area');
         const carouselState = {};
 
-        function forceYouTubeHD(container) {
-            const tryForce = setInterval(() => {
-                const iframe = container.querySelector('iframe');
-                if (!iframe) return;
-                clearInterval(tryForce);
-                const send = () => {
-                    if(iframe.contentWindow) {
-                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setPlaybackQualityRange', args: ['hd1080', 'hd1080'] }), '*');
-                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }), '*');
-                    }
-                };
-                send();
-                setTimeout(send, 800);
-                setTimeout(send, 2000);
-            }, 100);
-        }
+        // Dados fictícios para o exemplo rodar
+        const carouselData = { 'analises-vol': ['wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo'] };
 
-        function updateCategoryNav(activeName) {
-            document.querySelectorAll('.category-nav-btn').forEach(btn => {
-                btn.classList.toggle('active-cat', btn.textContent.trim() === activeName);
-            });
-        }
-
-        function getCarouselMetrics() {
-            const isMobile = window.innerWidth <= 768;
-            return {
-                isMobile,
-                baseW: isMobile ? 110 : 140,
-                baseH: isMobile ? 62 : 79,
-                activeW: isMobile ? 240 : 320,
-                activeH: isMobile ? 135 : 180,
-                step: (isMobile ? 110 : 140) + 15,
-                diff: (isMobile ? 240 : 320) - (isMobile ? 110 : 140)
-            };
-        }
-
-        function buildInlineVideo(id, description = '') {
-            const descHTML = description ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>` : '<div class="w-full md:w-1/3"></div>';
-            const safeDesc = description.replace(/'/g, "\\'"); 
-            
-            return `
-            <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper" data-desc="${safeDesc}">
-                <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
-                    <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" onclick="handleInlineClick('${id}', this)">
-                        <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-500 absolute inset-0 pointer-events-none">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-full bg-white/5 border border-white/10 opacity-10 group-hover:opacity-30 group-hover:scale-105 transition duration-500 relative z-20 pointer-events-none">
-                            <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                    </div>
-                    <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
-                </div>
-                ${descHTML}
-            </div>`;
-        }
-
-        function handleInlineClick(id, coverElement) {
-            const wrapper = coverElement.closest('.inline-video-wrapper');
-            const description = wrapper.getAttribute('data-desc');
-
-            if (window.innerWidth <= 768) {
-                openLightbox(id, description);
-            } else {
-                coverElement.style.display = 'none';
-                const mount = wrapper.querySelector('.player-mount');
-                mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
-                
-                const player = new Plyr(mount.querySelector('.js-player'), {
-                    controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
-                    settings: ['quality', 'speed'],
-                    youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
-                    autoplay: true
-                });
-                
-                player.on('ready', () => { 
-                    player.volume = 0.75; 
-                    forceYouTubeHD(mount);
-                });
-                currentPlayers.push(player);
-            }
-        }
-
-        function buildCarousel(carouselId) {
-            const ids = carouselData[carouselId];
-            if (!ids || ids.length === 0) return '';
-            
-            const itemsHTML = ids.map((id) => `
-                <div class="carousel-item" data-vid="${id}" onclick="handleCarouselClick(this,'${carouselId}')">
-                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
-                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-                </div>`).join('');
-                
-            const loopHTML = ids.length >= 6 ? itemsHTML + itemsHTML : itemsHTML;
-
-            return `
-                <div class="vitrine-section relative group">
-                    <p class="vitrine-label">mais trabalhos</p>
-                    
-                    <button class="carousel-nav-btn absolute left-[-30px] top-[60%] -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-2 z-20 hidden md:block" onclick="scrollCarouselLeft('${carouselId}', event)">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-white/50 hover:text-white transition"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-
-                    <div class="carousel-wrapper" id="wrap-${carouselId}"
-                         onmouseenter="handleHoverIn('${carouselId}')"
-                         onmouseleave="handleHoverOut('${carouselId}')">
-                        <div class="carousel-track" id="track-${carouselId}">${loopHTML}</div>
-                    </div>
-                </div>`;
-        }
-
-        // AJUSTE 2: Nova lógica física para transição da seta preservando loop infinito
-        window.scrollCarouselLeft = function(id, event) {
-            event.stopPropagation();
-            const state = carouselState[id];
-            if(state) {
-                state.currentSpeed = -25; // Impulso físico negativo (move para a esquerda)
-            }
-        };
-
-        function initCarousels() {
-            Object.keys(carouselData).forEach(id => {
-                const track = document.getElementById('track-' + id);
-                if (!track) return;
-
-                if (carouselState[id] && carouselState[id].rafId) {
-                    cancelAnimationFrame(carouselState[id].rafId);
-                }
-
-                const itemsCount = carouselData[id].length;
-
-                carouselState[id] = {
-                    track: track,
-                    pos: 0,
-                    baseSpeed: itemsCount >= 6 ? 0.7 : 0, 
-                    currentSpeed: itemsCount >= 6 ? 0.7 : 0,
-                    isPaused: false,
-                    isHovered: false,
-                    itemsCount: itemsCount,
-                    isSlidingToItem: false,
-                    isClosing: false,
-                    targetEl: null,
-                    syncTargetEl: null,
-                    targetX: 0,
-                    rafId: null
-                };
-
-                startTicker(id);
-            });
-        }
-
-        function startTicker(id) {
-            const state = carouselState[id];
-            if (!state) return;
-
-            function tick() {
-                const isLooping = state.itemsCount >= 6;
-                const allItems = Array.from(state.track.children);
-                let currentHalfWidth = 0;
-                
-                if (isLooping && allItems[state.itemsCount]) {
-                    currentHalfWidth = allItems[state.itemsCount].offsetLeft;
-                }
-
-                const metrics = getCarouselMetrics();
-
-                if (state.isSlidingToItem && state.targetEl && !state.isClosing) {
-                    if (isLooping && currentHalfWidth > 0) {
-                        if (state.pos <= -currentHalfWidth) {
-                            state.pos += currentHalfWidth;
-                            state.targetX += currentHalfWidth;
-                        } else if (state.pos > 0) {
-                            state.pos -= currentHalfWidth;
-                            state.targetX -= currentHalfWidth;
-                        }
-                    }
-
-                    let diff = state.targetX - state.pos;
-                    let speed = diff * 0.08; 
-                    let maxSpeed = 25; 
-                    
-                    if (speed > maxSpeed) speed = maxSpeed;
-                    if (speed < -maxSpeed) speed = -maxSpeed;
-                    
-                    if (Math.abs(diff) < 0.5) {
-                        state.pos = state.targetX;
-                    } else {
-                        state.pos += speed;
-                    }
-
-                    let targetReachedSize = false;
-                    
-                    allItems.forEach(item => {
-                        let isTarget = (item === state.targetEl || item === state.syncTargetEl);
-                        
-                        let currentW = parseFloat(item.style.width) || (item.classList.contains('active') ? metrics.activeW : metrics.baseW);
-                        let currentH = parseFloat(item.style.height) || (item.classList.contains('active') ? metrics.activeH : metrics.baseH);
-                        let currentO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
-
-                        let targetW = isTarget ? metrics.activeW : metrics.baseW;
-                        let targetH = isTarget ? metrics.activeH : metrics.baseH;
-                        let targetO = isTarget ? 1 : 0.7;
-
-                        currentW += (targetW - currentW) * 0.15;
-                        currentH += (targetH - currentH) * 0.15;
-                        currentO += (targetO - currentO) * 0.15;
-
-                        item.style.width = currentW + 'px';
-                        item.style.height = currentH + 'px';
-                        item.style.opacity = currentO;
-
-                        if (isTarget && item === state.targetEl) {
-                            if (Math.abs(targetW - currentW) < 0.5) targetReachedSize = true;
-                        }
-                    });
-
-                    if (Math.abs(state.targetX - state.pos) < 0.5 && targetReachedSize) {
-                        state.pos = state.targetX;
-                        state.currentSpeed = 0; 
-                        state.isSlidingToItem = false;
-                        allItems.forEach(item => {
-                            item.style.width = '';
-                            item.style.height = '';
-                            item.style.opacity = '';
-                            if (item === state.targetEl || item === state.syncTargetEl) {
-                                item.classList.add('active');
-                            } else {
-                                item.classList.remove('active');
-                            }
-                        });
-                    }
-                } 
-                else if (state.isClosing && state.targetEl) {
-                    let targetReached = true;
-                    allItems.forEach(item => {
-                        if (item === state.targetEl || item === state.syncTargetEl) {
-                            let currentW = parseFloat(item.style.width) || metrics.activeW;
-                            let currentH = parseFloat(item.style.height) || metrics.activeH;
-                            let currentO = parseFloat(item.style.opacity) || 1;
-
-                            currentW += (metrics.baseW - currentW) * 0.08;
-                            currentH += (metrics.baseH - currentH) * 0.08;
-                            currentO += (0.7 - currentO) * 0.08;
-
-                            item.style.width = currentW + 'px';
-                            item.style.height = currentH + 'px';
-                            item.style.opacity = currentO;
-
-                            if (Math.abs(metrics.baseW - currentW) > 0.5) targetReached = false;
-                        }
-                    });
-
-                    const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
-                    state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.08; 
-                    state.pos -= state.currentSpeed;
-
-                    if (isLooping && currentHalfWidth > 0) {
-                        if (state.pos <= -currentHalfWidth) state.pos += currentHalfWidth;
-                        else if (state.pos > 0) state.pos -= currentHalfWidth;
-                    }
-
-                    if (targetReached) {
-                        state.isClosing = false;
-                        state.isPaused = false;
-                        state.targetEl = null;
-                        state.syncTargetEl = null;
-                        allItems.forEach(item => {
-                            item.style.transition = '';
-                            item.style.width = '';
-                            item.style.height = '';
-                            item.style.opacity = '';
-                            item.classList.remove('active');
-                        });
-                    }
-                }
-                else if (!state.isPaused && isLooping && !state.isClosing) {
-                    const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
-                    state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.05;
-                    state.pos -= state.currentSpeed;
-                    
-                    // Ajuste de Reset Físico Robusto bidirecional
-                    if (currentHalfWidth > 0) {
-                        if (state.pos <= -currentHalfWidth) {
-                            state.pos += currentHalfWidth;
-                        } else if (state.pos > 0) {
-                            state.pos -= currentHalfWidth;
-                        }
-                    }
-                }
-
-                state.track.style.transform = `translate3d(${state.pos}px, 0, 0)`;
-                state.rafId = requestAnimationFrame(tick);
-            }
-            
-            state.rafId = requestAnimationFrame(tick);
-        }
-
-        function handleHoverIn(id) { if (carouselState[id]) carouselState[id].isHovered = true; }
-        function handleHoverOut(id) { if (carouselState[id]) carouselState[id].isHovered = false; }
-
-        function handleCarouselClick(el, id) {
-            const state = carouselState[id];
-            if (!state) return;
-
-            const isLooping = state.itemsCount >= 6;
-            const allItems = Array.from(state.track.children);
-            const domIndex = allItems.indexOf(el);
-            const realIndex = domIndex % state.itemsCount;
-            const originalEl = allItems[realIndex];
-            const cloneEl = isLooping ? allItems[realIndex + state.itemsCount] : null;
-
-            if (state.targetEl === originalEl || state.targetEl === cloneEl) {
-                state.isClosing = false; 
-                openLightbox(el.dataset.vid);
-                return;
-            }
-
-            state.isPaused = true;
-            state.isSlidingToItem = true;
-            state.isClosing = false; 
-            
-            allItems.forEach(item => {
-                if (item.classList.contains('active') && item !== originalEl && item !== cloneEl) {
-                    item.style.width = window.getComputedStyle(item).width;
-                    item.style.height = window.getComputedStyle(item).height;
-                    item.style.opacity = window.getComputedStyle(item).opacity;
-                    item.classList.remove('active');
-                }
-                item.style.transition = 'none';
-            });
-
-            state.targetEl = originalEl;
-            state.syncTargetEl = cloneEl;
-            
-            const metrics = getCarouselMetrics();
-            
-            let finalOffset = domIndex * metrics.step;
-            if (domIndex >= state.itemsCount) finalOffset += metrics.diff; 
-            let baseTargetX = -finalOffset;
-
-            if (metrics.isMobile) {
-                const wrapperW = state.track.parentElement.offsetWidth;
-                baseTargetX += (wrapperW - metrics.activeW) / 2;
-            }
-
-            if (isLooping) {
-                const LOOP_W = state.itemsCount * metrics.step + metrics.diff;
-                state.targetX = baseTargetX;
-                while (state.targetX > state.pos + 100) state.targetX -= LOOP_W;
-                while (state.targetX < state.pos - LOOP_W + 100) state.targetX += LOOP_W;
-            } else {
-                state.targetX = baseTargetX;
-            }
-        }
-
-        document.addEventListener('click', (e) => {
-            if (document.getElementById('portfolio-view').classList.contains('active')) {
-                if (!e.target.closest('.carousel-item') && !e.target.closest('.carousel-nav-btn')) {
-                    Object.keys(carouselState).forEach(id => {
-                        const state = carouselState[id];
-                        if (state && state.targetEl && !state.isClosing) {
-                            state.isClosing = true;
-                            state.currentSpeed = 0; 
-                            const allItems = Array.from(state.track.children);
-                            allItems.forEach(item => {
-                                item.style.transition = 'none'; 
-                                if (item.classList.contains('active')) {
-                                    item.style.width = window.getComputedStyle(item).width;
-                                    item.style.height = window.getComputedStyle(item).height;
-                                    item.style.opacity = window.getComputedStyle(item).opacity;
-                                    item.classList.remove('active');
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
-
-        const fadeObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { rootMargin: '0px 0px -5% 0px', threshold: 0 });
-
-        document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
-
-        // Ajuste: Menu sticky reage apenas quando a tela de hero sai da view
+        // Header Fixa
         window.addEventListener('scroll', () => {
-            const capaRect = document.getElementById('capa').getBoundingClientRect();
-            stickyHeader.classList.toggle('visible', capaRect.bottom <= 100);
+            if (window.scrollY > 50) {
+                stickyHeader.style.background = "rgba(25, 25, 25, 0.95)";
+            } else {
+                stickyHeader.style.background = "rgba(37, 37, 37, 0.8)";
+            }
         });
 
+        // Transição Global
         function triggerTransition(callback) {
             const overlay = document.getElementById('transition-overlay');
             overlay.style.display = 'block';
@@ -1070,288 +174,113 @@
                 overlay.style.opacity = '1';
                 setTimeout(() => {
                     callback();
-                    setTimeout(() => {
-                        overlay.style.opacity = '0';
-                        setTimeout(() => { overlay.style.display = 'none'; }, 200);
-                    }, 50);
+                    setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => overlay.style.display = 'none', 200); }, 50);
                 }, 200);
             });
         }
 
-        // AJUSTE 4: Fechamento suave alinhado à transição preta global
+        // Navegação Global
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
-                const targetSection = document.querySelector(this.getAttribute('href'));
-                
-                const isModalOpen = view.classList.contains('active');
-
+                const target = document.querySelector(this.getAttribute('href'));
                 triggerTransition(() => {
-                    if (isModalOpen) {
-                        view.classList.remove('active');
-                        document.body.style.overflow = '';
-                        currentPlayers.forEach(p => { try { p.pause(); } catch(e){} }); // Pausa videos abertos
-                    }
-                    window.scrollTo({ top: targetSection.offsetTop, behavior: 'auto' });
+                    view.classList.remove('active');
+                    document.body.style.overflow = '';
+                    window.scrollTo({ top: target.offsetTop, behavior: 'auto' });
                 });
             });
         });
 
-        let lightboxPlayer = null;
-
-        function openLightbox(videoId, description = '') {
-            const lb = document.getElementById('video-lightbox');
-            const wrap = document.getElementById('lightbox-player-wrap');
-            const descEl = document.getElementById('lightbox-desc');
-            
-            wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
-            
-            if (description) {
-                descEl.innerHTML = description;
-                descEl.classList.remove('hidden');
-            } else {
-                descEl.innerHTML = '';
-                descEl.classList.add('hidden');
-            }
-
-            lb.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            setTimeout(() => {
-                lightboxPlayer = new Plyr('#lb-plyr', {
-                    controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
-                    settings: ['quality', 'speed'],
-                    youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
-                    autoplay: true
-                });
-                
-                lightboxPlayer.on('ready', () => {
-                    lightboxPlayer.volume = 0.75; 
-                    forceYouTubeHD(wrap);
-                });
-            }, 50);
+        function buildCarousel(id) {
+            const items = (carouselData[id] || []).map(vid => `
+                <div class="carousel-item" data-vid="${vid}" onclick="handleCarouselClick(this,'${id}')">
+                    <img src="https://img.youtube.com/vi/${vid}/mqdefault.jpg">
+                </div>
+            `).join('');
+            return `
+                <div class="vitrine-section relative group">
+                    <button class="absolute left-[-40px] top-1/2 -translate-y-1/2 z-20 opacity-0 group-hover:opacity-100 transition-all" onclick="scrollCarouselLeft('${id}', event)">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                    </button>
+                    <div class="carousel-wrapper"><div class="carousel-track" id="track-${id}">${items + items}</div></div>
+                </div>`;
         }
 
-        function closeLightbox() {
-            if (lightboxPlayer) {
-                try { lightboxPlayer.pause(); lightboxPlayer.destroy(); } catch(e) {}
-                lightboxPlayer = null;
-            }
-            document.getElementById('lightbox-player-wrap').innerHTML = '';
-            document.getElementById('lightbox-desc').innerHTML = '';
-            document.getElementById('lightbox-desc').classList.add('hidden');
-            document.getElementById('video-lightbox').classList.remove('active');
-            
-            if (view.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
-            }
-
-            Object.keys(carouselState).forEach(id => {
-                const state = carouselState[id];
-                if (state && state.targetEl) {
+        // AJUSTE 2: Seta funcional mesmo com vídeo ativo
+        window.scrollCarouselLeft = function(id, event) {
+            event.stopPropagation();
+            const state = carouselState[id];
+            if (state) {
+                // Se houver vídeo ativo, reseta o estado de "alvo" para permitir movimento suave
+                if (state.targetEl) {
                     state.isClosing = true;
-                    state.currentSpeed = 0; 
-                    const allItems = Array.from(state.track.children);
-                    allItems.forEach(item => {
-                        item.style.transition = 'none';
-                        if (item.classList.contains('active')) {
-                            item.style.width = window.getComputedStyle(item).width;
-                            item.style.height = window.getComputedStyle(item).height;
-                            item.style.opacity = window.getComputedStyle(item).opacity;
-                            item.classList.remove('active');
-                        }
-                    });
+                    state.isSlidingToItem = false;
                 }
-            });
-        }
-
-        document.getElementById('video-lightbox').addEventListener('click', function(e) {
-            if (e.target === this || e.target.classList.contains('lightbox-inner')) closeLightbox();
-        });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-
-        function toggleSubCategory(id, element) {
-            const container = document.getElementById(id);
-            const indicator = element.querySelector('.indicator');
-
-            Object.keys(carouselState).forEach(cId => {
-                const state = carouselState[cId];
-                if (state && state.targetEl && !state.isClosing) {
-                    state.isClosing = true;
-                    state.currentSpeed = 0; 
-                    const allItems = Array.from(state.track.children);
-                    allItems.forEach(item => {
-                        item.style.transition = 'none';
-                        if (item.classList.contains('active')) {
-                            item.style.width = window.getComputedStyle(item).width;
-                            item.style.height = window.getComputedStyle(item).height;
-                            item.style.opacity = window.getComputedStyle(item).opacity;
-                            item.classList.remove('active');
-                        }
-                    });
-                }
-            });
-
-            if (container.classList.contains('hidden')) {
-                container.classList.remove('hidden');
-                container.classList.add('flex');
-                indicator.innerText = 'FECHAR';
-            } else {
-                container.classList.add('hidden');
-                container.classList.remove('flex');
-                indicator.innerText = 'ABRIR';
+                state.currentSpeed = -30; // Impulso para a esquerda
             }
+        };
+
+        function startTicker(id) {
+            const state = carouselState[id];
+            function tick() {
+                const track = state.track;
+                const items = Array.from(track.children);
+                const halfWidth = items[items.length/2].offsetLeft;
+
+                if (!state.isPaused || state.isClosing) {
+                    state.pos -= state.currentSpeed;
+                    state.currentSpeed += (0.7 - state.currentSpeed) * 0.05; // Retorna à velocidade base
+                    
+                    if (state.pos <= -halfWidth) state.pos += halfWidth;
+                    if (state.pos > 0) state.pos -= halfWidth;
+                }
+
+                // Lógica de crescimento do item central (UX padrão)
+                if (state.isSlidingToItem && state.targetEl) {
+                    const targetX = -state.targetEl.offsetLeft + (track.parentElement.offsetWidth/2 - 160);
+                    state.pos += (targetX - state.pos) * 0.1;
+                }
+
+                track.style.transform = `translate3d(${state.pos}px, 0, 0)`;
+                state.rafId = requestAnimationFrame(tick);
+            }
+            state.rafId = requestAnimationFrame(tick);
         }
 
         function openCategory(name) {
-            if (!view.classList.contains('active')) {
-                lastScrollPosition = window.scrollY;
-            }
-
-            currentPlayers.forEach(player => { try { player.pause(); } catch(e) {} });
-            currentPlayers = [];
-            Object.keys(carouselState).forEach(id => {
-                if (carouselState[id] && carouselState[id].rafId) {
-                    cancelAnimationFrame(carouselState[id].rafId);
-                }
-            });
-
             triggerTransition(() => {
-                
-                stickyHeader.classList.add('visible');
-                
-                // Título foi removido conforme solicitação
-                descElement.innerText  = descricoesPortfolio[name] || '';
-                updateCategoryNav(name);
-
-                document.body.style.overflow = 'hidden';
-
-                if (name === 'Vídeos Diários') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col w-full border-b border-white/5 pb-4">
-                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-analises', this)">
-                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Análises</h4>
-                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
-                            </div>
-                            <div id="cat-analises" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildInlineVideo('csh7Z3dcb0g', 'Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.')}
-                                ${buildInlineVideo('82Ah3XW5Jg4', 'Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.')}
-                                ${buildCarousel('analises-vol')}
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col w-full border-b border-white/5 pb-4 mt-8">
-                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-comentados', this)">
-                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Comentados</h4>
-                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
-                            </div>
-                            <div id="cat-comentados" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildInlineVideo('ll3UYdXXhlE')}
-                                ${buildInlineVideo('Oacodzw29CE')}
-                                ${buildCarousel('comentados-vol')}
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col w-full border-b border-white/5 pb-4 mt-8">
-                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-noticias', this)">
-                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Notícias</h4>
-                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
-                            </div>
-                            <div id="cat-noticias" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildInlineVideo('d0d43qkOE7A')}
-                                ${buildInlineVideo('AkrpKrpF3dc')}
-                                ${buildCarousel('noticias-vol')}
-                            </div>
-                        </div>
-                    `;
-
-                } else if (name === 'Highlights') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col gap-12 w-full">
-                            ${buildInlineVideo('ewiL53kmyPI', 'Edição de materiais brutos de transmissões ao vivo focada na construção de ritmo e tom consistentes. O processo priorizou a cadência e a estruturação da montagem, garantindo a fluidez e a dinâmica do conteúdo do início ao fim.')}
-                            ${buildInlineVideo('f-2xznYjToI', 'Curadoria de 16 horas de material bruto distribuídas em 3 transmissões. A montagem priorizou a seleção criteriosa de momentos e a construção de ritmo, evitando a saturação sem perder os eventos relevantes.')}
-                            ${buildCarousel('highlights-vol')}
-                        </div>
-                    `;
-
-                } else if (name === 'Mini Documentários') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col gap-12 w-full">
-                            ${buildInlineVideo('yiK_Z7XGyBA', 'Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa. Edição construída para conduzir esse discurso do início ao fim, garantindo a unidade e a fluidez.')}
-                            ${buildInlineVideo('qgXUQirQ7Bk')}
-                        </div>
-                    `;
-
-                } else if (name === 'Aberturas') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col gap-12 w-full">
-                            ${buildInlineVideo('G4qpobpXdKo', 'Desenvolvi cenas inéditas utilizando IA e o treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. O projeto somou aproximadamente 300 horas entre geração e pós-produção, garantindo a fidelidade estética e a originalidade do conteúdo.')}
-                            ${buildCarousel('aberturas-vol')}
-                        </div>
-                    `;
-
-                } else if (name === 'Institucionais') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col gap-12 w-full">
-                            ${buildInlineVideo('4minjPUiGdI', 'Assumi a execução integral do projeto, da idealização ao roteiro, suprindo a ausência de um direcionamento criativo. Conduzi a curadoria de imagens e a locução, garantindo a unidade estética e a precisão do tom em todas as etapas da entrega.')}
-                            ${buildInlineVideo('O03qeBRocIs', 'A animação e a dinâmica de elementos gráficos deram vida a uma identidade institucional fictícia através do motion design. O projeto priorizou a fluidez dos movimentos e a precisão técnica, garantindo a coesão visual e a integridade da marca.')}
-                        </div>
-                    `;
-                }
-
-                view.scrollTop = 0;
                 view.classList.add('active');
-
-                setTimeout(() => {
-                    initCarousels();
-                }, 50);
-            });
-        }
-
-        const capaImg = document.querySelector('.capa-img-full');
-        capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; });
-        if (capaImg.complete) capaImg.style.opacity = '1';
-
-        const perfilImg = document.getElementById('perfil-img');
-        if (perfilImg) {
-            perfilImg.addEventListener('load', () => { perfilImg.classList.remove('opacity-0'); });
-            if (perfilImg.complete) perfilImg.classList.remove('opacity-0');
-        }
-
-        const contactForm = document.getElementById('contact-form');
-        const formStatus  = document.getElementById('form-status');
-
-        if (contactForm) {
-            contactForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const btn  = contactForm.querySelector('button[type="submit"]');
-                const orig = btn.innerText;
-                btn.innerText = 'ENVIANDO...';
-                try {
-                    const response = await fetch(contactForm.action, {
-                        method: contactForm.method,
-                        body: new FormData(contactForm),
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    if (response.ok) {
-                        formStatus.innerText = "Obrigado pela mensagem! Entrarei em contato em breve para falarmos sobre o seu projeto.";
-                        formStatus.style.color = '#f3f3f3';
-                        contactForm.reset();
-                    } else {
-                        formStatus.innerText = "Oops! Ocorreu um erro ao enviar sua mensagem.";
-                        formStatus.style.color = '#f87171';
-                    }
-                } catch (err) {
-                    formStatus.innerText = "Oops! Ocorreu um erro ao enviar sua mensagem.";
-                    formStatus.style.color = '#f87171';
-                } finally {
-                    formStatus.classList.remove('hidden');
-                    btn.innerText = orig;
+                document.body.style.overflow = 'hidden';
+                contentArea.innerHTML = name === 'Vídeos Diários' ? buildCarousel('analises-vol') : '<p class="p-10">Conteúdo em breve...</p>';
+                
+                // Inicializa o estado do carrossel após injetar no DOM
+                const track = document.getElementById('track-analises-vol');
+                if (track) {
+                    carouselState['analises-vol'] = { track, pos: 0, currentSpeed: 0.7, isPaused: false };
+                    startTicker('analises-vol');
                 }
             });
         }
+
+        function handleCarouselClick(el, id) {
+            const state = carouselState[id];
+            state.isPaused = true;
+            state.isSlidingToItem = true;
+            state.isClosing = false;
+            state.targetEl = el;
+            Array.from(state.track.children).forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // Revelar imagem da capa
+        const img = document.querySelector('.capa-img-full');
+        img.onload = () => img.style.opacity = 1;
+        if (img.complete) img.onload();
+
+        // Observer para Fade
+        const obs = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('is-visible')), { threshold: 0.1 });
+        document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
     </script>
 </body>
 </html>
