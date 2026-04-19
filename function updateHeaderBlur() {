@@ -425,9 +425,9 @@
             const isModalActive = view.classList.contains('active');
             
             if (isModalActive) {
-                stickyHeader.style.setProperty('--blur-val', '4.5px');
+                stickyHeader.style.setProperty('--blur-val', '2px');
                 stickyHeader.style.setProperty('--sat-val', '0.8');
-                stickyHeader.style.setProperty('--bg-fade-col', 'rgba(37, 37, 37, 0.5)'); 
+                stickyHeader.style.setProperty('--bg-fade-col', 'rgba(37, 37, 37, 1)'); 
             } else {
                 const capaH = capa.offsetHeight;
                 const scrollY = window.scrollY;
@@ -438,8 +438,8 @@
                 
                 if (scrollY > startBlurAt) {
                     const progress = Math.min((scrollY - startBlurAt) / (capaH - startBlurAt), 1);
-                    blur = progress * 6; 
-                    opacity = progress * 0.85; 
+                    blur = progress * 3; 
+                    opacity = Math.min(progress * 1.7, 1); 
                 }
 
                 stickyHeader.style.setProperty('--blur-val', blur + 'px');
