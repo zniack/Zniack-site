@@ -56,6 +56,7 @@
             color: white;
             font-family: 'Roboto', sans-serif;
             overflow-x: hidden; 
+            scroll-behavior: smooth;
         }
 
         .noise::after {
@@ -84,13 +85,10 @@
             100% { transform: translate(0, 0); }
         }
 
-        /* ── REMOVIDO SCROLL SNAP - ROLAGEM LIVRE ── */
+        /* ── REMOVIDO SNAP - A ROLAGEM AGORA É LIVRE ── */
         .snap-container {
             position: relative; 
-            scroll-behavior: smooth;
         }
-        .snap-container::-webkit-scrollbar { display: none; }
-        .snap-container { -ms-overflow-style: none; scrollbar-width: none; }
 
         section {
             min-height: 100vh; 
@@ -265,6 +263,7 @@
             width: max-content;
         }
 
+        /* ── EFEITO FADE DE VOLTA À VIDA ── */
         .fade-up {
             opacity: 0;
             transform: translateY(40px);
@@ -272,6 +271,10 @@
             will-change: opacity, transform;
         }
         .fade-up.is-visible { opacity: 1; transform: translateY(0); }
+
+        #portfolio-content-area .plyr__control--overlaid {
+            display: none !important;
+        }
 
         /* ── CARROSSEL ── */
         .vitrine-section {
@@ -288,7 +291,6 @@
             margin-bottom: 18px;
         }
 
-        /* FIX DO SHAKE/PULO: Altura pré-alocada impede a tela de "chutar" */
         .carousel-wrapper {
             position: relative;
             width: 100%;
@@ -307,13 +309,14 @@
             width: max-content;
             will-change: transform;
             overflow-anchor: none;
-            height: 180px; /* Altura exata de um vídeo aberto 320px */
+            height: 180px; 
         }
 
+        /* FIX DO SHAKE: Altura explicitamente setada sem aspect-ratio dependente */
         .carousel-item {
             flex: 0 0 auto;
             width: 140px; 
-            aspect-ratio: 16/9; 
+            height: 78.75px; /* Base 16:9 PC */
             position: relative;
             border: 1px solid rgba(255,255,255,0.04);
             border-radius: 4px;
@@ -321,7 +324,10 @@
             cursor: pointer;
             opacity: 0.7; 
             transition: border-color 0.4s ease;
-            will-change: width, opacity, transform;
+            will-change: width, height, opacity, transform;
+            /* Trava o sub-pixel rendering (o shake visual da imagem) */
+            transform: translateZ(0); 
+            backface-visibility: hidden;
         }
 
         .carousel-item:hover {
@@ -331,6 +337,7 @@
 
         .carousel-item.active {
             width: 320px;
+            height: 180px;
             opacity: 1;
             border-color: rgba(255,255,255,0.3);
         }
@@ -420,11 +427,11 @@
             section { padding: 15vh 5%; }
             .portfolio-modal { padding: 5vh 5%; }
             .nome-foto { margin-top: 15px; }
-            .carousel-item { width: 110px; }
-            .carousel-item.active { width: 240px; }
-            /* Altura fixa proporcional ao mobile */
+            
             .carousel-wrapper { min-height: 155px; }
             .carousel-track { height: 135px; }
+            .carousel-item { width: 110px; height: 61.875px; }
+            .carousel-item.active { width: 240px; height: 135px; }
         }
     </style>
 </head>
@@ -567,6 +574,8 @@
         const descElement  = document.getElementById('category-desc');
         const contentArea  = document.getElementById('portfolio-content-area');
 
+        let currentPlayers = [];
+
         // ── DADOS DOS CARROSSEIS ──
         const carouselData = {
             'analises-vol': [
@@ -604,32 +613,27 @@
 
         const carouselState = {};
 
+        // Medidas reais com base na tela (O Segredo para evitar o Shake)
         function getCarouselMetrics() {
             const isMobile = window.innerWidth <= 768;
-            const baseW = isMobile ? 110 : 140;
-            const activeW = isMobile ? 240 : 320;
-            const gap = 15;
             return {
                 isMobile,
-                baseW,
-                activeW,
-                step: baseW + gap,
-                diff: activeW - baseW
+                baseW: isMobile ? 110 : 140,
+                baseH: isMobile ? 61.875 : 78.75,
+                activeW: isMobile ? 240 : 320,
+                activeH: isMobile ? 135 : 180,
+                step: (isMobile ? 110 : 140) + 15,
+                diff: (isMobile ? 240 : 320) - (isMobile ? 110 : 140)
             };
         }
 
-        // UX: Função auxiliar que transforma vídeos normais em Gatilhos Limpos de Lightbox
-        function buildMainVideo(id, description = '') {
+        // UX Escolha: Devolve a funcionalidade de Vídeo Inline com a descrição embaixo!
+        function buildInlineVideo(id, description = '') {
             const descHTML = description ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>` : '<div class="w-full md:w-1/3"></div>';
             return `
             <div class="flex flex-col md:flex-row gap-6 w-full items-start">
-                <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0 group cursor-pointer" onclick="openLightbox('${id}')">
-                    <img src="https://img.youtube.com/vi/${id}/maxresdefault.jpg" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-500">
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                         <div class="w-16 h-16 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-sm border border-white/10 group-hover:scale-110 transition duration-300">
-                             <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                         </div>
-                    </div>
+                <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
+                    <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>
                 </div>
                 ${descHTML}
             </div>`;
@@ -704,6 +708,7 @@
 
                 const metrics = getCarouselMetrics();
 
+                // ── CENA 1: DESLIZE E EXPANSAO (Protegida contra Shake) ──
                 if (state.isSlidingToItem && state.targetEl && !state.isClosing) {
                     if (isLooping && currentHalfWidth > 0) {
                         if (state.pos <= -currentHalfWidth) {
@@ -732,16 +737,21 @@
                     
                     allItems.forEach(item => {
                         let isTarget = (item === state.targetEl || item === state.syncTargetEl);
+                        
                         let currentW = parseFloat(item.style.width) || (item.classList.contains('active') ? metrics.activeW : metrics.baseW);
+                        let currentH = parseFloat(item.style.height) || (item.classList.contains('active') ? metrics.activeH : metrics.baseH);
                         let currentO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
 
                         let targetW = isTarget ? metrics.activeW : metrics.baseW;
+                        let targetH = isTarget ? metrics.activeH : metrics.baseH;
                         let targetO = isTarget ? 1 : 0.7;
 
                         currentW += (targetW - currentW) * 0.1;
+                        currentH += (targetH - currentH) * 0.1;
                         currentO += (targetO - currentO) * 0.1;
 
                         item.style.width = currentW + 'px';
+                        item.style.height = currentH + 'px';
                         item.style.opacity = currentO;
 
                         if (isTarget && item === state.targetEl) {
@@ -754,6 +764,7 @@
                         state.isSlidingToItem = false;
                         allItems.forEach(item => {
                             item.style.width = '';
+                            item.style.height = '';
                             item.style.opacity = '';
                             if (item === state.targetEl || item === state.syncTargetEl) {
                                 item.classList.add('active');
@@ -763,17 +774,21 @@
                         });
                     }
                 } 
+                // ── CENA 3: FECHANDO O PLAYER ──
                 else if (state.isClosing && state.targetEl) {
                     let targetReached = true;
                     allItems.forEach(item => {
                         if (item === state.targetEl || item === state.syncTargetEl) {
                             let currentW = parseFloat(item.style.width) || metrics.activeW;
+                            let currentH = parseFloat(item.style.height) || metrics.activeH;
                             let currentO = parseFloat(item.style.opacity) || 1;
 
                             currentW += (metrics.baseW - currentW) * 0.015;
+                            currentH += (metrics.baseH - currentH) * 0.015;
                             currentO += (0.7 - currentO) * 0.015;
 
                             item.style.width = currentW + 'px';
+                            item.style.height = currentH + 'px';
                             item.style.opacity = currentO;
 
                             if (Math.abs(metrics.baseW - currentW) > 0.5) targetReached = false;
@@ -797,11 +812,13 @@
                         allItems.forEach(item => {
                             item.style.transition = '';
                             item.style.width = '';
+                            item.style.height = '';
                             item.style.opacity = '';
                             item.classList.remove('active');
                         });
                     }
                 }
+                // ── CENA 2: CARROSSEL DESCANSANDO (Scroll) ──
                 else if (!state.isPaused && isLooping && !state.isClosing) {
                     const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
                     state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.05;
@@ -846,6 +863,7 @@
             allItems.forEach(item => {
                 if (item.classList.contains('active') && item !== originalEl && item !== cloneEl) {
                     item.style.width = window.getComputedStyle(item).width;
+                    item.style.height = window.getComputedStyle(item).height;
                     item.style.opacity = window.getComputedStyle(item).opacity;
                     item.classList.remove('active');
                 }
@@ -877,6 +895,7 @@
             }
         }
 
+        // ── OBSERVER RECONFIGURADO: Agora escuta a Janela, garantindo o Fade-Up ──
         const fadeObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -884,11 +903,12 @@
                     observer.unobserve(entry.target);
                 }
             });
-        }, { root: mainScroll, threshold: 0.15 });
+        }, { threshold: 0.15 });
 
         document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
 
-        mainScroll.addEventListener('scroll', () => {
+        // Listener reconfigurado para a janela global
+        window.addEventListener('scroll', () => {
             const bannerRect = bannerNav.getBoundingClientRect();
             stickyHeader.classList.toggle('visible', bannerRect.bottom <= 0);
         });
@@ -912,10 +932,10 @@
                 const targetSection = document.querySelector(this.getAttribute('href'));
                 if (view.classList.contains('active')) {
                     view.classList.remove('active');
-                    mainScroll.style.overflowY = 'auto';
+                    document.body.style.overflow = '';
                 }
                 triggerTransition(() => {
-                    mainScroll.scrollTo({ top: targetSection.offsetTop, behavior: 'auto' });
+                    window.scrollTo({ top: targetSection.offsetTop, behavior: 'auto' });
                 });
             });
         });
@@ -928,7 +948,7 @@
             wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
             lb.classList.add('active');
             
-            document.getElementById('portfolio-view').style.overflowY = 'hidden';
+            document.body.style.overflow = 'hidden';
 
             setTimeout(() => {
                 lightboxPlayer = new Plyr('#lb-plyr', {
@@ -938,7 +958,7 @@
                 });
                 
                 lightboxPlayer.on('ready', () => {
-                    lightboxPlayer.volume = 0.75; // O Volume Protegido UX Ajustado
+                    lightboxPlayer.volume = 0.75; 
                 });
             }, 50);
         }
@@ -951,7 +971,7 @@
             document.getElementById('lightbox-player-wrap').innerHTML = '';
             document.getElementById('video-lightbox').classList.remove('active');
             
-            document.getElementById('portfolio-view').style.overflowY = 'auto';
+            document.body.style.overflow = '';
 
             Object.keys(carouselState).forEach(id => {
                 const state = carouselState[id];
@@ -963,6 +983,7 @@
                         item.style.transition = 'none';
                         if (item.classList.contains('active')) {
                             item.style.width = window.getComputedStyle(item).width;
+                            item.style.height = window.getComputedStyle(item).height;
                             item.style.opacity = window.getComputedStyle(item).opacity;
                             item.classList.remove('active');
                         }
@@ -990,6 +1011,7 @@
                         item.style.transition = 'none';
                         if (item.classList.contains('active')) {
                             item.style.width = window.getComputedStyle(item).width;
+                            item.style.height = window.getComputedStyle(item).height;
                             item.style.opacity = window.getComputedStyle(item).opacity;
                             item.classList.remove('active');
                         }
@@ -1012,7 +1034,9 @@
             triggerTransition(() => {
                 titleElement.innerText = name;
                 descElement.innerText  = descricoesPortfolio[name] || '';
-                mainScroll.style.overflowY = 'hidden';
+                
+                // Trava o scroll da página de fundo quando modal abrir
+                document.body.style.overflow = 'hidden';
 
                 if (name === 'Vídeos Diários') {
                     contentArea.innerHTML = `
@@ -1022,8 +1046,8 @@
                                 <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
                             </div>
                             <div id="cat-analises" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildMainVideo('csh7Z3dcb0g', 'Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.')}
-                                ${buildMainVideo('82Ah3XW5Jg4', 'Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.')}
+                                ${buildInlineVideo('csh7Z3dcb0g', 'Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.')}
+                                ${buildInlineVideo('82Ah3XW5Jg4', 'Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.')}
                                 ${buildCarousel('analises-vol')}
                             </div>
                         </div>
@@ -1034,8 +1058,8 @@
                                 <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
                             </div>
                             <div id="cat-comentados" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildMainVideo('ll3UYdXXhlE')}
-                                ${buildMainVideo('Oacodzw29CE')}
+                                ${buildInlineVideo('ll3UYdXXhlE')}
+                                ${buildInlineVideo('Oacodzw29CE')}
                                 ${buildCarousel('comentados-vol')}
                             </div>
                         </div>
@@ -1046,8 +1070,8 @@
                                 <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
                             </div>
                             <div id="cat-noticias" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildMainVideo('d0d43qkOE7A')}
-                                ${buildMainVideo('AkrpKrpF3dc')}
+                                ${buildInlineVideo('d0d43qkOE7A')}
+                                ${buildInlineVideo('AkrpKrpF3dc')}
                                 ${buildCarousel('noticias-vol')}
                             </div>
                         </div>
@@ -1056,8 +1080,8 @@
                 } else if (name === 'Highlights') {
                     contentArea.innerHTML = `
                         <div class="flex flex-col gap-12 w-full">
-                            ${buildMainVideo('ewiL53kmyPI', 'Edição de materiais brutos de transmissões ao vivo focada na construção de ritmo e tom consistentes. O processo priorizou a cadência e a estruturação da montagem, garantindo a fluidez e a dinâmica do conteúdo do início ao fim.')}
-                            ${buildMainVideo('f-2xznYjToI', 'Curadoria de 16 horas de material bruto distribuídas em 3 transmissões. A montagem priorizou a seleção criteriosa de momentos e a construção de ritmo, evitando a saturação sem perder os eventos relevantes.')}
+                            ${buildInlineVideo('ewiL53kmyPI', 'Edição de materiais brutos de transmissões ao vivo focada na construção de ritmo e tom consistentes. O processo priorizou a cadência e a estruturação da montagem, garantindo a fluidez e a dinâmica do conteúdo do início ao fim.')}
+                            ${buildInlineVideo('f-2xznYjToI', 'Curadoria de 16 horas de material bruto distribuídas em 3 transmissões. A montagem priorizou a seleção criteriosa de momentos e a construção de ritmo, evitando a saturação sem perder os eventos relevantes.')}
                             ${buildCarousel('highlights-vol')}
                         </div>
                     `;
@@ -1065,15 +1089,15 @@
                 } else if (name === 'Mini Documentários') {
                     contentArea.innerHTML = `
                         <div class="flex flex-col gap-12 w-full">
-                            ${buildMainVideo('yiK_Z7XGyBA', 'Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa. Edição construída para conduzir esse discurso do início ao fim, garantindo a unidade e a fluidez.')}
-                            ${buildMainVideo('qgXUQirQ7Bk')}
+                            ${buildInlineVideo('yiK_Z7XGyBA', 'Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa. Edição construída para conduzir esse discurso do início ao fim, garantindo a unidade e a fluidez.')}
+                            ${buildInlineVideo('qgXUQirQ7Bk')}
                         </div>
                     `;
 
                 } else if (name === 'Aberturas') {
                     contentArea.innerHTML = `
                         <div class="flex flex-col gap-12 w-full">
-                            ${buildMainVideo('G4qpobpXdKo', 'Desenvolvi cenas inéditas utilizando IA e o treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. O projeto somou aproximadamente 300 horas entre geração e pós-produção, garantindo a fidelidade estética e a originalidade do conteúdo.')}
+                            ${buildInlineVideo('G4qpobpXdKo', 'Desenvolvi cenas inéditas utilizando IA e o treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. O projeto somou aproximadamente 300 horas entre geração e pós-produção, garantindo a fidelidade estética e a originalidade do conteúdo.')}
                             ${buildCarousel('aberturas-vol')}
                         </div>
                     `;
@@ -1081,8 +1105,8 @@
                 } else if (name === 'Institucionais') {
                     contentArea.innerHTML = `
                         <div class="flex flex-col gap-12 w-full">
-                            ${buildMainVideo('4minjPUiGdI', 'Assumi a execução integral do projeto, da idealização ao roteiro, suprindo a ausência de um direcionamento criativo. Conduzi a curadoria de imagens e a locução, garantindo a unidade estética e a precisão do tom em todas as etapas da entrega.')}
-                            ${buildMainVideo('O03qeBRocIs', 'A animação e a dinâmica de elementos gráficos deram vida a uma identidade institucional fictícia através do motion design. O projeto priorizou a fluidez dos movimentos e a precisão técnica, garantindo a coesão visual e a integridade da marca.')}
+                            ${buildInlineVideo('4minjPUiGdI', 'Assumi a execução integral do projeto, da idealização ao roteiro, suprindo a ausência de um direcionamento criativo. Conduzi a curadoria de imagens e a locução, garantindo a unidade estética e a precisão do tom em todas as etapas da entrega.')}
+                            ${buildInlineVideo('O03qeBRocIs', 'A animação e a dinâmica de elementos gráficos deram vida a uma identidade institucional fictícia através do motion design. O projeto priorizou a fluidez dos movimentos e a precisão técnica, garantindo a coesão visual e a integridade da marca.')}
                         </div>
                     `;
                 }
@@ -1090,13 +1114,41 @@
                 view.scrollTop = 0;
                 view.classList.add('active');
 
+                // Recarrega Players Inline
                 setTimeout(() => {
+                    currentPlayers.forEach(p => { try { p.destroy(); } catch(e) {} });
+                    currentPlayers = Array.from(document.querySelectorAll('.js-player')).map(p => {
+                        const playerInst = new Plyr(p, {
+                            controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
+                            youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
+                        });
+                        playerInst.on('ready', () => {
+                            playerInst.volume = 0.75; 
+                        });
+                        return playerInst;
+                    });
                     initCarousels();
                 }, 50);
             });
         }
 
         function closeCategory() {
+            currentPlayers.forEach(player => {
+                if (player.playing) {
+                    let vol = player.volume;
+                    const step = vol / 20;
+                    const iv = setInterval(() => {
+                        vol -= step;
+                        if (vol <= 0) {
+                            clearInterval(iv);
+                            player.pause();
+                            try { player.volume = 1; } catch(e) {}
+                        } else {
+                            try { player.volume = vol; } catch(e) {}
+                        }
+                    }, 50);
+                }
+            });
             Object.keys(carouselState).forEach(id => {
                 if (carouselState[id] && carouselState[id].rafId) {
                     cancelAnimationFrame(carouselState[id].rafId);
@@ -1104,7 +1156,7 @@
             });
             triggerTransition(() => {
                 view.classList.remove('active');
-                mainScroll.style.overflowY = 'auto';
+                document.body.style.overflow = '';
             });
         }
 
