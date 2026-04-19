@@ -44,22 +44,15 @@
             --plyr-menu-color: #d9d9d9;
         }
 
-        .plyr__poster {
-            background-size: cover !important;
-            background-position: center !important;
-        }
-
-        .plyr__control--overlaid {
-            display: none !important;
-        }
+        .plyr__poster { background-size: cover !important; background-position: center !important; }
+        .plyr__control--overlaid { display: none !important; }
 
         body, html {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--bg-color);
             color: white;
             font-family: 'Roboto', sans-serif;
-            overflow-x: hidden; 
+            overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
@@ -74,28 +67,20 @@
             z-index: 9998;
             animation: noiseAnim 0.2s steps(2) infinite;
         }
-
         @keyframes noiseAnim {
-            0% { transform: translate(0, 0); }
-            10% { transform: translate(-1%, -1%); }
-            20% { transform: translate(1%, 1%); }
-            30% { transform: translate(-2%, 1%); }
-            40% { transform: translate(2%, -1%); }
-            50% { transform: translate(-1%, 2%); }
-            60% { transform: translate(1%, -2%); }
-            70% { transform: translate(2%, 2%); }
-            80% { transform: translate(-2%, -2%); }
-            90% { transform: translate(1%, 1%); }
-            100% { transform: translate(0, 0); }
+            0%  { transform: translate(0,0); }    10% { transform: translate(-1%,-1%); }
+            20% { transform: translate(1%,1%); }  30% { transform: translate(-2%,1%); }
+            40% { transform: translate(2%,-1%); } 50% { transform: translate(-1%,2%); }
+            60% { transform: translate(1%,-2%); } 70% { transform: translate(2%,2%); }
+            80% { transform: translate(-2%,-2%); }90% { transform: translate(1%,1%); }
+            100%{ transform: translate(0,0); }
         }
 
-        .snap-container {
-            position: relative; 
-        }
+        .snap-container { position: relative; }
 
         section {
-            min-height: 100vh; 
-            padding: 20vh 10%; 
+            min-height: 100vh;
+            padding: 20vh 10%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -113,8 +98,7 @@
         .capa-img-full {
             position: absolute;
             top: 0; left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
             object-position: center;
             z-index: 0;
@@ -132,23 +116,21 @@
             gap: 3rem;
         }
 
-        /* ── HEADER STICKY COM VIDRO FOSCO ── */
+        /* ── HEADER: sempre no topo, sem top animado, blur via JS ── */
         .header-sticky {
             position: fixed;
-            top: -100px; left: 0;
+            top: 0; left: 0;
             width: 100%;
             padding: 30px 10%;
             z-index: 100;
-            background: rgba(37, 37, 37, 0.55);
-            backdrop-filter: blur(18px) saturate(0.8);
-            -webkit-backdrop-filter: blur(18px) saturate(0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            transition: top 0.4s ease, opacity 0.4s ease;
+            background: rgba(37,37,37,0);
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+            border-bottom: 1px solid rgba(255,255,255,0);
             display: flex;
             gap: 3rem;
+            /* sem transition CSS — o JS atualiza a cada scroll frame */
         }
-
-        .header-sticky.visible { top: 0; }
 
         #transition-overlay {
             display: none;
@@ -171,12 +153,7 @@
             text-align: left;
         }
 
-        .texto-corpo {
-            color: var(--text-main);
-            font-size: 14px;
-            line-height: 1.8;
-            margin: 0;
-        }
+        .texto-corpo { color: var(--text-main); font-size: 14px; line-height: 1.8; margin: 0; }
 
         .comentario-trabalho {
             font-family: 'Roboto', sans-serif;
@@ -190,7 +167,7 @@
 
         .nome-foto {
             font-family: 'Oswald', sans-serif;
-            font-weight: 200; 
+            font-weight: 200;
             font-size: 18px;
             color: var(--text-light);
             letter-spacing: 2px;
@@ -198,35 +175,34 @@
         }
 
         .signature {
-            font-family: 'Skyer', 'Syncopate', sans-serif; 
-            font-size: 14px; 
+            font-family: 'Skyer', 'Syncopate', sans-serif;
+            font-size: 14px;
             color: var(--text-light);
             font-weight: 400;
-            margin-top: 4px; 
+            margin-top: 4px;
             opacity: 0.8;
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
+            text-transform: uppercase;
+            letter-spacing: 3px;
         }
 
-        .list-item { 
+        .list-item {
             font-family: 'Roboto', sans-serif;
             list-style: none;
-            font-weight: 100; 
-            color: var(--text-sub); 
-            margin-bottom: 40px; 
+            font-weight: 100;
+            color: var(--text-sub);
+            margin-bottom: 40px;
             text-align: left;
             font-size: 14px;
         }
         .list-item:last-child { margin-bottom: 0; }
-
-        .list-item b { 
+        .list-item b {
             font-family: 'Oswald', sans-serif;
-            font-weight: 400; 
-            color: rgba(255, 255, 255, 0.7); 
-            display: block; 
-            text-transform: uppercase; 
-            font-size: 14px; 
-            letter-spacing: 4px; 
+            font-weight: 400;
+            color: rgba(255,255,255,0.7);
+            display: block;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 4px;
             margin-bottom: 8px;
         }
 
@@ -237,16 +213,15 @@
         .portfolio-box:hover {
             border-color: rgba(255,255,255,0.3);
             background: rgba(255,255,255,0.02);
-            transform: translateX(10px); 
+            transform: translateX(10px);
         }
 
         .portfolio-modal {
             position: fixed;
             top: 0; left: 0;
-            width: 100%;
-            height: 100vh;
+            width: 100%; height: 100vh;
             background-color: var(--bg-color);
-            z-index: 90; 
+            z-index: 90;
             overflow-y: auto;
             padding: 120px 10% 10vh 10%;
             opacity: 0;
@@ -255,13 +230,8 @@
         .portfolio-modal.active { opacity: 1; visibility: visible; }
         .portfolio-modal::-webkit-scrollbar { display: none; }
 
-        .portfolio-layout-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
+        .portfolio-layout-container { display: flex; flex-direction: column; width: 100%; }
 
-        /* ── NAV DE CATEGORIAS (TOPO) ── */
         .category-nav {
             display: flex;
             flex-direction: row;
@@ -270,9 +240,10 @@
             margin-bottom: 30px;
         }
 
+        /* lettering 2pt menor (era 10px) */
         .category-nav-btn {
             font-family: 'Oswald', sans-serif;
-            font-size: 10px;
+            font-size: 8px;
             letter-spacing: 3px;
             text-transform: uppercase;
             color: rgba(255,255,255,0.3);
@@ -282,44 +253,29 @@
             transition: color 0.2s ease, border-color 0.2s ease;
             background: none;
         }
-        .category-nav-btn:hover {
-            color: rgba(255,255,255,0.7);
-            border-color: rgba(255,255,255,0.2);
-        }
-        .category-nav-btn.active-cat {
-            color: white;
-            border-color: rgba(255,255,255,0.4);
-        }
+        .category-nav-btn:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
+        .category-nav-btn.active-cat { color: white; border-color: rgba(255,255,255,0.4); }
 
         @media (min-width: 769px) {
-            #capa {
-                justify-content: flex-start;
-                padding-top: 100px;
-            }
-            .banner-nav {
-                background: none;
-                padding-top: 0;
-            }
+            #capa { justify-content: flex-start; padding-top: 100px; }
+            .banner-nav { background: none; padding-top: 0; }
         }
 
         .fade-up {
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 0.5s cubic-bezier(0.25,1,0.5,1), transform 0.5s cubic-bezier(0.25,1,0.5,1);
             will-change: opacity, transform;
         }
         .fade-up.is-visible { opacity: 1; transform: translateY(0); }
 
-        .vitrine-section {
-            margin-top: 56px;
-            width: 100%;
-        }
+        .vitrine-section { margin-top: 56px; width: 100%; position: relative; }
 
         .vitrine-label {
             font-family: 'Oswald', sans-serif;
             font-size: 11px;
             letter-spacing: 5px;
-            color: rgba(255, 255, 255, 0.6); 
+            color: rgba(255,255,255,0.6);
             text-transform: uppercase;
             margin-bottom: 18px;
         }
@@ -330,145 +286,110 @@
             overflow: hidden;
             padding: 10px 0;
             overflow-anchor: none;
-            min-height: 200px; 
+            min-height: 200px;
             display: flex;
             align-items: center;
-            contain: layout; 
+            contain: layout;
         }
 
+        /* alinhado à esquerda: transform sempre parte de 0, sem centering */
         .carousel-track {
             display: flex;
-            gap: 15px; 
-            align-items: center; 
+            gap: 15px;
+            align-items: center;
             width: max-content;
             will-change: transform;
             overflow-anchor: none;
-            height: 180px; 
+            height: 180px;
+            transform: translate3d(0,0,0);
         }
 
         .carousel-item {
             flex: 0 0 auto;
-            width: 140px; 
-            height: 79px; 
+            width: 140px; height: 79px;
             position: relative;
             border: 1px solid rgba(255,255,255,0.04);
             border-radius: 4px;
             overflow: hidden;
             cursor: pointer;
-            opacity: 0.7; 
+            opacity: 0.7;
             transition: border-color 0.4s ease;
             will-change: width, height, opacity, transform;
-            transform: translateZ(0); 
+            transform: translateZ(0);
             backface-visibility: hidden;
         }
-
-        .carousel-item:hover {
-            opacity: 1;
-            border-color: rgba(255,255,255,0.15);
-        }
-
-        .carousel-item.active {
-            width: 320px;
-            height: 180px;
-            opacity: 1;
-            border-color: rgba(255,255,255,0.3);
-        }
-
-        .carousel-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            pointer-events: none;
-        }
+        .carousel-item:hover { opacity: 1; border-color: rgba(255,255,255,0.15); }
+        .carousel-item.active { width: 320px; height: 180px; opacity: 1; border-color: rgba(255,255,255,0.3); }
+        .carousel-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
 
         .carousel-play {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease;
             background: rgba(0,0,0,0.15);
         }
-        .carousel-item:hover .carousel-play,
-        .carousel-item.active .carousel-play { 
-            opacity: 1; 
+        .carousel-item:hover .carousel-play, .carousel-item.active .carousel-play { opacity: 1; }
+        .carousel-play svg { width: 32px; height: 32px; fill: rgba(255,255,255,0.9); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7)); }
+
+        /* ── SETA ESQUERDA DO CARROSSEL ── */
+        .carousel-nav-btn {
+            position: absolute;
+            left: -40px;
+            top: 55%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.2s ease, color 0.2s ease;
+            padding: 6px;
+            z-index: 20;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: none; /* visível só desktop via media query abaixo */
         }
-        
-        .carousel-play svg {
-            width: 32px;
-            height: 32px;
-            fill: rgba(255,255,255,0.9);
-            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
-        }
+        @media (min-width: 769px) { .carousel-nav-btn { display: block; } }
+        .vitrine-section:hover .carousel-nav-btn { opacity: 1; }
+        .carousel-nav-btn svg { display: block; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+        .carousel-nav-btn:hover svg { color: white; }
 
         #video-lightbox {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             z-index: 99999;
             background: rgba(8,8,8,0.96);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
         #video-lightbox.active { opacity: 1; visibility: visible; }
 
         .lightbox-inner {
-            width: 90%;
-            max-width: 860px;
+            width: 90%; max-width: 860px;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
         }
-
         .lightbox-close {
-            position: absolute;
-            top: -38px;
-            right: 0;
-            background: none;
-            border: none;
+            position: absolute; top: -38px; right: 0;
+            background: none; border: none;
             color: rgba(255,255,255,0.4);
             font-family: 'Oswald', sans-serif;
-            font-size: 11px;
-            letter-spacing: 4px;
-            cursor: pointer;
-            transition: color 0.2s;
-            text-transform: uppercase;
-            padding: 0;
+            font-size: 11px; letter-spacing: 4px;
+            cursor: pointer; transition: color 0.2s;
+            text-transform: uppercase; padding: 0;
         }
         .lightbox-close:hover { color: white; }
+        .lightbox-player-wrap { width: 100%; aspect-ratio: 16/9; background: #0a0a0a; }
 
-        .lightbox-player-wrap {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #0a0a0a;
-        }
+        #portfolio-content-area { padding-bottom: 35vh; }
 
-        #portfolio-content-area {
-            padding-bottom: 35vh; 
-        }
-
-        /* ── SUBCATEGORIA: TOGGLE COM ANIMAÇÃO ── */
+        /* ── SUBCATEGORIA ANIMADA ── */
         .subcat-header {
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 16px;
+            display: flex; align-items: center; gap: 16px;
             border-left: 1px solid rgba(255,255,255,0.2);
             padding: 10px 14px;
             transition: border-color 0.3s ease;
-            width: max-content;
-            max-width: 100%;
+            width: max-content; max-width: 100%;
         }
         .subcat-header:hover { border-color: white; }
-
         .subcat-title {
             font-family: 'Oswald', sans-serif;
             letter-spacing: 3px;
@@ -478,71 +399,53 @@
             transition: color 0.3s ease;
             white-space: nowrap;
         }
-        .subcat-header:hover .subcat-title { color: white; }
+        .subcat-header:hover .subcat-title,
+        .subcat-header.open .subcat-title { color: white; }
 
         .subcat-indicator {
             font-family: 'Oswald', sans-serif;
             color: rgba(255,255,255,0.3);
-            font-size: 10px;
-            letter-spacing: 2px;
+            font-size: 10px; letter-spacing: 2px;
             text-transform: uppercase;
-            transition: color 0.3s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
-            transform: translateX(0px);
-            opacity: 1;
+            transition: color 0.3s ease, transform 0.4s cubic-bezier(0.25,1,0.5,1), opacity 0.3s ease;
             white-space: nowrap;
         }
         .subcat-header:hover .subcat-indicator { color: white; }
-        .subcat-header.open .subcat-indicator {
-            transform: translateX(6px);
-            opacity: 0.5;
-        }
+        .subcat-header.open .subcat-indicator { transform: translateX(6px); opacity: 0.5; }
 
-        /* Container de conteúdo da subcategoria com animação de abertura */
         .subcat-body {
             display: grid;
             grid-template-rows: 0fr;
-            transition: grid-template-rows 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: grid-template-rows 0.45s cubic-bezier(0.25,1,0.5,1);
             width: 100%;
         }
-        .subcat-body.open {
-            grid-template-rows: 1fr;
-        }
+        .subcat-body.open { grid-template-rows: 1fr; }
         .subcat-body-inner {
             overflow: hidden;
             opacity: 0;
             transform: translateY(12px);
-            transition: opacity 0.4s ease 0.05s, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) 0.05s;
+            transition: opacity 0.4s ease 0.05s, transform 0.4s cubic-bezier(0.25,1,0.5,1) 0.05s;
         }
-        .subcat-body.open .subcat-body-inner {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .subcat-body.open .subcat-body-inner { opacity: 1; transform: translateY(0); }
         .subcat-body-inner-pad {
             padding-top: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 48px;
+            display: flex; flex-direction: column; gap: 48px;
         }
 
         @media (max-width: 768px) {
             #capa { min-height: 80vh; height: 80vh; }
             .capa-img-full { object-fit: cover; object-position: center 20%; }
-            .banner-nav, .header-sticky {
-                gap: 15px; padding: 20px 5%;
-                justify-content: center; flex-wrap: wrap;
-            }
+            .banner-nav, .header-sticky { gap: 15px; padding: 20px 5%; justify-content: center; flex-wrap: wrap; }
             .nav-link { font-size: 11px !important; letter-spacing: 3px !important; }
             section { padding: 15vh 5%; }
             .portfolio-modal { padding: 100px 5% 5vh 5%; }
             .nome-foto { margin-top: 15px; }
-            
             .carousel-wrapper { min-height: 155px; contain: layout; }
             .carousel-track { height: 135px; }
             .carousel-item { width: 110px; height: 62px; }
             .carousel-item.active { width: 240px; height: 135px; }
-
             .category-nav { gap: 6px; }
-            .category-nav-btn { font-size: 9px; padding: 5px 10px; letter-spacing: 2px; }
+            .category-nav-btn { font-size: 7px; padding: 5px 10px; letter-spacing: 2px; }
         }
     </style>
 </head>
@@ -551,26 +454,26 @@
     <div id="transition-overlay"></div>
 
     <header id="sticky-header" class="header-sticky">
-        <a href="#sobre" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
-        <a href="#trabalho" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
-        <a href="#portfolio" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
-        <a href="#contato" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
+        <a href="#sobre"    class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
+        <a href="#trabalho" class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
+        <a href="#portfolio" class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
+        <a href="#contato"  class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
     </header>
 
     <main class="snap-container" id="main-scroll">
-        
+
         <section id="capa">
             <img src="capa.jpg" alt="Zniack - Portfólio de Edição de Vídeo e Alta Demanda" class="capa-img-full">
             <nav class="banner-nav">
-                <a href="#sobre" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
-                <a href="#trabalho" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
-                <a href="#portfolio" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
-                <a href="#contato" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
+                <a href="#sobre"    class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
+                <a href="#trabalho" class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
+                <a href="#portfolio" class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
+                <a href="#contato"  class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
             </nav>
         </section>
 
         <section id="sobre">
-            <div class="flex flex-col md:flex-row gap-12 items-start w-full fade-up"> 
+            <div class="flex flex-col md:flex-row gap-12 items-start w-full fade-up">
                 <div class="w-full max-w-[600px]">
                     <h2 class="titulo-secao">Quem sou eu</h2>
                     <div class="texto-corpo">
@@ -633,9 +536,9 @@
                 <h2 class="titulo-secao">Contato</h2>
                 <div class="flex flex-col gap-16 w-full max-w-[600px]">
                     <form id="contact-form" action="https://formspree.io/f/mzdyewrp" method="POST" class="flex flex-col gap-8 w-full">
-                        <input type="text" name="name" required placeholder="NOME" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <input type="email" name="email" required placeholder="EMAIL" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <textarea name="message" required placeholder="MENSAGEM" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
+                        <input type="text"  name="name"    required placeholder="NOME"     class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
+                        <input type="email" name="email"   required placeholder="EMAIL"    class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
+                        <textarea           name="message" required placeholder="MENSAGEM" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
                         <button type="submit" class="font-['Oswald'] text-[12px] tracking-[4px] border border-white p-4 hover:bg-white hover:text-black transition uppercase w-max mt-4">Enviar</button>
                         <p id="form-status" class="hidden font-['Oswald'] tracking-[2px] text-sm mt-2 text-[#d9d9d9]"></p>
                     </form>
@@ -660,7 +563,6 @@
 
     <div id="portfolio-view" class="portfolio-modal">
         <div class="portfolio-layout-container">
-            
             <div class="category-nav" id="category-nav">
                 <button class="category-nav-btn" onclick="openCategory('Vídeos Diários')">Vídeos Diários</button>
                 <button class="category-nav-btn" onclick="openCategory('Highlights')">Highlights</button>
@@ -668,12 +570,10 @@
                 <button class="category-nav-btn" onclick="openCategory('Aberturas')">Aberturas</button>
                 <button class="category-nav-btn" onclick="openCategory('Institucionais')">Institucionais</button>
             </div>
-
             <div class="portfolio-content-wrapper">
                 <p id="category-desc" class="font-['Roboto'] font-thin text-[15px] text-[#e3e3e3] mb-8 w-full max-w-[600px] text-left"></p>
                 <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px]"></div>
             </div>
-
         </div>
     </div>
 
@@ -686,105 +586,107 @@
     </div>
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-
     <script>
-        if ('scrollRestoration' in history) {
-            history.scrollRestoration = 'manual';
-        }
-        window.addEventListener('load', () => {
-            window.scrollTo(0, 0);
-        });
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        window.addEventListener('load', () => window.scrollTo(0, 0));
 
-        const mainScroll   = document.getElementById('main-scroll');
         const stickyHeader = document.getElementById('sticky-header');
-        const bannerNav    = document.querySelector('.banner-nav');
         const view         = document.getElementById('portfolio-view');
         const descElement  = document.getElementById('category-desc');
         const contentArea  = document.getElementById('portfolio-content-area');
 
-        let currentPlayers = [];
-        let lastScrollPosition = 0; 
+        let currentPlayers     = [];
+        let lastScrollPosition = 0;
 
+        /* ══════════════════════════════════════════════════════
+           HEADER BLUR PROGRESSIVO
+           Progresso 0→1 conforme o banner (#capa) sai da tela.
+           No topo: blur 0, opacidade 0.
+           Quando #capa sair completamente: blur 18px, sem bg sólido.
+           O header sempre está visível (top:0 fixo).
+        ══════════════════════════════════════════════════════ */
+        function updateHeaderBlur() {
+            if (view.classList.contains('active')) {
+                /* dentro do modal: efeito total, fixo */
+                stickyHeader.style.backdropFilter         = 'blur(18px) saturate(0.8)';
+                stickyHeader.style.webkitBackdropFilter   = 'blur(18px) saturate(0.8)';
+                stickyHeader.style.borderBottomColor      = 'rgba(255,255,255,0.04)';
+                return;
+            }
+            const capaH    = document.getElementById('capa').offsetHeight;
+            const progress = Math.min(Math.max(window.scrollY / capaH, 0), 1);
+            const blur     = progress * 18;
+            const border   = progress * 0.04;
+            stickyHeader.style.backdropFilter       = `blur(${blur}px) saturate(0.8)`;
+            stickyHeader.style.webkitBackdropFilter = `blur(${blur}px) saturate(0.8)`;
+            stickyHeader.style.borderBottomColor    = `rgba(255,255,255,${border})`;
+        }
+
+        window.addEventListener('scroll', updateHeaderBlur, { passive: true });
+        updateHeaderBlur();
+
+        /* ══════════════════════════════════════════════════════
+           DADOS
+        ══════════════════════════════════════════════════════ */
         const carouselData = {
-            'analises-vol': [
-                'wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk',
-                '3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro',
-                'nUKCw5Ejyao','0FwPnvvsKkE'
-            ],
-            'comentados-vol': [
-                '9EGPFtDVG3s','qxumGqBVclY','Hps6cf-9Ld4','7wYKFmQ7TMc',
-                'OhN7CmFrkrM','OIMWARx6nZA','K-HN5rFeDv8',
-                'ZZAvKcMFano','wfrHj0L9ccc','E60hFmhy4hk'
-            ],
-            'noticias-vol': [
-                'VNNOvzWHpw8','kMDkKOBXsxg','xfEOq0u8d8k','4XrtZ5SD-jI',
-                'mxD0WFRvt7k','KErRxCP2fP0','zPP-6cOafdQ','_z1GkNuudqU',
-                'QOziuqM_FQA','xYxGu5smFOg'
-            ],
-            'highlights-vol': [
-                'KAKM9mEqtoc','w2WLKVPCNxY','kT3T1T7pbXU','GICsA2s6cDc',
-                'Rc3IYyWu2wE','v_ELfeP2WxY','6NpgsBK8JPI','ILaJ6TaO1X0',
-                '2E97i-ChJVI','BsCDkg0lMek'
-            ],
-            'aberturas-vol': [
-                '7f7FDHkQjuQ' 
-            ]
+            'analises-vol':   ['wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk','3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro','nUKCw5Ejyao','0FwPnvvsKkE'],
+            'comentados-vol': ['9EGPFtDVG3s','qxumGqBVclY','Hps6cf-9Ld4','7wYKFmQ7TMc','OhN7CmFrkrM','OIMWARx6nZA','K-HN5rFeDv8','ZZAvKcMFano','wfrHj0L9ccc','E60hFmhy4hk'],
+            'noticias-vol':   ['VNNOvzWHpw8','kMDkKOBXsxg','xfEOq0u8d8k','4XrtZ5SD-jI','mxD0WFRvt7k','KErRxCP2fP0','zPP-6cOafdQ','_z1GkNuudqU','QOziuqM_FQA','xYxGu5smFOg'],
+            'highlights-vol': ['KAKM9mEqtoc','w2WLKVPCNxY','kT3T1T7pbXU','GICsA2s6cDc','Rc3IYyWu2wE','v_ELfeP2WxY','6NpgsBK8JPI','ILaJ6TaO1X0','2E97i-ChJVI','BsCDkg0lMek'],
+            'aberturas-vol':  ['7f7FDHkQjuQ']
         };
 
         const descricoesPortfolio = {
-            'Vídeos Diários': 'Vídeos recebidos, editados e entregues em menos de 24 horas.',
-            'Highlights': 'Vídeos dinâmicos de melhores momentos.',
-            'Mini Documentários': 'Vídeos com foco em narrativa.',
-            'Aberturas': 'Aberturas para campeonatos e eventos.',
-            'Institucionais': 'Vídeos corporativos e comunicação de marca.'
+            'Vídeos Diários':    'Vídeos recebidos, editados e entregues em menos de 24 horas.',
+            'Highlights':        'Vídeos dinâmicos de melhores momentos.',
+            'Mini Documentários':'Vídeos com foco em narrativa.',
+            'Aberturas':         'Aberturas para campeonatos e eventos.',
+            'Institucionais':    'Vídeos corporativos e comunicação de marca.'
         };
 
         const carouselState = {};
 
         function forceYouTubeHD(container) {
-            const tryForce = setInterval(() => {
+            const t = setInterval(() => {
                 const iframe = container.querySelector('iframe');
                 if (!iframe) return;
-                clearInterval(tryForce);
+                clearInterval(t);
                 const send = () => {
-                    if(iframe.contentWindow) {
-                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setPlaybackQualityRange', args: ['hd1080', 'hd1080'] }), '*');
-                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }), '*');
+                    if (iframe.contentWindow) {
+                        iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'setPlaybackQualityRange',args:['hd1080','hd1080']}), '*');
+                        iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'setPlaybackQuality',args:['hd1080']}), '*');
                     }
                 };
-                send();
-                setTimeout(send, 800);
-                setTimeout(send, 2000);
+                send(); setTimeout(send,800); setTimeout(send,2000);
             }, 100);
         }
 
-        function updateCategoryNav(activeName) {
-            document.querySelectorAll('.category-nav-btn').forEach(btn => {
-                btn.classList.toggle('active-cat', btn.textContent.trim() === activeName);
-            });
+        function updateCategoryNav(name) {
+            document.querySelectorAll('.category-nav-btn').forEach(btn =>
+                btn.classList.toggle('active-cat', btn.textContent.trim() === name)
+            );
         }
 
         function getCarouselMetrics() {
-            const isMobile = window.innerWidth <= 768;
+            const m = window.innerWidth <= 768;
             return {
-                isMobile,
-                baseW: isMobile ? 110 : 140,
-                baseH: isMobile ? 62 : 79,
-                activeW: isMobile ? 240 : 320,
-                activeH: isMobile ? 135 : 180,
-                step: (isMobile ? 110 : 140) + 15,
-                diff: (isMobile ? 240 : 320) - (isMobile ? 110 : 140)
+                isMobile: m,
+                baseW:  m ? 110 : 140,  baseH:  m ? 62  : 79,
+                activeW:m ? 240 : 320,  activeH:m ? 135 : 180,
+                step:  (m ? 110 : 140) + 15,
+                diff:  (m ? 240 : 320) - (m ? 110 : 140)
             };
         }
 
-        function buildInlineVideo(id, description = '') {
-            const descHTML = description ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>` : '<div class="w-full md:w-1/3"></div>';
-            const safeDesc = description.replace(/'/g, "\\'"); 
-            
+        function buildInlineVideo(id, description='') {
+            const descHTML = description
+                ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>`
+                : '<div class="w-full md:w-1/3"></div>';
+            const safeDesc = description.replace(/'/g,"\\'");
             return `
             <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper" data-desc="${safeDesc}">
                 <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
-                    <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" onclick="handleInlineClick('${id}', this)">
+                    <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" onclick="handleInlineClick('${id}',this)">
                         <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-500 absolute inset-0 pointer-events-none">
                         <div class="w-16 h-16 flex items-center justify-center rounded-full bg-white/5 border border-white/10 opacity-10 group-hover:opacity-30 group-hover:scale-105 transition duration-500 relative z-20 pointer-events-none">
                             <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -796,75 +698,63 @@
             </div>`;
         }
 
-        function handleInlineClick(id, coverElement) {
-            const wrapper = coverElement.closest('.inline-video-wrapper');
-            const description = wrapper.getAttribute('data-desc');
-
-            if (window.innerWidth <= 768) {
-                openLightbox(id, description);
-            } else {
-                coverElement.style.display = 'none';
-                const mount = wrapper.querySelector('.player-mount');
-                mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
-                
-                const player = new Plyr(mount.querySelector('.js-player'), {
-                    controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
-                    settings: ['quality', 'speed'],
-                    youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
-                    autoplay: true
-                });
-                
-                player.on('ready', () => { 
-                    player.volume = 0.75; 
-                    forceYouTubeHD(mount);
-                });
-                currentPlayers.push(player);
-            }
+        function handleInlineClick(id, coverEl) {
+            const wrapper = coverEl.closest('.inline-video-wrapper');
+            const desc    = wrapper.getAttribute('data-desc');
+            if (window.innerWidth <= 768) { openLightbox(id, desc); return; }
+            coverEl.style.display = 'none';
+            const mount = wrapper.querySelector('.player-mount');
+            mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
+            const player = new Plyr(mount.querySelector('.js-player'), {
+                controls:['play','progress','current-time','mute','volume','settings','fullscreen'],
+                settings:['quality','speed'],
+                youtube:{ noCookie:true, rel:0, showinfo:0, iv_load_policy:3, modestbranding:1 },
+                autoplay:true
+            });
+            player.on('ready', () => { player.volume = 0.75; forceYouTubeHD(mount); });
+            currentPlayers.push(player);
         }
 
         function buildCarousel(carouselId) {
             const ids = carouselData[carouselId];
             if (!ids || ids.length === 0) return '';
-            
-            const itemsHTML = ids.map((id) => `
+            const itemsHTML = ids.map(id => `
                 <div class="carousel-item" data-vid="${id}" onclick="handleCarouselClick(this,'${carouselId}')">
                     <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
                     <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
                 </div>`).join('');
-                
             const loopHTML = ids.length >= 6 ? itemsHTML + itemsHTML : itemsHTML;
-
             return `
-                <div class="vitrine-section relative group">
-                    <p class="vitrine-label">mais trabalhos</p>
-                    
-                    <button class="carousel-nav-btn absolute left-[-30px] top-[60%] -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity p-2 z-20 hidden md:block" onclick="scrollCarouselLeft('${carouselId}', event)">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-white/50 hover:text-white transition"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-
-                    <div class="carousel-wrapper" id="wrap-${carouselId}"
-                         onmouseenter="handleHoverIn('${carouselId}')"
-                         onmouseleave="handleHoverOut('${carouselId}')">
-                        <div class="carousel-track" id="track-${carouselId}">${loopHTML}</div>
-                    </div>
-                </div>`;
+            <div class="vitrine-section">
+                <p class="vitrine-label">mais trabalhos</p>
+                <button class="carousel-nav-btn" onclick="scrollCarouselLeft('${carouselId}',event)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <div class="carousel-wrapper" id="wrap-${carouselId}"
+                     onmouseenter="handleHoverIn('${carouselId}')"
+                     onmouseleave="handleHoverOut('${carouselId}')">
+                    <div class="carousel-track" id="track-${carouselId}">${loopHTML}</div>
+                </div>
+            </div>`;
         }
 
-        /* ── CARROSSEL: VOLTAR COM ITEM SELECIONADO ── */
+        /* ══ SETA: impulso para a esquerda ══
+           Fecha item selecionado se houver, depois aplica impulso negativo.
+           O carrossel NUNCA se move para a esquerda por clique em item —
+           apenas pela seta. */
         window.scrollCarouselLeft = function(id, event) {
             event.stopPropagation();
-            const state = carouselState[id];
-            if (!state) return;
+            const s = carouselState[id];
+            if (!s) return;
 
-            if (state.targetEl || state.isSlidingToItem) {
-                state.isSlidingToItem = false;
-                state.isClosing = true;
-                const allItems = Array.from(state.track.children);
-                allItems.forEach(item => {
+            if (s.targetEl || s.isSlidingToItem) {
+                s.isSlidingToItem = false;
+                s.isClosing = true;
+                Array.from(s.track.children).forEach(item => {
                     item.style.transition = 'none';
                     if (item.classList.contains('active')) {
-                        item.style.width = window.getComputedStyle(item).width;
-                        item.style.height = window.getComputedStyle(item).height;
+                        item.style.width   = window.getComputedStyle(item).width;
+                        item.style.height  = window.getComputedStyle(item).height;
                         item.style.opacity = window.getComputedStyle(item).opacity;
                         item.classList.remove('active');
                     }
@@ -872,588 +762,356 @@
             }
 
             setTimeout(() => {
-                state.isClosing = false;
-                state.isPaused = false;
-                state.targetEl = null;
-                state.syncTargetEl = null;
-                state.currentSpeed = -20;
-                const releaseImpulse = () => {
-                    if (state.currentSpeed < state.baseSpeed) {
-                        state.currentSpeed += 0.5;
-                        if (state.currentSpeed < state.baseSpeed) {
-                            requestAnimationFrame(releaseImpulse);
-                        } else {
-                            state.currentSpeed = state.baseSpeed;
-                        }
-                    }
+                s.isClosing    = false;
+                s.isPaused     = false;
+                s.targetEl     = null;
+                s.syncTargetEl = null;
+                s.currentSpeed = -20; /* negativo = move para a esquerda */
+                const release = () => {
+                    s.currentSpeed += 0.4;
+                    if (s.currentSpeed < s.baseSpeed) requestAnimationFrame(release);
+                    else s.currentSpeed = s.baseSpeed;
                 };
-                setTimeout(releaseImpulse, 300);
+                setTimeout(release, 280);
             }, 80);
         };
 
+        /* ══ INIT ══ */
         function initCarousels() {
             Object.keys(carouselData).forEach(id => {
                 const track = document.getElementById('track-' + id);
                 if (!track) return;
-
-                if (carouselState[id] && carouselState[id].rafId) {
-                    cancelAnimationFrame(carouselState[id].rafId);
-                }
-
-                const itemsCount = carouselData[id].length;
-
+                if (carouselState[id] && carouselState[id].rafId) cancelAnimationFrame(carouselState[id].rafId);
+                const n = carouselData[id].length;
                 carouselState[id] = {
-                    track: track,
-                    pos: 0,
-                    baseSpeed: itemsCount >= 6 ? 0.7 : 0, 
-                    currentSpeed: itemsCount >= 6 ? 0.7 : 0,
-                    isPaused: false,
-                    isHovered: false,
-                    itemsCount: itemsCount,
-                    isSlidingToItem: false,
-                    isClosing: false,
-                    targetEl: null,
-                    syncTargetEl: null,
-                    targetX: 0,
-                    rafId: null
+                    track, pos:0,
+                    baseSpeed: n>=6 ? 0.7 : 0,
+                    currentSpeed: n>=6 ? 0.7 : 0,
+                    isPaused:false, isHovered:false, itemsCount:n,
+                    isSlidingToItem:false, isClosing:false,
+                    targetEl:null, syncTargetEl:null, targetX:0, rafId:null
                 };
-
                 startTicker(id);
             });
         }
 
         function startTicker(id) {
-            const state = carouselState[id];
-            if (!state) return;
-
+            const s = carouselState[id];
+            if (!s) return;
             function tick() {
-                const isLooping = state.itemsCount >= 6;
-                const allItems = Array.from(state.track.children);
-                let currentHalfWidth = 0;
-                
-                if (isLooping && allItems[state.itemsCount]) {
-                    currentHalfWidth = allItems[state.itemsCount].offsetLeft;
-                }
-
+                const isLoop  = s.itemsCount >= 6;
+                const items   = Array.from(s.track.children);
                 const metrics = getCarouselMetrics();
+                let halfW = 0;
+                if (isLoop && items[s.itemsCount]) halfW = items[s.itemsCount].offsetLeft;
 
-                if (state.isSlidingToItem && state.targetEl && !state.isClosing) {
-                    if (isLooping && currentHalfWidth > 0) {
-                        if (state.pos <= -currentHalfWidth) {
-                            state.pos += currentHalfWidth;
-                            state.targetX += currentHalfWidth;
-                        } else if (state.pos > 0) {
-                            state.pos -= currentHalfWidth;
-                            state.targetX -= currentHalfWidth;
-                        }
+                if (s.isSlidingToItem && s.targetEl && !s.isClosing) {
+                    /* corrige loop ao deslizar para item */
+                    if (isLoop && halfW > 0) {
+                        if (s.pos <= -halfW) { s.pos += halfW; s.targetX += halfW; }
+                        else if (s.pos > 0)  { s.pos -= halfW; s.targetX -= halfW; }
                     }
+                    const diff  = s.targetX - s.pos;
+                    const spd   = Math.max(-25, Math.min(25, diff * 0.08));
+                    s.pos = Math.abs(diff) < 0.5 ? s.targetX : s.pos + spd;
 
-                    let diff = state.targetX - state.pos;
-                    let speed = diff * 0.08; 
-                    let maxSpeed = 25; 
-                    
-                    if (speed > maxSpeed) speed = maxSpeed;
-                    if (speed < -maxSpeed) speed = -maxSpeed;
-                    
-                    if (Math.abs(diff) < 0.5) {
-                        state.pos = state.targetX;
-                    } else {
-                        state.pos += speed;
-                    }
-
-                    let targetReachedSize = false;
-                    
-                    allItems.forEach(item => {
-                        let isTarget = (item === state.targetEl || item === state.syncTargetEl);
-                        
-                        let currentW = parseFloat(item.style.width) || (item.classList.contains('active') ? metrics.activeW : metrics.baseW);
-                        let currentH = parseFloat(item.style.height) || (item.classList.contains('active') ? metrics.activeH : metrics.baseH);
-                        let currentO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
-
-                        let targetW = isTarget ? metrics.activeW : metrics.baseW;
-                        let targetH = isTarget ? metrics.activeH : metrics.baseH;
-                        let targetO = isTarget ? 1 : 0.7;
-
-                        currentW += (targetW - currentW) * 0.15;
-                        currentH += (targetH - currentH) * 0.15;
-                        currentO += (targetO - currentO) * 0.15;
-
-                        item.style.width = currentW + 'px';
-                        item.style.height = currentH + 'px';
-                        item.style.opacity = currentO;
-
-                        if (isTarget && item === state.targetEl) {
-                            if (Math.abs(targetW - currentW) < 0.5) targetReachedSize = true;
-                        }
+                    let sizeOk = false;
+                    items.forEach(item => {
+                        const isTgt = item===s.targetEl || item===s.syncTargetEl;
+                        let cW = parseFloat(item.style.width)   || (item.classList.contains('active') ? metrics.activeW : metrics.baseW);
+                        let cH = parseFloat(item.style.height)  || (item.classList.contains('active') ? metrics.activeH : metrics.baseH);
+                        let cO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
+                        const tW = isTgt ? metrics.activeW : metrics.baseW;
+                        const tH = isTgt ? metrics.activeH : metrics.baseH;
+                        const tO = isTgt ? 1 : 0.7;
+                        cW += (tW-cW)*0.15; cH += (tH-cH)*0.15; cO += (tO-cO)*0.15;
+                        item.style.width=cW+'px'; item.style.height=cH+'px'; item.style.opacity=cO;
+                        if (isTgt && item===s.targetEl && Math.abs(tW-cW)<0.5) sizeOk=true;
                     });
-
-                    if (Math.abs(state.targetX - state.pos) < 0.5 && targetReachedSize) {
-                        state.pos = state.targetX;
-                        state.currentSpeed = 0; 
-                        state.isSlidingToItem = false;
-                        allItems.forEach(item => {
-                            item.style.width = '';
-                            item.style.height = '';
-                            item.style.opacity = '';
-                            if (item === state.targetEl || item === state.syncTargetEl) {
-                                item.classList.add('active');
-                            } else {
-                                item.classList.remove('active');
-                            }
+                    if (Math.abs(s.targetX-s.pos)<0.5 && sizeOk) {
+                        s.pos=s.targetX; s.currentSpeed=0; s.isSlidingToItem=false;
+                        items.forEach(item => {
+                            item.style.width=''; item.style.height=''; item.style.opacity='';
+                            if (item===s.targetEl||item===s.syncTargetEl) item.classList.add('active');
+                            else item.classList.remove('active');
                         });
                     }
-                } 
-                else if (state.isClosing && state.targetEl) {
-                    let targetReached = true;
-                    allItems.forEach(item => {
-                        if (item === state.targetEl || item === state.syncTargetEl) {
-                            let currentW = parseFloat(item.style.width) || metrics.activeW;
-                            let currentH = parseFloat(item.style.height) || metrics.activeH;
-                            let currentO = parseFloat(item.style.opacity) || 1;
 
-                            currentW += (metrics.baseW - currentW) * 0.08;
-                            currentH += (metrics.baseH - currentH) * 0.08;
-                            currentO += (0.7 - currentO) * 0.08;
-
-                            item.style.width = currentW + 'px';
-                            item.style.height = currentH + 'px';
-                            item.style.opacity = currentO;
-
-                            if (Math.abs(metrics.baseW - currentW) > 0.5) targetReached = false;
+                } else if (s.isClosing && s.targetEl) {
+                    let done=true;
+                    items.forEach(item => {
+                        if (item===s.targetEl||item===s.syncTargetEl) {
+                            let cW=parseFloat(item.style.width)||metrics.activeW;
+                            let cH=parseFloat(item.style.height)||metrics.activeH;
+                            let cO=parseFloat(item.style.opacity)||1;
+                            cW+=(metrics.baseW-cW)*0.08; cH+=(metrics.baseH-cH)*0.08; cO+=(0.7-cO)*0.08;
+                            item.style.width=cW+'px'; item.style.height=cH+'px'; item.style.opacity=cO;
+                            if (Math.abs(metrics.baseW-cW)>0.5) done=false;
                         }
                     });
-
-                    const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
-                    state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.08; 
-                    state.pos -= state.currentSpeed;
-
-                    if (isLooping && currentHalfWidth > 0) {
-                        if (state.pos <= -currentHalfWidth) state.pos += currentHalfWidth;
-                        else if (state.pos > 0) state.pos -= currentHalfWidth;
+                    const ts = s.isHovered ? s.baseSpeed*0.5 : s.baseSpeed;
+                    s.currentSpeed += (ts-s.currentSpeed)*0.08;
+                    s.pos -= s.currentSpeed;
+                    if (isLoop && halfW>0) {
+                        if (s.pos<=-halfW) s.pos+=halfW;
+                        else if (s.pos>0)  s.pos-=halfW;
+                    }
+                    if (done) {
+                        s.isClosing=false; s.isPaused=false; s.targetEl=null; s.syncTargetEl=null;
+                        items.forEach(item => { item.style.transition=''; item.style.width=''; item.style.height=''; item.style.opacity=''; item.classList.remove('active'); });
                     }
 
-                    if (targetReached) {
-                        state.isClosing = false;
-                        state.isPaused = false;
-                        state.targetEl = null;
-                        state.syncTargetEl = null;
-                        allItems.forEach(item => {
-                            item.style.transition = '';
-                            item.style.width = '';
-                            item.style.height = '';
-                            item.style.opacity = '';
-                            item.classList.remove('active');
-                        });
-                    }
-                }
-                else if (!state.isPaused && isLooping && !state.isClosing) {
-                    const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
-                    state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.05;
-                    state.pos -= state.currentSpeed;
-                    
-                    if (currentHalfWidth > 0) {
-                        if (state.pos <= -currentHalfWidth) {
-                            state.pos += currentHalfWidth;
-                        } else if (state.pos > 0) {
-                            state.pos -= currentHalfWidth;
-                        }
+                } else if (!s.isPaused && isLoop && !s.isClosing) {
+                    const ts = s.isHovered ? s.baseSpeed*0.5 : s.baseSpeed;
+                    s.currentSpeed += (ts-s.currentSpeed)*0.05;
+                    s.pos -= s.currentSpeed;
+                    /* loop bidirecional para suportar impulso negativo da seta */
+                    if (halfW>0) {
+                        if (s.pos<=-halfW) s.pos+=halfW;
+                        else if (s.pos>0)  s.pos-=halfW;
                     }
                 }
 
-                state.track.style.transform = `translate3d(${state.pos}px, 0, 0)`;
-                state.rafId = requestAnimationFrame(tick);
+                s.track.style.transform = `translate3d(${s.pos}px,0,0)`;
+                s.rafId = requestAnimationFrame(tick);
             }
-            
-            state.rafId = requestAnimationFrame(tick);
+            s.rafId = requestAnimationFrame(tick);
         }
 
-        function handleHoverIn(id) { if (carouselState[id]) carouselState[id].isHovered = true; }
-        function handleHoverOut(id) { if (carouselState[id]) carouselState[id].isHovered = false; }
+        function handleHoverIn(id)  { if (carouselState[id]) carouselState[id].isHovered=true;  }
+        function handleHoverOut(id) { if (carouselState[id]) carouselState[id].isHovered=false; }
 
+        /* clique em item: APENAS move para a direita (nunca para a esquerda) */
         function handleCarouselClick(el, id) {
-            const state = carouselState[id];
-            if (!state) return;
+            const s = carouselState[id];
+            if (!s) return;
+            const isLoop  = s.itemsCount >= 6;
+            const items   = Array.from(s.track.children);
+            const domIdx  = items.indexOf(el);
+            const realIdx = domIdx % s.itemsCount;
+            const origEl  = items[realIdx];
+            const cloneEl = isLoop ? items[realIdx + s.itemsCount] : null;
 
-            const isLooping = state.itemsCount >= 6;
-            const allItems = Array.from(state.track.children);
-            const domIndex = allItems.indexOf(el);
-            const realIndex = domIndex % state.itemsCount;
-            const originalEl = allItems[realIndex];
-            const cloneEl = isLooping ? allItems[realIndex + state.itemsCount] : null;
+            if (s.targetEl===origEl || s.targetEl===cloneEl) { openLightbox(el.dataset.vid); return; }
 
-            if (state.targetEl === originalEl || state.targetEl === cloneEl) {
-                state.isClosing = false; 
-                openLightbox(el.dataset.vid);
-                return;
-            }
-
-            state.isPaused = true;
-            state.isSlidingToItem = true;
-            state.isClosing = false; 
-            
-            allItems.forEach(item => {
-                if (item.classList.contains('active') && item !== originalEl && item !== cloneEl) {
-                    item.style.width = window.getComputedStyle(item).width;
-                    item.style.height = window.getComputedStyle(item).height;
-                    item.style.opacity = window.getComputedStyle(item).opacity;
+            s.isPaused=true; s.isSlidingToItem=true; s.isClosing=false;
+            items.forEach(item => {
+                if (item.classList.contains('active') && item!==origEl && item!==cloneEl) {
+                    item.style.width=window.getComputedStyle(item).width;
+                    item.style.height=window.getComputedStyle(item).height;
+                    item.style.opacity=window.getComputedStyle(item).opacity;
                     item.classList.remove('active');
                 }
-                item.style.transition = 'none';
+                item.style.transition='none';
             });
-
-            state.targetEl = originalEl;
-            state.syncTargetEl = cloneEl;
-            
-            const metrics = getCarouselMetrics();
-            
-            let finalOffset = domIndex * metrics.step;
-            if (domIndex >= state.itemsCount) finalOffset += metrics.diff; 
-            let baseTargetX = -finalOffset;
-
-            if (metrics.isMobile) {
-                const wrapperW = state.track.parentElement.offsetWidth;
-                baseTargetX += (wrapperW - metrics.activeW) / 2;
-            }
-
-            if (isLooping) {
-                const LOOP_W = state.itemsCount * metrics.step + metrics.diff;
-                state.targetX = baseTargetX;
-                while (state.targetX > state.pos + 100) state.targetX -= LOOP_W;
-                while (state.targetX < state.pos - LOOP_W + 100) state.targetX += LOOP_W;
-            } else {
-                state.targetX = baseTargetX;
-            }
+            s.targetEl=origEl; s.syncTargetEl=cloneEl;
+            const metrics=getCarouselMetrics();
+            let offset = domIdx*metrics.step;
+            if (domIdx>=s.itemsCount) offset+=metrics.diff;
+            let baseX = -offset;
+            if (metrics.isMobile) baseX += (s.track.parentElement.offsetWidth - metrics.activeW)/2;
+            if (isLoop) {
+                const LW = s.itemsCount*metrics.step + metrics.diff;
+                s.targetX = baseX;
+                while (s.targetX > s.pos+100)    s.targetX -= LW;
+                while (s.targetX < s.pos-LW+100) s.targetX += LW;
+            } else { s.targetX=baseX; }
         }
 
-        document.addEventListener('click', (e) => {
-            if (document.getElementById('portfolio-view').classList.contains('active')) {
-                if (!e.target.closest('.carousel-item') && !e.target.closest('.carousel-nav-btn')) {
-                    Object.keys(carouselState).forEach(id => {
-                        const state = carouselState[id];
-                        if (state && state.targetEl && !state.isClosing) {
-                            state.isClosing = true;
-                            state.currentSpeed = 0; 
-                            const allItems = Array.from(state.track.children);
-                            allItems.forEach(item => {
-                                item.style.transition = 'none'; 
-                                if (item.classList.contains('active')) {
-                                    item.style.width = window.getComputedStyle(item).width;
-                                    item.style.height = window.getComputedStyle(item).height;
-                                    item.style.opacity = window.getComputedStyle(item).opacity;
-                                    item.classList.remove('active');
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
-
-        const fadeObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { rootMargin: '0px 0px -5% 0px', threshold: 0 });
-
-        document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
-
-        /* ── HEADER: ignora scroll enquanto modal está aberto ── */
-        window.addEventListener('scroll', () => {
-            if (view.classList.contains('active')) return;
-            const capaRect = document.getElementById('capa').getBoundingClientRect();
-            stickyHeader.classList.toggle('visible', capaRect.bottom <= 100);
-        });
-
-        function triggerTransition(callback) {
-            const overlay = document.getElementById('transition-overlay');
-            overlay.style.display = 'block';
-            requestAnimationFrame(() => {
-                overlay.style.opacity = '1';
-                setTimeout(() => {
-                    callback();
-                    setTimeout(() => {
-                        overlay.style.opacity = '0';
-                        setTimeout(() => { overlay.style.display = 'none'; }, 200);
-                    }, 50);
-                }, 200);
-            });
-        }
-
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetSection = document.querySelector(this.getAttribute('href'));
-                
-                const isModalOpen = view.classList.contains('active');
-
-                triggerTransition(() => {
-                    if (isModalOpen) {
-                        view.classList.remove('active');
-                        document.body.style.overflow = '';
-                        currentPlayers.forEach(p => { try { p.pause(); } catch(e){} });
-                    }
-                    window.scrollTo({ top: targetSection.offsetTop, behavior: 'auto' });
-                });
-            });
-        });
-
-        let lightboxPlayer = null;
-
-        function openLightbox(videoId, description = '') {
-            const lb = document.getElementById('video-lightbox');
-            const wrap = document.getElementById('lightbox-player-wrap');
-            const descEl = document.getElementById('lightbox-desc');
-            
-            wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
-            
-            if (description) {
-                descEl.innerHTML = description;
-                descEl.classList.remove('hidden');
-            } else {
-                descEl.innerHTML = '';
-                descEl.classList.add('hidden');
-            }
-
-            lb.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            setTimeout(() => {
-                lightboxPlayer = new Plyr('#lb-plyr', {
-                    controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
-                    settings: ['quality', 'speed'],
-                    youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
-                    autoplay: true
-                });
-                
-                lightboxPlayer.on('ready', () => {
-                    lightboxPlayer.volume = 0.75; 
-                    forceYouTubeHD(wrap);
-                });
-            }, 50);
-        }
-
-        function closeLightbox() {
-            if (lightboxPlayer) {
-                try { lightboxPlayer.pause(); lightboxPlayer.destroy(); } catch(e) {}
-                lightboxPlayer = null;
-            }
-            document.getElementById('lightbox-player-wrap').innerHTML = '';
-            document.getElementById('lightbox-desc').innerHTML = '';
-            document.getElementById('lightbox-desc').classList.add('hidden');
-            document.getElementById('video-lightbox').classList.remove('active');
-            
-            if (view.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
-            }
-
+        /* fecha ao clicar fora */
+        document.addEventListener('click', e => {
+            if (!view.classList.contains('active')) return;
+            if (e.target.closest('.carousel-item')||e.target.closest('.carousel-nav-btn')) return;
             Object.keys(carouselState).forEach(id => {
-                const state = carouselState[id];
-                if (state && state.targetEl) {
-                    state.isClosing = true;
-                    state.currentSpeed = 0; 
-                    const allItems = Array.from(state.track.children);
-                    allItems.forEach(item => {
-                        item.style.transition = 'none';
+                const s=carouselState[id];
+                if (s&&s.targetEl&&!s.isClosing) {
+                    s.isClosing=true; s.currentSpeed=0;
+                    Array.from(s.track.children).forEach(item => {
+                        item.style.transition='none';
                         if (item.classList.contains('active')) {
-                            item.style.width = window.getComputedStyle(item).width;
-                            item.style.height = window.getComputedStyle(item).height;
-                            item.style.opacity = window.getComputedStyle(item).opacity;
+                            item.style.width=window.getComputedStyle(item).width;
+                            item.style.height=window.getComputedStyle(item).height;
+                            item.style.opacity=window.getComputedStyle(item).opacity;
                             item.classList.remove('active');
                         }
                     });
                 }
             });
-        }
-
-        document.getElementById('video-lightbox').addEventListener('click', function(e) {
-            if (e.target === this || e.target.classList.contains('lightbox-inner')) closeLightbox();
         });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-        /* ── SUBCATEGORIA: TOGGLE COM ANIMAÇÃO DE SLIDE + FADE ── */
-        function toggleSubCategory(id, headerEl) {
-            const body = document.getElementById('body-' + id);
-            if (!body) return;
+        /* fade-up */
+        const fadeObs = new IntersectionObserver((entries,obs)=>{
+            entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('is-visible');obs.unobserve(e.target);} });
+        },{rootMargin:'0px 0px -5% 0px',threshold:0});
+        document.querySelectorAll('.fade-up').forEach(el=>fadeObs.observe(el));
 
-            const isOpen = body.classList.contains('open');
-
-            /* Fecha carrosseis ativos ao recolher */
-            if (isOpen) {
-                Object.keys(carouselState).forEach(cId => {
-                    const state = carouselState[cId];
-                    if (state && state.targetEl && !state.isClosing) {
-                        state.isClosing = true;
-                        state.currentSpeed = 0;
-                        const allItems = Array.from(state.track.children);
-                        allItems.forEach(item => {
-                            item.style.transition = 'none';
-                            if (item.classList.contains('active')) {
-                                item.style.width = window.getComputedStyle(item).width;
-                                item.style.height = window.getComputedStyle(item).height;
-                                item.style.opacity = window.getComputedStyle(item).opacity;
-                                item.classList.remove('active');
-                            }
-                        });
-                    }
-                });
-                body.classList.remove('open');
-                headerEl.classList.remove('open');
-            } else {
-                body.classList.add('open');
-                headerEl.classList.add('open');
-            }
+        /* transição */
+        function triggerTransition(cb) {
+            const ov=document.getElementById('transition-overlay');
+            ov.style.display='block';
+            requestAnimationFrame(()=>{
+                ov.style.opacity='1';
+                setTimeout(()=>{
+                    cb();
+                    setTimeout(()=>{ ov.style.opacity='0'; setTimeout(()=>{ ov.style.display='none'; },200); },50);
+                },200);
+            });
         }
 
-        /* ── helper para montar bloco de subcategoria ── */
+        /* nav links */
+        document.querySelectorAll('.nav-link').forEach(link=>{
+            link.addEventListener('click',function(e){
+                e.preventDefault();
+                const target  = document.querySelector(this.getAttribute('href'));
+                const wasOpen = view.classList.contains('active');
+                triggerTransition(()=>{
+                    if (wasOpen) { view.classList.remove('active'); document.body.style.overflow=''; currentPlayers.forEach(p=>{try{p.pause();}catch(x){}}); }
+                    window.scrollTo({top:target.offsetTop,behavior:'auto'});
+                    updateHeaderBlur();
+                });
+            });
+        });
+
+        /* lightbox */
+        let lightboxPlayer=null;
+        function openLightbox(videoId,description='') {
+            const lb=document.getElementById('video-lightbox');
+            const wrap=document.getElementById('lightbox-player-wrap');
+            const descEl=document.getElementById('lightbox-desc');
+            wrap.innerHTML=`<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
+            if(description){descEl.innerHTML=description;descEl.classList.remove('hidden');}
+            else{descEl.innerHTML='';descEl.classList.add('hidden');}
+            lb.classList.add('active'); document.body.style.overflow='hidden';
+            setTimeout(()=>{
+                lightboxPlayer=new Plyr('#lb-plyr',{
+                    controls:['play','progress','current-time','mute','volume','settings','fullscreen'],
+                    settings:['quality','speed'],
+                    youtube:{noCookie:true,rel:0,showinfo:0,iv_load_policy:3,modestbranding:1},
+                    autoplay:true
+                });
+                lightboxPlayer.on('ready',()=>{ lightboxPlayer.volume=0.75; forceYouTubeHD(wrap); });
+            },50);
+        }
+        function closeLightbox() {
+            if(lightboxPlayer){try{lightboxPlayer.pause();lightboxPlayer.destroy();}catch(e){} lightboxPlayer=null;}
+            document.getElementById('lightbox-player-wrap').innerHTML='';
+            document.getElementById('lightbox-desc').innerHTML='';
+            document.getElementById('lightbox-desc').classList.add('hidden');
+            document.getElementById('video-lightbox').classList.remove('active');
+            document.body.style.overflow=view.classList.contains('active')?'hidden':'';
+            Object.keys(carouselState).forEach(id=>{
+                const s=carouselState[id];
+                if(s&&s.targetEl){ s.isClosing=true; s.currentSpeed=0;
+                    Array.from(s.track.children).forEach(item=>{
+                        item.style.transition='none';
+                        if(item.classList.contains('active')){item.style.width=window.getComputedStyle(item).width;item.style.height=window.getComputedStyle(item).height;item.style.opacity=window.getComputedStyle(item).opacity;item.classList.remove('active');}
+                    });
+                }
+            });
+        }
+        document.getElementById('video-lightbox').addEventListener('click',function(e){if(e.target===this||e.target.classList.contains('lightbox-inner'))closeLightbox();});
+        document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
+
+        /* subcategoria */
+        function toggleSubCategory(id,headerEl) {
+            const body=document.getElementById('body-'+id);
+            if(!body)return;
+            const isOpen=body.classList.contains('open');
+            if(isOpen){
+                Object.keys(carouselState).forEach(cId=>{
+                    const s=carouselState[cId];
+                    if(s&&s.targetEl&&!s.isClosing){s.isClosing=true;s.currentSpeed=0;Array.from(s.track.children).forEach(item=>{item.style.transition='none';if(item.classList.contains('active')){item.style.width=window.getComputedStyle(item).width;item.style.height=window.getComputedStyle(item).height;item.style.opacity=window.getComputedStyle(item).opacity;item.classList.remove('active');}});}
+                });
+                body.classList.remove('open'); headerEl.classList.remove('open');
+            } else { body.classList.add('open'); headerEl.classList.add('open'); }
+        }
+
         function buildSubCategory(id, label, videosHTML) {
             return `
             <div class="flex flex-col w-full border-b border-white/5 pb-4">
-                <div class="subcat-header" onclick="toggleSubCategory('${id}', this)">
+                <div class="subcat-header" onclick="toggleSubCategory('${id}',this)">
                     <span class="subcat-title">${label}</span>
                     <span class="subcat-indicator">ABRIR</span>
                 </div>
                 <div class="subcat-body" id="body-${id}">
                     <div class="subcat-body-inner">
-                        <div class="subcat-body-inner-pad">
-                            ${videosHTML}
-                        </div>
+                        <div class="subcat-body-inner-pad">${videosHTML}</div>
                     </div>
                 </div>
             </div>`;
         }
 
         function openCategory(name) {
-            if (!view.classList.contains('active')) {
-                lastScrollPosition = window.scrollY;
-            }
+            if(!view.classList.contains('active')) lastScrollPosition=window.scrollY;
+            currentPlayers.forEach(p=>{try{p.pause();}catch(e){}});
+            currentPlayers=[];
+            Object.keys(carouselState).forEach(id=>{ if(carouselState[id]&&carouselState[id].rafId)cancelAnimationFrame(carouselState[id].rafId); });
 
-            currentPlayers.forEach(player => { try { player.pause(); } catch(e) {} });
-            currentPlayers = [];
-            Object.keys(carouselState).forEach(id => {
-                if (carouselState[id] && carouselState[id].rafId) {
-                    cancelAnimationFrame(carouselState[id].rafId);
-                }
-            });
-
-            triggerTransition(() => {
-                
-                stickyHeader.classList.add('visible');
-                
-                descElement.innerText  = descricoesPortfolio[name] || '';
+            triggerTransition(()=>{
+                descElement.innerText=descricoesPortfolio[name]||'';
                 updateCategoryNav(name);
+                document.body.style.overflow='hidden';
 
-                document.body.style.overflow = 'hidden';
+                if(name==='Vídeos Diários'){
+                    contentArea.innerHTML=
+                        buildSubCategory('analises','Análises',
+                            buildInlineVideo('csh7Z3dcb0g','Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.')+
+                            buildInlineVideo('82Ah3XW5Jg4','Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.')+
+                            buildCarousel('analises-vol'))+
+                        '<div style="margin-top:32px">'+buildSubCategory('comentados','Comentados',buildInlineVideo('ll3UYdXXhlE')+buildInlineVideo('Oacodzw29CE')+buildCarousel('comentados-vol'))+'</div>'+
+                        '<div style="margin-top:32px">'+buildSubCategory('noticias','Notícias',buildInlineVideo('d0d43qkOE7A')+buildInlineVideo('AkrpKrpF3dc')+buildCarousel('noticias-vol'))+'</div>';
 
-                if (name === 'Vídeos Diários') {
-                    contentArea.innerHTML =
-                        buildSubCategory('analises', 'Análises',
-                            buildInlineVideo('csh7Z3dcb0g', 'Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.') +
-                            buildInlineVideo('82Ah3XW5Jg4', 'Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.') +
-                            buildCarousel('analises-vol')
-                        ) +
-                        '<div style="margin-top:32px">' +
-                        buildSubCategory('comentados', 'Comentados',
-                            buildInlineVideo('ll3UYdXXhlE') +
-                            buildInlineVideo('Oacodzw29CE') +
-                            buildCarousel('comentados-vol')
-                        ) +
-                        '</div>' +
-                        '<div style="margin-top:32px">' +
-                        buildSubCategory('noticias', 'Notícias',
-                            buildInlineVideo('d0d43qkOE7A') +
-                            buildInlineVideo('AkrpKrpF3dc') +
-                            buildCarousel('noticias-vol')
-                        ) +
-                        '</div>';
+                }else if(name==='Highlights'){
+                    contentArea.innerHTML=`<div class="flex flex-col gap-12 w-full">
+                        ${buildInlineVideo('ewiL53kmyPI','Edição de materiais brutos de transmissões ao vivo focada na construção de ritmo e tom consistentes. O processo priorizou a cadência e a estruturação da montagem, garantindo a fluidez e a dinâmica do conteúdo do início ao fim.')}
+                        ${buildInlineVideo('f-2xznYjToI','Curadoria de 16 horas de material bruto distribuídas em 3 transmissões. A montagem priorizou a seleção criteriosa de momentos e a construção de ritmo, evitando a saturação sem perder os eventos relevantes.')}
+                        ${buildCarousel('highlights-vol')}</div>`;
 
-                } else if (name === 'Highlights') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col gap-12 w-full">
-                            ${buildInlineVideo('ewiL53kmyPI', 'Edição de materiais brutos de transmissões ao vivo focada na construção de ritmo e tom consistentes. O processo priorizou a cadência e a estruturação da montagem, garantindo a fluidez e a dinâmica do conteúdo do início ao fim.')}
-                            ${buildInlineVideo('f-2xznYjToI', 'Curadoria de 16 horas de material bruto distribuídas em 3 transmissões. A montagem priorizou a seleção criteriosa de momentos e a construção de ritmo, evitando a saturação sem perder os eventos relevantes.')}
-                            ${buildCarousel('highlights-vol')}
-                        </div>
-                    `;
+                }else if(name==='Mini Documentários'){
+                    contentArea.innerHTML=`<div class="flex flex-col gap-12 w-full">
+                        ${buildInlineVideo('yiK_Z7XGyBA','Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa. Edição construída para conduzir esse discurso do início ao fim, garantindo a unidade e a fluidez.')}
+                        ${buildInlineVideo('qgXUQirQ7Bk')}</div>`;
 
-                } else if (name === 'Mini Documentários') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col gap-12 w-full">
-                            ${buildInlineVideo('yiK_Z7XGyBA', 'Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa. Edição construída para conduzir esse discurso do início ao fim, garantindo a unidade e a fluidez.')}
-                            ${buildInlineVideo('qgXUQirQ7Bk')}
-                        </div>
-                    `;
+                }else if(name==='Aberturas'){
+                    contentArea.innerHTML=`<div class="flex flex-col gap-12 w-full">
+                        ${buildInlineVideo('G4qpobpXdKo','Desenvolvi cenas inéditas utilizando IA e o treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. O projeto somou aproximadamente 300 horas entre geração e pós-produção, garantindo a fidelidade estética e a originalidade do conteúdo.')}
+                        ${buildCarousel('aberturas-vol')}</div>`;
 
-                } else if (name === 'Aberturas') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col gap-12 w-full">
-                            ${buildInlineVideo('G4qpobpXdKo', 'Desenvolvi cenas inéditas utilizando IA e o treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. O projeto somou aproximadamente 300 horas entre geração e pós-produção, garantindo a fidelidade estética e a originalidade do conteúdo.')}
-                            ${buildCarousel('aberturas-vol')}
-                        </div>
-                    `;
-
-                } else if (name === 'Institucionais') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col gap-12 w-full">
-                            ${buildInlineVideo('4minjPUiGdI', 'Assumi a execução integral do projeto, da idealização ao roteiro, suprindo a ausência de um direcionamento criativo. Conduzi a curadoria de imagens e a locução, garantindo a unidade estética e a precisão do tom em todas as etapas da entrega.')}
-                            ${buildInlineVideo('O03qeBRocIs', 'A animação e a dinâmica de elementos gráficos deram vida a uma identidade institucional fictícia através do motion design. O projeto priorizou a fluidez dos movimentos e a precisão técnica, garantindo a coesão visual e a integridade da marca.')}
-                        </div>
-                    `;
+                }else if(name==='Institucionais'){
+                    contentArea.innerHTML=`<div class="flex flex-col gap-12 w-full">
+                        ${buildInlineVideo('4minjPUiGdI','Assumi a execução integral do projeto, da idealização ao roteiro, suprindo a ausência de um direcionamento criativo. Conduzi a curadoria de imagens e a locução, garantindo a unidade estética e a precisão do tom em todas as etapas da entrega.')}
+                        ${buildInlineVideo('O03qeBRocIs','A animação e a dinâmica de elementos gráficos deram vida a uma identidade institucional fictícia através do motion design. O projeto priorizou a fluidez dos movimentos e a precisão técnica, garantindo a coesão visual e a integridade da marca.')}</div>`;
                 }
 
-                view.scrollTop = 0;
-                view.classList.add('active');
-
-                setTimeout(() => {
-                    initCarousels();
-                }, 50);
+                view.scrollTop=0; view.classList.add('active');
+                setTimeout(initCarousels,50);
             });
         }
 
-        const capaImg = document.querySelector('.capa-img-full');
-        capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; });
-        if (capaImg.complete) capaImg.style.opacity = '1';
-
-        const perfilImg = document.getElementById('perfil-img');
-        if (perfilImg) {
-            perfilImg.addEventListener('load', () => { perfilImg.classList.remove('opacity-0'); });
-            if (perfilImg.complete) perfilImg.classList.remove('opacity-0');
+        /* imagens */
+        const capaImg=document.querySelector('.capa-img-full');
+        capaImg.addEventListener('load',()=>{ capaImg.style.opacity='1'; });
+        if(capaImg.complete) capaImg.style.opacity='1';
+        const perfilImg=document.getElementById('perfil-img');
+        if(perfilImg){
+            perfilImg.addEventListener('load',()=>{ perfilImg.classList.remove('opacity-0'); });
+            if(perfilImg.complete) perfilImg.classList.remove('opacity-0');
         }
 
-        const contactForm = document.getElementById('contact-form');
-        const formStatus  = document.getElementById('form-status');
-
-        if (contactForm) {
-            contactForm.addEventListener('submit', async function(e) {
+        /* formulário */
+        const contactForm=document.getElementById('contact-form');
+        const formStatus=document.getElementById('form-status');
+        if(contactForm){
+            contactForm.addEventListener('submit',async function(e){
                 e.preventDefault();
-                const btn  = contactForm.querySelector('button[type="submit"]');
-                const orig = btn.innerText;
-                btn.innerText = 'ENVIANDO...';
-                try {
-                    const response = await fetch(contactForm.action, {
-                        method: contactForm.method,
-                        body: new FormData(contactForm),
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    if (response.ok) {
-                        formStatus.innerText = "Obrigado pela mensagem! Entrarei em contato em breve para falarmos sobre o seu projeto.";
-                        formStatus.style.color = '#f3f3f3';
-                        contactForm.reset();
-                    } else {
-                        formStatus.innerText = "Oops! Ocorreu um erro ao enviar sua mensagem.";
-                        formStatus.style.color = '#f87171';
-                    }
-                } catch (err) {
-                    formStatus.innerText = "Oops! Ocorreu um erro ao enviar sua mensagem.";
-                    formStatus.style.color = '#f87171';
-                } finally {
-                    formStatus.classList.remove('hidden');
-                    btn.innerText = orig;
-                }
+                const btn=contactForm.querySelector('button[type="submit"]');
+                const orig=btn.innerText; btn.innerText='ENVIANDO...';
+                try{
+                    const res=await fetch(contactForm.action,{method:contactForm.method,body:new FormData(contactForm),headers:{'Accept':'application/json'}});
+                    if(res.ok){formStatus.innerText='Obrigado pela mensagem! Entrarei em contato em breve para falarmos sobre o seu projeto.';formStatus.style.color='#f3f3f3';contactForm.reset();}
+                    else{formStatus.innerText='Oops! Ocorreu um erro ao enviar sua mensagem.';formStatus.style.color='#f87171';}
+                }catch(err){formStatus.innerText='Oops! Ocorreu um erro ao enviar sua mensagem.';formStatus.style.color='#f87171';}
+                finally{formStatus.classList.remove('hidden');btn.innerText=orig;}
             });
         }
     </script>
