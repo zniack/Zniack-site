@@ -91,6 +91,10 @@
             z-index: -1;
             backdrop-filter: blur(var(--blur-val, 0px)) saturate(var(--sat-val, 1));
             -webkit-backdrop-filter: blur(var(--blur-val, 0px)) saturate(var(--sat-val, 1));
+            
+            /* IMPLEMENTAÇÃO: Cor de fundo dinâmica (Fade) controlada via JS */
+            background-color: var(--bg-fade-col, transparent);
+
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
             pointer-events: none;
@@ -224,8 +228,6 @@
             }
             .nav-link { font-size: 11px !important; letter-spacing: 3px !important; }
             section { padding: 15vh 5%; }
-            
-            /* AJUSTE 1: Aumento drástico no padding do topo do modal para o header não esconder as categorias */
             .portfolio-modal { padding: 140px 5% 100px 5%; } 
             
             .carousel-wrapper { min-height: 155px; }
@@ -387,21 +389,27 @@
             if (isModalActive) {
                 stickyHeader.style.setProperty('--blur-val', '4.5px');
                 stickyHeader.style.setProperty('--sat-val', '0.8');
+                // IMPLEMENTAÇÃO: Fade 50% no modal aberto (cor escura base do site)
+                stickyHeader.style.setProperty('--bg-fade-col', 'rgba(37, 37, 37, 0.5)'); 
             } else {
                 const capaH = capa.offsetHeight;
                 const scrollY = window.scrollY;
                 let blur = 0;
+                let opacity = 0; // Nova variável para opacidade do fade
                 
                 const startBlurAt = capaH * 0.8; 
                 
                 if (scrollY > startBlurAt) {
                     const progress = Math.min((scrollY - startBlurAt) / (capaH - startBlurAt), 1);
-                    // AJUSTE 2: Blur máximo de 4.5px (metade do anterior)
                     blur = progress * 4.5; 
+                    // IMPLEMENTAÇÃO: Opacidade progride até 0.5 (50%)
+                    opacity = progress * 0.5; 
                 }
 
                 stickyHeader.style.setProperty('--blur-val', blur + 'px');
                 stickyHeader.style.setProperty('--sat-val', blur > 0 ? '0.8' : '1');
+                // IMPLEMENTAÇÃO: Aplica a cor de fundo com opacidade dinâmica
+                stickyHeader.style.setProperty('--bg-fade-col', `rgba(37, 37, 37, ${opacity})`);
             }
 
             if (window.innerWidth <= 768) {
