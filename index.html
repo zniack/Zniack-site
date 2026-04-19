@@ -18,17 +18,18 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://img.youtube.com" crossorigin>
+    <link rel="preconnect" href="https://www.youtube.com">
     
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;400&family=Roboto:wght@100;300;400;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
     <style>
         @font-face {
             font-family: 'Skyer';
             src: url('skyer.otf') format('opentype'), url('skyer.ttf') format('truetype');
             font-weight: normal; font-style: normal;
-            /* OTIMIZAÇÃO: Impede que o texto fique invisível enquanto a fonte local carrega */
             font-display: swap; 
         }
 
@@ -57,6 +58,9 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             opacity: 0.01; pointer-events: none; z-index: 9998;
             animation: noiseAnim 0.2s steps(2) infinite;
+            /* OTIMIZAÇÃO: Aceleração de hardware para o ruído não pesar no processador */
+            will-change: transform;
+            transform-style: preserve-3d;
         }
         @keyframes noiseAnim {
             0%{transform:translate(0,0);} 20%{transform:translate(1%,1%);} 40%{transform:translate(2%,-1%);}
@@ -226,8 +230,11 @@
         .subcat-indicator { font-family: 'Oswald', sans-serif; color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; }
         .subcat-header:hover .subcat-indicator { color: white; }
         .subcat-header.open .subcat-indicator { transform: translateX(6px); opacity: 0.5; }
+        
+        /* TRANSFORMAÇÃO DE MARGIN: 6px iniciais para 32px totais (0 para 26 animado) */
         .subcat-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease, margin-bottom 0.4s ease; width: 100%; margin-bottom: 0px; }
         .subcat-body.open { grid-template-rows: 1fr; margin-bottom: 26px; }
+        
         .subcat-body-inner { overflow: hidden; opacity: 0; transform: translateY(12px); transition: all 0.4s ease; }
         .subcat-body.open .subcat-body-inner { opacity: 1; transform: translateY(0); }
         .subcat-body-inner-pad { padding-top: 32px; display: flex; flex-direction: column; gap: 48px; }
@@ -388,7 +395,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js" defer></script>
     <script>
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         window.addEventListener('load', () => window.scrollTo(0, 0));
@@ -573,7 +580,7 @@
             if (!s) return;
 
             const isLoop = s.itemsCount >= 6;
-            const items = Array.from(s.track.children);
+            const items = s.items; 
             
             let currentItem = s.targetEl || items.find(item => item.classList.contains('active'));
 
@@ -590,11 +597,13 @@
                 s.isPaused = true;
                 s.isSlidingToItem = true;
                 s.isClosing = false;
+                
+                const metrics = getCarouselMetrics();
 
                 items.forEach(item => {
                     if (item.classList.contains('active') && item !== origEl && item !== cloneEl) {
-                        item.style.width = window.getComputedStyle(item).width;
-                        item.style.height = window.getComputedStyle(item).height;
+                        item.style.width = item.style.width || metrics.activeW + 'px';
+                        item.style.height = item.style.height || metrics.activeH + 'px';
                         item.classList.remove('active');
                     }
                     item.style.transition = 'none';
@@ -603,7 +612,6 @@
                 s.targetEl = origEl;
                 s.syncTargetEl = cloneEl;
 
-                const metrics = getCarouselMetrics();
                 let offset = prevRealIdx * metrics.step;
                 if (prevRealIdx >= s.itemsCount) offset += metrics.diff;
                 
@@ -629,7 +637,9 @@
                 if (carouselState[id] && carouselState[id].rafId) cancelAnimationFrame(carouselState[id].rafId);
                 const n = carouselData[id].length;
                 carouselState[id] = {
-                    track, pos:0,
+                    track, 
+                    items: Array.from(track.children), 
+                    pos:0,
                     baseSpeed: n>=6 ? 0.7 : 0,
                     currentSpeed: n>=6 ? 0.7 : 0,
                     isPaused:false, isHovered:false, itemsCount:n,
@@ -645,7 +655,7 @@
             if (!s) return;
             function tick() {
                 const isLoop  = s.itemsCount >= 6;
-                const items   = Array.from(s.track.children);
+                const items   = s.items; 
                 const metrics = getCarouselMetrics();
                 let halfW = 0;
                 if (isLoop && items[s.itemsCount]) halfW = items[s.itemsCount].offsetLeft;
@@ -727,7 +737,7 @@
             const s = carouselState[id];
             if (!s) return;
             const isLoop  = s.itemsCount >= 6;
-            const items   = Array.from(s.track.children);
+            const items   = s.items; 
             const domIdx  = items.indexOf(el);
             const realIdx = domIdx % s.itemsCount;
             const origEl  = items[realIdx];
@@ -736,16 +746,18 @@
             if (s.targetEl===origEl || s.targetEl===cloneEl) { openLightbox(el.dataset.vid); return; }
 
             s.isPaused=true; s.isSlidingToItem=true; s.isClosing=false;
+            const metrics=getCarouselMetrics();
+            
             items.forEach(item => {
                 if (item.classList.contains('active') && item!==origEl && item!==cloneEl) {
-                    item.style.width=window.getComputedStyle(item).width;
-                    item.style.height=window.getComputedStyle(item).height;
+                    item.style.width = item.style.width || metrics.activeW + 'px';
+                    item.style.height = item.style.height || metrics.activeH + 'px';
                     item.classList.remove('active');
                 }
                 item.style.transition='none';
             });
             s.targetEl=origEl; s.syncTargetEl=cloneEl;
-            const metrics=getCarouselMetrics();
+            
             let offset = domIdx*metrics.step;
             if (domIdx>=s.itemsCount) offset+=metrics.diff;
             let baseX = -offset;
@@ -761,15 +773,17 @@
         document.addEventListener('click', e => {
             if (!view.classList.contains('active')) return;
             if (e.target.closest('.carousel-item')||e.target.closest('.carousel-nav-btn')) return;
+            const metrics = getCarouselMetrics();
+            
             Object.keys(carouselState).forEach(id => {
                 const s=carouselState[id];
                 if (s&&s.targetEl&&!s.isClosing) {
                     s.isClosing=true; s.currentSpeed=0;
-                    Array.from(s.track.children).forEach(item => {
+                    s.items.forEach(item => {
                         item.style.transition='none';
                         if (item.classList.contains('active')) {
-                            item.style.width=window.getComputedStyle(item).width;
-                            item.style.height=window.getComputedStyle(item).height;
+                            item.style.width = item.style.width || metrics.activeW + 'px';
+                            item.style.height = item.style.height || metrics.activeH + 'px';
                             item.classList.remove('active');
                         }
                     });
@@ -836,6 +850,7 @@
                 lightboxPlayer.on('ready',()=>{ lightboxPlayer.volume=0.75; forceYouTubeHD(wrap); });
             },50);
         }
+        
         function closeLightbox() {
             if(lightboxPlayer){try{lightboxPlayer.pause();lightboxPlayer.destroy();}catch(e){} lightboxPlayer=null;}
             document.getElementById('lightbox-player-wrap').innerHTML='';
@@ -847,12 +862,18 @@
 
             document.getElementById('video-lightbox').classList.remove('active');
             document.body.style.overflow=view.classList.contains('active')?'hidden':'';
+            
+            const metrics = getCarouselMetrics();
             Object.keys(carouselState).forEach(id=>{
                 const s=carouselState[id];
                 if(s&&s.targetEl){ s.isClosing=true; s.currentSpeed=0;
-                    Array.from(s.track.children).forEach(item=>{
+                    s.items.forEach(item=>{
                         item.style.transition='none';
-                        if(item.classList.contains('active')){item.style.width=window.getComputedStyle(item).width;item.style.height=window.getComputedStyle(item).height;item.classList.remove('active');}
+                        if(item.classList.contains('active')){
+                            item.style.width = item.style.width || metrics.activeW + 'px';
+                            item.style.height = item.style.height || metrics.activeH + 'px';
+                            item.classList.remove('active');
+                        }
                     });
                 }
             });
@@ -865,9 +886,20 @@
             if(!body)return;
             const isOpen=body.classList.contains('open');
             if(isOpen){
+                const metrics = getCarouselMetrics();
                 Object.keys(carouselState).forEach(cId=>{
                     const s=carouselState[cId];
-                    if(s&&s.targetEl&&!s.isClosing){s.isClosing=true;s.currentSpeed=0;Array.from(s.track.children).forEach(item=>{item.style.transition='none';if(item.classList.contains('active')){item.style.width=window.getComputedStyle(item).width;item.style.height=window.getComputedStyle(item).height;item.classList.remove('active');}});}
+                    if(s&&s.targetEl&&!s.isClosing){
+                        s.isClosing=true;s.currentSpeed=0;
+                        s.items.forEach(item=>{
+                            item.style.transition='none';
+                            if(item.classList.contains('active')){
+                                item.style.width = item.style.width || metrics.activeW + 'px';
+                                item.style.height = item.style.height || metrics.activeH + 'px';
+                                item.classList.remove('active');
+                            }
+                        });
+                    }
                 });
                 body.classList.remove('open'); headerEl.classList.remove('open');
             } else { body.classList.add('open'); headerEl.classList.add('open'); }
