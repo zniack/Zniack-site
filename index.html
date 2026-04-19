@@ -277,6 +277,11 @@
         }
         .fade-up.is-visible { opacity: 1; transform: translateY(0); }
 
+        /* REMOVE A BOLA BRANCA DO PLAYER NATIVO (FORA DO CARROSSEL E LIGHTBOX) */
+        #portfolio-content-area .plyr__control--overlaid {
+            display: none !important;
+        }
+
         /* ── CARROSSEL ── */
         .vitrine-section {
             margin-top: 56px;
@@ -296,36 +301,44 @@
             position: relative;
             width: 100%;
             overflow: hidden;
-            cursor: grab;
-            user-select: none;
+            padding: 10px 0;
         }
-        .carousel-wrapper:active { cursor: grabbing; }
 
         .carousel-track {
             display: flex;
-            gap: 10px;
-            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            gap: 15px;
+            align-items: center;
+            width: max-content;
             will-change: transform;
         }
 
+        /* ── EFEITO DE TAMANHO E OPACIDADE ── */
         .carousel-item {
             flex: 0 0 auto;
-            width: 170px;
-            aspect-ratio: 16/9;
+            width: 140px;
+            aspect-ratio: 16/9; /* Garante que a thumb seja 100% visível, nunca cortada */
             position: relative;
             border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 4px;
             overflow: hidden;
             cursor: pointer;
-            transition: width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        filter 0.45s ease,
-                        border-color 0.45s ease;
-            filter: brightness(0.4) saturate(0.2);
+            opacity: 0.7; /* Opacidade base */
+            /* Transição suave e cremosa do tamanho */
+            transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+                        opacity 0.4s ease,
+                        border-color 0.4s ease;
+            will-change: width;
+        }
+
+        .carousel-item:hover {
+            opacity: 1;
+            border-color: rgba(255,255,255,0.15);
         }
 
         .carousel-item.active {
-            width: 255px;
-            filter: brightness(1) saturate(1);
-            border-color: rgba(255,255,255,0.2);
+            width: 320px;
+            opacity: 1;
+            border-color: rgba(255,255,255,0.3);
         }
 
         .carousel-item img {
@@ -346,33 +359,16 @@
             transition: opacity 0.3s ease;
             background: rgba(0,0,0,0.15);
         }
-        .carousel-item.active .carousel-play { opacity: 1; }
+        .carousel-item:hover .carousel-play,
+        .carousel-item.active .carousel-play { 
+            opacity: 1; 
+        }
+        
         .carousel-play svg {
             width: 32px;
             height: 32px;
             fill: rgba(255,255,255,0.9);
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
-        }
-
-        .carousel-nav {
-            display: flex;
-            gap: 6px;
-            margin-top: 14px;
-        }
-        .carousel-nav button {
-            background: none;
-            border: 1px solid rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.4);
-            font-family: 'Oswald', sans-serif;
-            font-size: 11px;
-            letter-spacing: 2px;
-            padding: 5px 13px;
-            cursor: pointer;
-            transition: border-color 0.2s ease, color 0.2s ease;
-        }
-        .carousel-nav button:hover {
-            border-color: rgba(255,255,255,0.45);
-            color: white;
         }
 
         /* ── LIGHTBOX ── */
@@ -386,7 +382,7 @@
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
         #video-lightbox.active { opacity: 1; visibility: visible; }
 
@@ -430,8 +426,8 @@
             section { padding: 15vh 5%; }
             .portfolio-modal { padding: 5vh 5%; }
             .nome-foto { margin-top: 15px; }
-            .carousel-item { width: 130px; }
-            .carousel-item.active { width: 190px; }
+            .carousel-item { width: 110px; }
+            .carousel-item.active { width: 240px; }
         }
     </style>
 </head>
@@ -547,7 +543,6 @@
 
     </main>
 
-    <!-- MODAL DE CATEGORIA -->
     <div id="portfolio-view" class="portfolio-modal">
         <button onclick="closeCategory()" class="btn-voltar-sticky font-['Oswald'] text-[12px] tracking-[3px] text-white/80 hover:text-white hover:bg-white/10 transition uppercase flex items-center gap-2">
             <span>&larr;</span> Voltar para Portfólio
@@ -557,7 +552,6 @@
         <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px] pb-32"></div>
     </div>
 
-    <!-- LIGHTBOX -->
     <div id="video-lightbox">
         <div class="lightbox-inner">
             <button class="lightbox-close" onclick="closeLightbox()">&#x2715; Fechar</button>
@@ -601,7 +595,7 @@
                 '2E97i-ChJVI','BsCDkg0lMek'
             ],
             'aberturas-vol': [
-                '7f7FDHkQjuQ'
+                '7f7FDHkQjuQ' // Tem apenas 1 vídeo, então não rodará sozinho
             ]
         };
 
@@ -613,7 +607,112 @@
             'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
 
-        // ── FADE OBSERVER ──
+        // ── LÓGICA DO CARROSSEL: SCROLL LENTO CONTÍNUO E DESTAQUE NO CLIQUE ──
+        const carouselState = {};
+
+        function buildCarousel(carouselId) {
+            const ids = carouselData[carouselId];
+            if (!ids || ids.length === 0) return '';
+            
+            // Cria o html dos vídeos base
+            const itemsHTML = ids.map(id => `
+                <div class="carousel-item" data-vid="${id}" onclick="handleCarouselClick(this,'${carouselId}')">
+                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
+                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                </div>`).join('');
+                
+            // Duplica os vídeos para criar o efeito infinito visualmente
+            const loopHTML = itemsHTML + itemsHTML;
+
+            return `
+                <div class="vitrine-section">
+                    <p class="vitrine-label">mais trabalhos</p>
+                    <div class="carousel-wrapper" id="wrap-${carouselId}"
+                         onmouseenter="handleHoverIn('${carouselId}')"
+                         onmouseleave="handleHoverOut('${carouselId}')">
+                        <div class="carousel-track" id="track-${carouselId}">${loopHTML}</div>
+                    </div>
+                </div>`;
+        }
+
+        function initCarousels() {
+            Object.keys(carouselData).forEach(id => {
+                const track = document.getElementById('track-' + id);
+                if (!track) return;
+
+                // Limpa animação prévia se já existia
+                if (carouselState[id] && carouselState[id].rafId) {
+                    cancelAnimationFrame(carouselState[id].rafId);
+                }
+
+                carouselState[id] = {
+                    track: track,
+                    pos: 0,
+                    speed: 0.6, // Velocidade de movimento lento
+                    isPaused: false,
+                    isHovered: false,
+                    itemsCount: carouselData[id].length,
+                    rafId: null
+                };
+
+                // Só inicia o movimento se tiver 6 ou mais vídeos
+                if (carouselData[id].length >= 6) {
+                    startTicker(id);
+                }
+            });
+        }
+
+        function startTicker(id) {
+            const state = carouselState[id];
+            if (!state) return;
+
+            // Calcula a largura exata da primeira metade (tamanho da div 140px + gap 15px)
+            const halfWidth = (140 + 15) * state.itemsCount;
+
+            function tick() {
+                // Rola suavemente apenas se não estiver pausado nem com mouse por cima
+                if (!state.isPaused && !state.isHovered) {
+                    state.pos -= state.speed;
+                    
+                    // Reseta infinitamente quando a primeira metade termina
+                    if (Math.abs(state.pos) >= halfWidth) {
+                        state.pos += halfWidth;
+                    }
+                    state.track.style.transform = `translateX(${state.pos}px)`;
+                }
+                state.rafId = requestAnimationFrame(tick);
+            }
+            // Inicia o loop
+            state.rafId = requestAnimationFrame(tick);
+        }
+
+        function handleHoverIn(id) { 
+            if (carouselState[id]) carouselState[id].isHovered = true; 
+        }
+        function handleHoverOut(id) { 
+            if (carouselState[id]) carouselState[id].isHovered = false; 
+        }
+
+        function handleCarouselClick(el, id) {
+            const state = carouselState[id];
+            if (!state) return;
+
+            // 1. Pausa o carrossel permanentemente enquanto o vídeo é visto
+            state.isPaused = true;
+
+            // 2. Tira o 'active' de todo mundo
+            document.querySelectorAll('.carousel-item.active').forEach(item => item.classList.remove('active'));
+            
+            // 3. Aplica o 'active' no clicado (fazendo ele crescer suavemente no lugar onde está)
+            el.classList.add('active');
+
+            // 4. Aguarda um curto espaço de tempo para você ver o crescimento e então abre o player
+            setTimeout(() => {
+                openLightbox(el.dataset.vid);
+            }, 350); 
+        }
+
+        // ── FADE OBSERVER E TRANSIÇÕES DE SEÇÃO ──
         const fadeObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -630,7 +729,6 @@
             stickyHeader.classList.toggle('visible', bannerRect.bottom <= 0);
         });
 
-        // ── TRANSIÇÃO ──
         function triggerTransition(callback) {
             const overlay = document.getElementById('transition-overlay');
             overlay.style.display = 'block';
@@ -658,124 +756,6 @@
             });
         });
 
-        // ── CARROSSEL: BUILD ──
-        function buildCarousel(carouselId) {
-            const ids = carouselData[carouselId];
-            if (!ids || ids.length === 0) return '';
-            const items = ids.map((id, i) => `
-                <div class="carousel-item${i === 0 ? ' active' : ''}" data-vid="${id}" data-index="${i}" onclick="handleCarouselClick(this,'${carouselId}')">
-                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
-                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-                </div>`).join('');
-            return `
-                <div class="vitrine-section">
-                    <p class="vitrine-label">mais trabalhos</p>
-                    <div class="carousel-wrapper" id="wrap-${carouselId}"
-                         onmousedown="cDragStart(event,'${carouselId}')"
-                         ontouchstart="cTouchStart(event,'${carouselId}')">
-                        <div class="carousel-track" id="track-${carouselId}">${items}</div>
-                    </div>
-                    <div class="carousel-nav">
-                        <button onclick="cStep('${carouselId}',-1)">&#8592;</button>
-                        <button onclick="cStep('${carouselId}',1)">&#8594;</button>
-                    </div>
-                </div>`;
-        }
-
-        // ── CARROSSEL: ESTADO E LÓGICA ──
-        const cState = {};
-
-        function cItems(id) {
-            const t = document.getElementById('track-' + id);
-            return t ? Array.from(t.querySelectorAll('.carousel-item')) : [];
-        }
-
-        function cInit(id) {
-            cState[id] = { active: 0, dragged: false };
-            cCenter(id, 0);
-        }
-
-        function cCenter(id, idx) {
-            const track = document.getElementById('track-' + id);
-            const wrap  = document.getElementById('wrap-' + id);
-            if (!track || !wrap) return;
-            const items = cItems(id);
-            if (!items.length) return;
-            let offset = 0;
-            for (let i = 0; i < idx; i++) offset += items[i].offsetWidth + 10;
-            const target = offset - (wrap.offsetWidth / 2) + (items[idx].offsetWidth / 2);
-            track.style.transform = `translateX(${-Math.max(0, target)}px)`;
-        }
-
-        function cSetActive(id, idx) {
-            const items = cItems(id);
-            if (!items.length) return;
-            idx = Math.max(0, Math.min(idx, items.length - 1));
-            cState[id].active = idx;
-            items.forEach((el, i) => el.classList.toggle('active', i === idx));
-            cCenter(id, idx);
-        }
-
-        function handleCarouselClick(el, id) {
-            if (cState[id] && cState[id].dragged) return;
-            const idx = parseInt(el.dataset.index);
-            if (idx === cState[id].active) openLightbox(el.dataset.vid);
-            else cSetActive(id, idx);
-        }
-
-        function cStep(id, dir) {
-            if (!cState[id]) return;
-            cSetActive(id, cState[id].active + dir);
-        }
-
-        function cDragStart(e, id) {
-            const state  = cState[id];
-            state.dragged = false;
-            const track  = document.getElementById('track-' + id);
-            const startX = e.clientX;
-            const startTX = new DOMMatrix(getComputedStyle(track).transform).m41;
-            const onMove = ev => {
-                const dx = ev.clientX - startX;
-                if (Math.abs(dx) > 5) state.dragged = true;
-                track.style.transition = 'none';
-                track.style.transform  = `translateX(${startTX + dx}px)`;
-            };
-            const onUp = ev => {
-                track.style.transition = '';
-                const dx = ev.clientX - startX;
-                if (Math.abs(dx) > 40) cStep(id, dx < 0 ? 1 : -1);
-                else cCenter(id, state.active);
-                document.removeEventListener('mousemove', onMove);
-                document.removeEventListener('mouseup', onUp);
-            };
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onUp);
-        }
-
-        function cTouchStart(e, id) {
-            const state  = cState[id];
-            state.dragged = false;
-            const track  = document.getElementById('track-' + id);
-            const startX = e.touches[0].clientX;
-            const startTX = new DOMMatrix(getComputedStyle(track).transform).m41;
-            const onMove = ev => {
-                const dx = ev.touches[0].clientX - startX;
-                if (Math.abs(dx) > 5) state.dragged = true;
-                track.style.transition = 'none';
-                track.style.transform  = `translateX(${startTX + dx}px)`;
-            };
-            const onEnd = ev => {
-                track.style.transition = '';
-                const dx = ev.changedTouches[0].clientX - startX;
-                if (Math.abs(dx) > 40) cStep(id, dx < 0 ? 1 : -1);
-                else cCenter(id, state.active);
-                document.removeEventListener('touchmove', onMove);
-                document.removeEventListener('touchend', onEnd);
-            };
-            document.addEventListener('touchmove', onMove, { passive: true });
-            document.addEventListener('touchend', onEnd);
-        }
-
         // ── LIGHTBOX ──
         let lightboxPlayer = null;
 
@@ -802,6 +782,12 @@
             document.getElementById('lightbox-player-wrap').innerHTML = '';
             document.getElementById('video-lightbox').classList.remove('active');
             document.body.style.overflow = '';
+
+            // Quando fecha o lightbox, os vídeos voltam a ficar pequenos e o carrossel volta a rolar
+            document.querySelectorAll('.carousel-item.active').forEach(item => item.classList.remove('active'));
+            Object.keys(carouselState).forEach(id => {
+                if (carouselState[id]) carouselState[id].isPaused = false;
+            });
         }
 
         document.getElementById('video-lightbox').addEventListener('click', function(e) {
@@ -809,7 +795,7 @@
         });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-        // ── SUBCATEGORIAS ──
+        // ── ABRIR / FECHAR CATEGORIA E SUBCATEGORIAS ──
         function toggleSubCategory(id, element) {
             const container = document.getElementById(id);
             const indicator = element.querySelector('.indicator');
@@ -817,14 +803,7 @@
                 container.classList.remove('hidden');
                 container.classList.add('flex');
                 indicator.innerText = 'FECHAR';
-                // inicializa carrossel quando subcategoria abre
-                setTimeout(() => {
-                    const track = container.querySelector('.carousel-track');
-                    if (track) {
-                        const cid = track.id.replace('track-', '');
-                        if (!cState[cid]) cInit(cid);
-                    }
-                }, 50);
+                setTimeout(() => initCarousels(), 50);
             } else {
                 container.classList.add('hidden');
                 container.classList.remove('flex');
@@ -832,7 +811,6 @@
             }
         }
 
-        // ── ABRIR CATEGORIA ──
         function openCategory(name) {
             triggerTransition(() => {
                 titleElement.innerText = name;
@@ -1004,15 +982,11 @@
                         controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
                         youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
                     }));
-                    // inicializa carrosseis imediatamente visíveis (Highlights, Aberturas)
-                    ['highlights-vol','aberturas-vol'].forEach(id => {
-                        if (document.getElementById('track-' + id)) cInit(id);
-                    });
+                    initCarousels();
                 }, 50);
             });
         }
 
-        // ── FECHAR CATEGORIA ──
         function closeCategory() {
             currentPlayers.forEach(player => {
                 if (player.playing) {
@@ -1030,18 +1004,22 @@
                     }, 50);
                 }
             });
+            Object.keys(carouselState).forEach(id => {
+                if (carouselState[id] && carouselState[id].rafId) {
+                    cancelAnimationFrame(carouselState[id].rafId);
+                }
+            });
             triggerTransition(() => {
                 view.classList.remove('active');
                 mainScroll.style.overflowY = 'auto';
             });
         }
 
-        // ── CAPA ──
+        // ── FORMULÁRIO E CAPA ──
         const capaImg = document.querySelector('.capa-img-full');
         capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; });
         if (capaImg.complete) capaImg.style.opacity = '1';
 
-        // ── FORMULÁRIO ──
         const contactForm = document.getElementById('contact-form');
         const formStatus  = document.getElementById('form-status');
 
