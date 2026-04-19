@@ -670,8 +670,6 @@
                 let currentHalfWidth = 0;
                 
                 if (isLooping) {
-                    // A MÁGICA DO ALINHAMENTO: Mede examente a largura do bloco 1 renderizada agora.
-                    // Isso ignora se tem vídeos 320px no meio, a física continua 100% precisa.
                     currentHalfWidth = allItems[state.itemsCount].offsetLeft;
                 }
 
@@ -688,7 +686,6 @@
                         }
                     }
 
-                    // FÍSICA DO DESLIZE
                     let diff = state.targetX - state.pos;
                     let speed = diff * 0.08; 
                     let maxSpeed = 25; 
@@ -702,7 +699,6 @@
                         state.pos += speed;
                     }
 
-                    // FÍSICA DO TAMANHO
                     let targetReachedSize = false;
                     
                     allItems.forEach(item => {
@@ -725,7 +721,6 @@
                         }
                     });
 
-                    // 100% PRONTO? "congela" na esquerda.
                     if (Math.abs(state.targetX - state.pos) < 1.0 && targetReachedSize) {
                         state.pos = state.targetX;
                         state.isSlidingToItem = false;
@@ -821,9 +816,9 @@
             const originalEl = allItems[realIndex];
             const cloneEl = isLooping ? allItems[realIndex + state.itemsCount] : null;
 
-            // ── REGRA DE OURO ATUALIZADA: Evita giro ao redor inteiro! ──
-            if ((state.targetEl === originalEl || state.targetEl === cloneEl) && !state.isSlidingToItem) {
-                state.isClosing = false; // Cancela o fechamento se estava fechando
+            // ── REGRA DE OURO ATUALIZADA: Permite duplo-clique abrir instantaneamente ──
+            if (state.targetEl === originalEl || state.targetEl === cloneEl) {
+                state.isClosing = false; 
                 openLightbox(el.dataset.vid);
                 return;
             }
@@ -846,20 +841,16 @@
             state.targetEl = originalEl;
             state.syncTargetEl = cloneEl;
             
-            // Calcula o ponto final real desse bloco, contabilizando a expansão.
             let finalOffset = domIndex * ITEM_STEP;
             if (domIndex >= state.itemsCount) {
-                finalOffset += 180; // Compensa a largura do Original (que também está expandindo antes do Clone)
+                finalOffset += 180; 
             }
             let baseTargetX = -finalOffset;
 
             if (isLooping) {
-                // Matemática do ciclo do loop total visual 
                 const LOOP_W = state.itemsCount * ITEM_STEP + 180;
                 state.targetX = baseTargetX;
                 
-                // UX Flow: Minimiza deslize brusco para trás.
-                // Se puxar demais pra direita (100px+), faz dar a volta pela frente (esquerda)
                 while (state.targetX > state.pos + 100) {
                     state.targetX -= LOOP_W;
                 }
@@ -931,7 +922,6 @@
                     autoplay: true
                 });
                 
-                // Volume Padrão Proteção Acústica UX 90%
                 lightboxPlayer.on('ready', () => {
                     lightboxPlayer.volume = 0.9;
                 });
@@ -975,11 +965,31 @@
         function toggleSubCategory(id, element) {
             const container = document.getElementById(id);
             const indicator = element.querySelector('.indicator');
+
+            // UX: Quando o usuário interage com uma nova sanfona, avisa 
+            // os carrosseis ativos para derreterem e voltarem a se mover suavemente.
+            Object.keys(carouselState).forEach(cId => {
+                const state = carouselState[cId];
+                if (state && state.targetEl && !state.isClosing) {
+                    state.isClosing = true;
+                    state.currentSpeed = 0; 
+                    const allItems = Array.from(state.track.children);
+                    allItems.forEach(item => {
+                        item.style.transition = 'none';
+                        if (item.classList.contains('active')) {
+                            item.style.width = window.getComputedStyle(item).width;
+                            item.style.opacity = window.getComputedStyle(item).opacity;
+                            item.classList.remove('active');
+                        }
+                    });
+                }
+            });
+
             if (container.classList.contains('hidden')) {
                 container.classList.remove('hidden');
                 container.classList.add('flex');
                 indicator.innerText = 'FECHAR';
-                setTimeout(() => initCarousels(), 50);
+                // Removido initCarousels() para não cortar as animações.
             } else {
                 container.classList.add('hidden');
                 container.classList.remove('flex');
@@ -1160,7 +1170,6 @@
                             youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
                         });
                         
-                        // Volume Padrão UX: Galerias ficam restritas a 90%
                         playerInst.on('ready', () => {
                             playerInst.volume = 0.9;
                         });
