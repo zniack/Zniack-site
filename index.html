@@ -226,8 +226,8 @@
         .subcat-indicator { font-family: 'Oswald', sans-serif; color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s ease; }
         .subcat-header:hover .subcat-indicator { color: white; }
         .subcat-header.open .subcat-indicator { transform: translateX(6px); opacity: 0.5; }
-        .subcat-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease; width: 100%; }
-        .subcat-body.open { grid-template-rows: 1fr; }
+        .subcat-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease, margin-bottom 0.4s ease; width: 100%; margin-bottom: 0px; }
+        .subcat-body.open { grid-template-rows: 1fr; margin-bottom: 26px; }
         .subcat-body-inner { overflow: hidden; opacity: 0; transform: translateY(12px); transition: all 0.4s ease; }
         .subcat-body.open .subcat-body-inner { opacity: 1; transform: translateY(0); }
         .subcat-body-inner-pad { padding-top: 32px; display: flex; flex-direction: column; gap: 48px; }
@@ -906,8 +906,8 @@
                             buildInlineVideo('csh7Z3dcb0g','Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.')+
                             buildInlineVideo('82Ah3XW5Jg4','Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.')+
                             buildCarousel('analises-vol'))+
-                        '<div style="margin-top:8px">'+buildSubCategory('comentados','Comentados',buildInlineVideo('ll3UYdXXhlE')+buildInlineVideo('Oacodzw29CE')+buildCarousel('comentados-vol'))+'</div>'+
-                        '<div style="margin-top:8px">'+buildSubCategory('noticias','Notícias',buildInlineVideo('d0d43qkOE7A')+buildInlineVideo('AkrpKrpF3dc')+buildCarousel('noticias-vol'))+'</div>';
+                        '<div style="margin-top:6px">'+buildSubCategory('comentados','Comentados',buildInlineVideo('ll3UYdXXhlE')+buildInlineVideo('Oacodzw29CE')+buildCarousel('comentados-vol'))+'</div>'+
+                        '<div style="margin-top:6px">'+buildSubCategory('noticias','Notícias',buildInlineVideo('d0d43qkOE7A')+buildInlineVideo('AkrpKrpF3dc')+buildCarousel('noticias-vol'))+'</div>';
 
                 }else if(name==='Highlights'){
                     contentArea.innerHTML=`<div class="flex flex-col gap-12 w-full">
