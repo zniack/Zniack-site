@@ -298,33 +298,36 @@
             overflow: hidden;
             cursor: grab;
             user-select: none;
+            padding: 10px 0; /* Espaço para expansão vertical se necessário */
         }
         .carousel-wrapper:active { cursor: grabbing; }
 
         .carousel-track {
             display: flex;
-            gap: 10px;
-            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            gap: 15px;
+            width: max-content;
+            /* Transição de transform removida do CSS pois o JS cuida disso por frame */
             will-change: transform;
         }
 
+        /* Ajustes de saturação e tamanho focados conforme solicitado */
         .carousel-item {
             flex: 0 0 auto;
-            width: 170px;
+            width: 140px; /* Tamanho base menor */
             aspect-ratio: 16/9;
             position: relative;
             border: 1px solid rgba(255,255,255,0.04);
             overflow: hidden;
             cursor: pointer;
-            transition: width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        filter 0.45s ease,
-                        border-color 0.45s ease;
-            filter: brightness(0.4) saturate(0.2);
+            transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color 0.45s ease,
+                        opacity 0.45s ease;
+            opacity: 0.8; /* Saturação normal, apenas leve foco visual */
         }
 
         .carousel-item.active {
-            width: 255px;
-            filter: brightness(1) saturate(1);
+            width: 320px; /* Expansão ampla no clique */
+            opacity: 1;
             border-color: rgba(255,255,255,0.2);
         }
 
@@ -352,27 +355,6 @@
             height: 32px;
             fill: rgba(255,255,255,0.9);
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
-        }
-
-        .carousel-nav {
-            display: flex;
-            gap: 6px;
-            margin-top: 14px;
-        }
-        .carousel-nav button {
-            background: none;
-            border: 1px solid rgba(255,255,255,0.12);
-            color: rgba(255,255,255,0.4);
-            font-family: 'Oswald', sans-serif;
-            font-size: 11px;
-            letter-spacing: 2px;
-            padding: 5px 13px;
-            cursor: pointer;
-            transition: border-color 0.2s ease, color 0.2s ease;
-        }
-        .carousel-nav button:hover {
-            border-color: rgba(255,255,255,0.45);
-            color: white;
         }
 
         /* ── LIGHTBOX ── */
@@ -430,8 +412,8 @@
             section { padding: 15vh 5%; }
             .portfolio-modal { padding: 5vh 5%; }
             .nome-foto { margin-top: 15px; }
-            .carousel-item { width: 130px; }
-            .carousel-item.active { width: 190px; }
+            .carousel-item { width: 110px; }
+            .carousel-item.active { width: 240px; }
         }
     </style>
 </head>
@@ -547,7 +529,6 @@
 
     </main>
 
-    <!-- MODAL DE CATEGORIA -->
     <div id="portfolio-view" class="portfolio-modal">
         <button onclick="closeCategory()" class="btn-voltar-sticky font-['Oswald'] text-[12px] tracking-[3px] text-white/80 hover:text-white hover:bg-white/10 transition uppercase flex items-center gap-2">
             <span>&larr;</span> Voltar para Portfólio
@@ -557,7 +538,6 @@
         <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px] pb-32"></div>
     </div>
 
-    <!-- LIGHTBOX -->
     <div id="video-lightbox">
         <div class="lightbox-inner">
             <button class="lightbox-close" onclick="closeLightbox()">&#x2715; Fechar</button>
@@ -658,123 +638,176 @@
             });
         });
 
-        // ── CARROSSEL: BUILD ──
+        // ── CARROSSEL LÓGICA INFINITA ──
+        const cState = {};
+        const baseSpeed = 0.8; // Velocidade de rolagem padrão
+
         function buildCarousel(carouselId) {
             const ids = carouselData[carouselId];
             if (!ids || ids.length === 0) return '';
-            const items = ids.map((id, i) => `
+            
+            // Duplica os IDs para criar o efeito de loop infinito suave
+            const loopIds = [...ids, ...ids];
+            
+            const items = loopIds.map((id, i) => `
                 <div class="carousel-item${i === 0 ? ' active' : ''}" data-vid="${id}" data-index="${i}" onclick="handleCarouselClick(this,'${carouselId}')">
                     <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
                     <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
                 </div>`).join('');
+                
             return `
                 <div class="vitrine-section">
                     <p class="vitrine-label">mais trabalhos</p>
                     <div class="carousel-wrapper" id="wrap-${carouselId}"
+                         onmouseenter="cHoverIn('${carouselId}')"
+                         onmouseleave="cHoverOut('${carouselId}')"
                          onmousedown="cDragStart(event,'${carouselId}')"
-                         ontouchstart="cTouchStart(event,'${carouselId}')">
+                         ontouchstart="cDragStart(event,'${carouselId}')">
                         <div class="carousel-track" id="track-${carouselId}">${items}</div>
-                    </div>
-                    <div class="carousel-nav">
-                        <button onclick="cStep('${carouselId}',-1)">&#8592;</button>
-                        <button onclick="cStep('${carouselId}',1)">&#8594;</button>
                     </div>
                 </div>`;
         }
 
-        // ── CARROSSEL: ESTADO E LÓGICA ──
-        const cState = {};
-
-        function cItems(id) {
-            const t = document.getElementById('track-' + id);
-            return t ? Array.from(t.querySelectorAll('.carousel-item')) : [];
-        }
-
         function cInit(id) {
-            cState[id] = { active: 0, dragged: false };
-            cCenter(id, 0);
+            const track = document.getElementById('track-' + id);
+            const wrap = document.getElementById('wrap-' + id);
+            if (!track || !wrap) return;
+
+            cState[id] = {
+                track: track,
+                wrap: wrap,
+                items: Array.from(track.querySelectorAll('.carousel-item')),
+                x: 0,
+                speed: baseSpeed,
+                targetSpeed: baseSpeed,
+                activeIdx: 0,
+                isHovered: false,
+                centering: false,
+                dragged: false
+            };
         }
 
-        function cCenter(id, idx) {
-            const track = document.getElementById('track-' + id);
-            const wrap  = document.getElementById('wrap-' + id);
-            if (!track || !wrap) return;
-            const items = cItems(id);
-            if (!items.length) return;
-            let offset = 0;
-            for (let i = 0; i < idx; i++) offset += items[i].offsetWidth + 10;
-            const target = offset - (wrap.offsetWidth / 2) + (items[idx].offsetWidth / 2);
-            track.style.transform = `translateX(${-Math.max(0, target)}px)`;
+        function cHoverIn(id) {
+            if (cState[id]) {
+                cState[id].isHovered = true;
+                if (!cState[id].centering) cState[id].targetSpeed = 0;
+            }
+        }
+
+        function cHoverOut(id) {
+            if (cState[id]) {
+                cState[id].isHovered = false;
+                cState[id].centering = false; // Libera o foco central para retomar o loop
+                cState[id].targetSpeed = baseSpeed;
+            }
         }
 
         function cSetActive(id, idx) {
-            const items = cItems(id);
-            if (!items.length) return;
-            idx = Math.max(0, Math.min(idx, items.length - 1));
-            cState[id].active = idx;
-            items.forEach((el, i) => el.classList.toggle('active', i === idx));
-            cCenter(id, idx);
+            const state = cState[id];
+            if (!state) return;
+            state.activeIdx = idx;
+
+            // Encontrar o par duplicado para manter a consistência visual no loop
+            const halfCount = state.items.length / 2;
+            const duplicateIdx = idx >= halfCount ? idx - halfCount : idx + halfCount;
+
+            state.items.forEach((el, i) => {
+                el.classList.toggle('active', i === idx || i === duplicateIdx);
+            });
+
+            // Ativa o deslizamento suave para o centro e pausa o carrossel temporariamente
+            state.centering = true;
+            state.targetSpeed = 0; 
         }
 
         function handleCarouselClick(el, id) {
-            if (cState[id] && cState[id].dragged) return;
+            const state = cState[id];
+            if (state && state.dragged) return; // Se arrastou, não abre vídeo
+            
             const idx = parseInt(el.dataset.index);
-            if (idx === cState[id].active) openLightbox(el.dataset.vid);
-            else cSetActive(id, idx);
-        }
-
-        function cStep(id, dir) {
-            if (!cState[id]) return;
-            cSetActive(id, cState[id].active + dir);
+            if (state && state.activeIdx === idx) {
+                openLightbox(el.dataset.vid);
+            } else {
+                cSetActive(id, idx);
+            }
         }
 
         function cDragStart(e, id) {
-            const state  = cState[id];
+            const state = cState[id];
+            if (!state) return;
+            
             state.dragged = false;
-            const track  = document.getElementById('track-' + id);
-            const startX = e.clientX;
-            const startTX = new DOMMatrix(getComputedStyle(track).transform).m41;
-            const onMove = ev => {
-                const dx = ev.clientX - startX;
-                if (Math.abs(dx) > 5) state.dragged = true;
-                track.style.transition = 'none';
-                track.style.transform  = `translateX(${startTX + dx}px)`;
-            };
-            const onUp = ev => {
-                track.style.transition = '';
-                const dx = ev.clientX - startX;
-                if (Math.abs(dx) > 40) cStep(id, dx < 0 ? 1 : -1);
-                else cCenter(id, state.active);
-                document.removeEventListener('mousemove', onMove);
-                document.removeEventListener('mouseup', onUp);
-            };
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onUp);
-        }
+            state.centering = false;
+            state.targetSpeed = 0;
+            state.speed = 0;
 
-        function cTouchStart(e, id) {
-            const state  = cState[id];
-            state.dragged = false;
-            const track  = document.getElementById('track-' + id);
-            const startX = e.touches[0].clientX;
-            const startTX = new DOMMatrix(getComputedStyle(track).transform).m41;
+            const startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const startXPos = state.x;
+
             const onMove = ev => {
-                const dx = ev.touches[0].clientX - startX;
+                const clientX = ev.type.includes('touch') ? ev.touches[0].clientX : ev.clientX;
+                const dx = clientX - startX;
                 if (Math.abs(dx) > 5) state.dragged = true;
-                track.style.transition = 'none';
-                track.style.transform  = `translateX(${startTX + dx}px)`;
+                state.x = startXPos + dx;
             };
+
             const onEnd = ev => {
-                track.style.transition = '';
-                const dx = ev.changedTouches[0].clientX - startX;
-                if (Math.abs(dx) > 40) cStep(id, dx < 0 ? 1 : -1);
-                else cCenter(id, state.active);
+                if (!state.isHovered) state.targetSpeed = baseSpeed;
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onEnd);
                 document.removeEventListener('touchmove', onMove);
                 document.removeEventListener('touchend', onEnd);
             };
+
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
             document.addEventListener('touchmove', onMove, { passive: true });
             document.addEventListener('touchend', onEnd);
         }
+
+        // Loop principal de animação responsável por rolagem, foco suave e repetição infinita
+        function animateCarousels() {
+            Object.keys(cState).forEach(id => {
+                const state = cState[id];
+                if (!state.track || !state.items.length) return;
+
+                const halfCount = state.items.length / 2;
+                // O ponto exato de reinício com base nos layouts dinâmicos dos itens
+                const midpoint = state.items[halfCount].offsetLeft;
+
+                if (state.centering) {
+                    const item = state.items[state.activeIdx];
+                    const wrapWidth = state.wrap.offsetWidth;
+                    // Calcula o posicionamento exato pro centro da tela
+                    let targetX = -item.offsetLeft + (wrapWidth / 2) - (item.offsetWidth / 2);
+
+                    // Interpolação suave para a posição de foco
+                    state.x += (targetX - state.x) * 0.08;
+
+                    if (!state.isHovered && Math.abs(targetX - state.x) < 2) {
+                        state.centering = false;
+                        state.targetSpeed = baseSpeed;
+                    }
+                } else {
+                    // Atualiza suavemente a velocidade respeitando pausas
+                    state.speed += (state.targetSpeed - state.speed) * 0.05;
+                    state.x -= state.speed;
+
+                    // Lógica do Scroll Infinito
+                    if (state.x <= -midpoint) {
+                        state.x += midpoint;
+                    } else if (state.x > 0 && state.speed < 0) { 
+                        state.x -= midpoint;
+                    }
+                }
+
+                state.track.style.transform = `translateX(${state.x}px)`;
+            });
+            requestAnimationFrame(animateCarousels);
+        }
+
+        // Inicia o motor de animação do carrossel
+        requestAnimationFrame(animateCarousels);
 
         // ── LIGHTBOX ──
         let lightboxPlayer = null;
@@ -817,7 +850,6 @@
                 container.classList.remove('hidden');
                 container.classList.add('flex');
                 indicator.innerText = 'FECHAR';
-                // inicializa carrossel quando subcategoria abre
                 setTimeout(() => {
                     const track = container.querySelector('.carousel-track');
                     if (track) {
@@ -1004,7 +1036,7 @@
                         controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
                         youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
                     }));
-                    // inicializa carrosseis imediatamente visíveis (Highlights, Aberturas)
+                    // Inicializa carrosseis logo na abertura
                     ['highlights-vol','aberturas-vol'].forEach(id => {
                         if (document.getElementById('track-' + id)) cInit(id);
                     });
