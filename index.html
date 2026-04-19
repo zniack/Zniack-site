@@ -1012,6 +1012,32 @@
                 finally{formStatus.classList.remove('hidden');btn.innerText=orig;}
             });
         }
+        // --- OBSERVER PARA ATUALIZAR A URL AO ROLAR A PÁGINA ---
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                // Quando a seção estiver ocupando pelo menos 50% da tela
+                if (entry.isIntersecting) {
+                    const currentId = entry.target.getAttribute('id');
+                    const currentHash = `#${currentId}`;
+                    
+                    // Atualiza a URL apenas se ela for diferente da atual
+                    if (window.location.hash !== currentHash) {
+                        // Usamos replaceState em vez de pushState para não lotar o histórico 
+                        // do botão "Voltar" do navegador do usuário a cada rolagem
+                        history.replaceState(null, null, currentHash);
+                    }
+                }
+            });
+        }, {
+            // Define que a seção precisa estar 50% visível para ser considerada a "ativa"
+            threshold: 0.5 
+        });
+
+        // Seleciona todas as seções que possuem um ID e começa a observá-las
+        document.querySelectorAll('section[id]').forEach(section => {
+            sectionObserver.observe(section);
+        });
+        // --------------------------------------------------------
     </script>
 </body>
 </html>
