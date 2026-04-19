@@ -420,6 +420,9 @@
 
         let currentPlayers     = [];
         let lastScrollPosition = 0;
+        
+        // VARIÁVEL DE CONTROLE: Só altera URL rolando a página se o menu já tiver sido clicado
+        let hasClickedMenu = false;
 
         function updateHeaderBlur() {
             const isModalActive = view.classList.contains('active');
@@ -477,7 +480,6 @@
         const carouselData = {
             'analises-vol':   ['wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk','3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro','nUKCw5Ejyao','0FwPnvvsKkE'],
             'comentados-vol': ['Oacodzw29CE', '9EGPFtDVG3s','qxumGqBVclY','Hps6cf-9Ld4','7wYKFmQ7TMc','OhN7CmFrkrM','OIMWARx6nZA','K-HN5rFeDv8','ZZAvKcMFano','wfrHj0L9ccc','E60hFmhy4hk'],
-            // ID 'AkrpKrpF3dc' inserido aqui no array do carrossel:
             'noticias-vol':   ['AkrpKrpF3dc', 'VNNOvzWHpw8','kMDkKOBXsxg','xfEOq0u8d8k','4XrtZ5SD-jI','mxD0WFRvt7k','KErRxCP2fP0','zPP-6cOafdQ','_z1GkNuudqU','QOziuqM_FQA','xYxGu5smFOg'],
             'highlights-vol': ['KAKM9mEqtoc','w2WLKVPCNxY','kT3T1T7pbXU','GICsA2s6cDc','Rc3IYyWu2wE','v_ELfeP2WxY','6NpgsBK8JPI','ILaJ6TaO1X0','2E97i-ChJVI','BsCDkg0lMek'],
             'aberturas-vol':  ['7f7FDHkQjuQ']
@@ -821,9 +823,13 @@
             });
         }
 
+        // --- ATUALIZADO: LINK DO MENU COM HASCLICKEDMENU ---
         document.querySelectorAll('.nav-link').forEach(link=>{
             link.addEventListener('click',function(e){
                 e.preventDefault();
+                
+                // Ativa a flag informando que o usuário usou o menu
+                hasClickedMenu = true; 
                 
                 const href = this.getAttribute('href');
                 const target  = document.querySelector(href);
@@ -952,7 +958,6 @@
                 updateHeaderBlur(); 
 
                 if(name==='Vídeos Diários'){
-                    // Código atualizado na subcategoria Notícias: Deixado apenas o d0d43qkOE7A inline com comentário e movido o AkrpKrpF3dc para o carrossel.
                     contentArea.innerHTML=
                         buildSubCategory('analises','Análises',
                             buildInlineVideo('csh7Z3dcb0g','Triagem e edição de 5 horas de material bruto não catalogado em uma janela de 7 horas para entrega. O processo envolveu a catalogação e a montagem em fluxo contínuo, garantindo a agilidade e a coesão do conteúdo.')+
@@ -1012,30 +1017,31 @@
                 finally{formStatus.classList.remove('hidden');btn.innerText=orig;}
             });
         }
-        // --- OBSERVER PARA ATUALIZAR A URL AO ROLAR A PÁGINA ---
-        const sectionObserver = new IntersectionObserver((entries) => {
+
+        // --- ATUALIZADO: OBSERVER CONDICIONAL PARA ATUALIZAR A URL AO ROLAR A PÁGINA ---
+        const scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                // Quando a seção estiver ocupando pelo menos 50% da tela
-                if (entry.isIntersecting) {
-                    const currentId = entry.target.getAttribute('id');
-                    const currentHash = `#${currentId}`;
+                // Só altera a URL se a seção estiver visível E o menu já tiver sido clicado
+                if (entry.isIntersecting && hasClickedMenu) {
+                    const id = entry.target.getAttribute('id');
                     
-                    // Atualiza a URL apenas se ela for diferente da atual
-                    if (window.location.hash !== currentHash) {
-                        // Usamos replaceState em vez de pushState para não lotar o histórico 
-                        // do botão "Voltar" do navegador do usuário a cada rolagem
-                        history.replaceState(null, null, currentHash);
+                    if (id === 'capa') {
+                        // Se voltou pro topo (#capa), limpa a URL para ficar só "zniack.com"
+                        history.replaceState(null, null, window.location.pathname);
+                    } else if (id) {
+                        // Se for outra seção, coloca a hashtag correspondente
+                        history.replaceState(null, null, `#${id}`);
                     }
                 }
             });
-        }, {
-            // Define que a seção precisa estar 50% visível para ser considerada a "ativa"
+        }, { 
+            // Dispara quando 50% da seção estiver visível na tela
             threshold: 0.5 
         });
 
         // Seleciona todas as seções que possuem um ID e começa a observá-las
         document.querySelectorAll('section[id]').forEach(section => {
-            sectionObserver.observe(section);
+            scrollObserver.observe(section);
         });
         // --------------------------------------------------------
     </script>
