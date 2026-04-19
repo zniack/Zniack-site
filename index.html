@@ -162,8 +162,8 @@
             gap: 8px;
             margin-bottom: 30px;
             position: sticky;
-            top: 0;
-            z-index: 10;
+            top: var(--header-h, 80px);
+            z-index: 101;
             padding: 14px 0 16px;
         }
 
@@ -179,6 +179,10 @@
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
             pointer-events: none;
             transition: backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, background-color 0.4s ease;
+        }
+
+        .category-nav.no-transition::before {
+            transition: none !important;
         }
 
         .category-nav.is-stuck::before {
@@ -459,6 +463,10 @@
             const nav = document.getElementById('category-nav');
             if (!nav) return;
 
+            // Atualiza CSS var com altura real da header
+            const headerH = stickyHeader.offsetHeight;
+            document.documentElement.style.setProperty('--header-h', headerH + 'px');
+
             // Remove sentinel antigo se existir
             const old = document.getElementById('category-nav-sentinel');
             if (old) old.remove();
@@ -466,17 +474,37 @@
             // Desconecta observer anterior
             if (categoryNavStickyObs) { categoryNavStickyObs.disconnect(); categoryNavStickyObs = null; }
 
-            // Cria sentinel de 1px logo antes da nav
+            // Garante estado limpo sem transição para evitar piscada
+            nav.classList.remove('is-stuck');
+            nav.classList.add('no-transition');
+
+            // Cria sentinel de 1px logo antes da nav (dentro do scroll container)
             const sentinel = document.createElement('div');
             sentinel.id = 'category-nav-sentinel';
+            // rootMargin negativo igual à altura da header: o sentinel "desaparece" 
+            // quando a nav está a headerH px do topo do modal
             sentinel.style.cssText = 'height:1px;margin-bottom:-1px;pointer-events:none;flex-shrink:0;';
             nav.parentNode.insertBefore(sentinel, nav);
 
-            categoryNavStickyObs = new IntersectionObserver(([entry]) => {
-                nav.classList.toggle('is-stuck', !entry.isIntersecting);
-            }, { root: view, threshold: 0 });
+            // Deixa dois frames passarem antes de ligar o observer,
+            // evitando o disparo falso durante o scrollTop=0
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    nav.classList.remove('no-transition');
 
-            categoryNavStickyObs.observe(sentinel);
+                    categoryNavStickyObs = new IntersectionObserver(([entry]) => {
+                        nav.classList.toggle('is-stuck', !entry.isIntersecting);
+                    }, {
+                        root: view,
+                        // rootMargin top negativo = altura da header, para o observer
+                        // considerar "saiu" apenas quando o sentinel passou pela linha da header
+                        rootMargin: `-${headerH}px 0px 0px 0px`,
+                        threshold: 0
+                    });
+
+                    categoryNavStickyObs.observe(sentinel);
+                });
+            });
         }
         // ───────────────────────────────────────────────────
 
@@ -529,9 +557,14 @@
             }
         }
 
+        function updateHeaderHeight() {
+            document.documentElement.style.setProperty('--header-h', stickyHeader.offsetHeight + 'px');
+        }
+
         window.addEventListener('scroll', updateHeaderBlur, { passive: true });
-        window.addEventListener('resize', updateHeaderBlur, { passive: true });
-        updateHeaderBlur(); 
+        window.addEventListener('resize', () => { updateHeaderBlur(); updateHeaderHeight(); }, { passive: true });
+        updateHeaderBlur();
+        updateHeaderHeight();
 
         const carouselData = {
             'analises-vol':   ['wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk','3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro','nUKCw5Ejyao','0FwPnvvsKkE'],
