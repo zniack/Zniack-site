@@ -72,7 +72,6 @@
             object-fit: cover; object-position: center; z-index: 0; opacity: 0; transition: opacity 1s ease;
         }
 
-        /* ── HEADER & MÁSCARA DE GRADIENTE SUAVE ── */
         .header-sticky {
             position: fixed;
             top: 0; left: 0;
@@ -85,16 +84,13 @@
             will-change: top, transform;
         }
 
-        /* Camada fantasma responsável pelo Blur suave */
         .header-sticky::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            /* Controlado via variáveis CSS injetadas pelo JS */
             backdrop-filter: blur(var(--blur-val, 0px)) saturate(var(--sat-val, 1));
             -webkit-backdrop-filter: blur(var(--blur-val, 0px)) saturate(var(--sat-val, 1));
-            /* Máscara: Sólido até 50% da header, e vai esmaecendo até o final (100%) */
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
             pointer-events: none;
@@ -194,7 +190,6 @@
         .lightbox-close:hover { color: white; }
         .lightbox-player-wrap { width: 100%; aspect-ratio: 16/9; background: #0a0a0a; }
 
-        /* ── ANIMAÇÃO DE FADE PARA O TEXTO DO LIGHTBOX ── */
         @keyframes fadeSlow {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -229,7 +224,9 @@
             }
             .nav-link { font-size: 11px !important; letter-spacing: 3px !important; }
             section { padding: 15vh 5%; }
-            .portfolio-modal { padding: 50px 5% 100px 5%; } 
+            
+            /* AJUSTE 1: Aumento drástico no padding do topo do modal para o header não esconder as categorias */
+            .portfolio-modal { padding: 140px 5% 100px 5%; } 
             
             .carousel-wrapper { min-height: 155px; }
             .carousel-track { height: 135px; }
@@ -366,7 +363,7 @@
         <div class="lightbox-inner">
             <button class="lightbox-close" onclick="closeLightbox()">&#x2715; Fechar</button>
             <div class="lightbox-player-wrap" id="lightbox-player-wrap"></div>
-            <p id="lightbox-desc" class="font-['Roboto'] font-thin text-[13px] text-[#e3e3e3] mt-4 text-center opacity-0"></p>
+            <p id="lightbox-desc" class="font-['Roboto'] font-thin text-[13px] text-[#e3e3e3] mt-4 text-center hidden"></p>
         </div>
     </div>
 
@@ -388,18 +385,19 @@
             const isModalActive = view.classList.contains('active');
             
             if (isModalActive) {
-                stickyHeader.style.setProperty('--blur-val', '9px');
+                stickyHeader.style.setProperty('--blur-val', '4.5px');
                 stickyHeader.style.setProperty('--sat-val', '0.8');
             } else {
                 const capaH = capa.offsetHeight;
                 const scrollY = window.scrollY;
                 let blur = 0;
                 
-                const startBlurAt = capaH * 0.8; // Apenas nos 20% finais do banner
+                const startBlurAt = capaH * 0.8; 
                 
                 if (scrollY > startBlurAt) {
                     const progress = Math.min((scrollY - startBlurAt) / (capaH - startBlurAt), 1);
-                    blur = progress * 9; 
+                    // AJUSTE 2: Blur máximo de 4.5px (metade do anterior)
+                    blur = progress * 4.5; 
                 }
 
                 stickyHeader.style.setProperty('--blur-val', blur + 'px');
@@ -586,7 +584,6 @@
                 let offset = prevRealIdx * metrics.step;
                 if (prevRealIdx >= s.itemsCount) offset += metrics.diff;
                 
-                // Sempre alinha à esquerda, tanto PC quanto Mobile
                 let baseX = -offset;
 
                 if (isLoop) {
@@ -732,8 +729,6 @@
             if (domIdx>=s.itemsCount) offset+=metrics.diff;
             let baseX = -offset;
             
-            // Centralização Mobile removida para garantir foco sempre alinhado à esquerda.
-            
             if (isLoop) {
                 const LW = s.itemsCount*metrics.step + metrics.diff;
                 s.targetX = baseX;
@@ -802,7 +797,7 @@
             if(description){
                 descEl.innerHTML=description;
                 descEl.classList.remove('hidden', 'fade-in-slow');
-                void descEl.offsetWidth; // Reflow para forçar CSS reler a animação
+                void descEl.offsetWidth; 
                 descEl.classList.add('fade-in-slow');
             } else {
                 descEl.innerHTML='';
