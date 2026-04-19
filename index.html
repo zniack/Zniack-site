@@ -410,7 +410,12 @@
     <script src="https://cdn.plyr.io/3.7.8/plyr.js" defer></script>
     <script>
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-        window.addEventListener('load', () => window.scrollTo(0, 0));
+        
+        // ATUALIZADO: Limpa a URL na hora de dar F5 (Load da página)
+        window.addEventListener('load', () => {
+            window.scrollTo(0, 0);
+            history.replaceState(null, null, window.location.pathname);
+        });
 
         const stickyHeader = document.getElementById('sticky-header');
         const capa         = document.getElementById('capa');
@@ -421,7 +426,6 @@
         let currentPlayers     = [];
         let lastScrollPosition = 0;
         
-        // VARIÁVEL DE CONTROLE: Só altera URL rolando a página se o menu já tiver sido clicado
         let hasClickedMenu = false;
 
         function updateHeaderBlur() {
@@ -823,19 +827,16 @@
             });
         }
 
-        // --- ATUALIZADO: LINK DO MENU COM HASCLICKEDMENU ---
         document.querySelectorAll('.nav-link').forEach(link=>{
             link.addEventListener('click',function(e){
                 e.preventDefault();
                 
-                // Ativa a flag informando que o usuário usou o menu
                 hasClickedMenu = true; 
                 
                 const href = this.getAttribute('href');
                 const target  = document.querySelector(href);
                 const wasOpen = view.classList.contains('active');
                 
-                // Atualiza a URL na barra de endereços silenciosamente
                 history.pushState(null, null, href);
                 
                 triggerTransition(()=>{
@@ -1018,32 +1019,25 @@
             });
         }
 
-        // --- ATUALIZADO: OBSERVER CONDICIONAL PARA ATUALIZAR A URL AO ROLAR A PÁGINA ---
         const scrollObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                // Só altera a URL se a seção estiver visível E o menu já tiver sido clicado
                 if (entry.isIntersecting && hasClickedMenu) {
                     const id = entry.target.getAttribute('id');
                     
                     if (id === 'capa') {
-                        // Se voltou pro topo (#capa), limpa a URL para ficar só "zniack.com"
                         history.replaceState(null, null, window.location.pathname);
                     } else if (id) {
-                        // Se for outra seção, coloca a hashtag correspondente
                         history.replaceState(null, null, `#${id}`);
                     }
                 }
             });
         }, { 
-            // Dispara quando 50% da seção estiver visível na tela
             threshold: 0.5 
         });
 
-        // Seleciona todas as seções que possuem um ID e começa a observá-las
         document.querySelectorAll('section[id]').forEach(section => {
             scrollObserver.observe(section);
         });
-        // --------------------------------------------------------
     </script>
 </body>
 </html>
