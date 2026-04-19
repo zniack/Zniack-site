@@ -111,6 +111,18 @@
             pointer-events: none;
         }
 
+        /* CORREÇÃO DO TEXTO AZUL: Estilo base carregado nativamente */
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            letter-spacing: 7px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover { color: rgba(255, 255, 255, 1); }
+
         #transition-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); z-index: 10000; opacity: 0; transition: opacity 0.2s ease-in-out;
@@ -246,6 +258,10 @@
                 justify-content: center; 
                 flex-wrap: wrap; 
                 gap: 15px;
+                /* CORREÇÃO PULO DO MOBILE */
+                position: absolute;
+                top: 80vh;
+                transform: translateY(-100%);
             }
             .header-sticky.mobile-fixed {
                 position: fixed !important;
@@ -271,10 +287,10 @@
     <div id="transition-overlay"></div>
 
     <header id="sticky-header" class="header-sticky">
-        <a href="#sobre"    class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
-        <a href="#trabalho" class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
-        <a href="#portfolio" class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Portfolio</a>
-        <a href="#contato"  class="nav-link font-['Oswald'] text-[14px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Contato</a>
+        <a href="#sobre"    class="nav-link">Quem sou eu</a>
+        <a href="#trabalho" class="nav-link">Como trabalho</a>
+        <a href="#portfolio" class="nav-link">Portfolio</a>
+        <a href="#contato"  class="nav-link">Contato</a>
     </header>
 
     <main class="snap-container" id="main-scroll">
@@ -328,8 +344,8 @@
                     <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Highlights')">
                         <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">HIGHLIGHTS</span>
                     </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Mini Documentários')">
-                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">MINI DOCUMENTÁRIOS</span>
+                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Produções Documentais')">
+                        <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">Produções Documentais</span>
                     </div>
                     <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Aberturas')">
                         <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">ABERTURAS</span>
@@ -376,7 +392,7 @@
             <div class="category-nav" id="category-nav">
                 <button class="category-nav-btn" onclick="openCategory('Vídeos Diários')">Vídeos Diários</button>
                 <button class="category-nav-btn" onclick="openCategory('Highlights')">Highlights</button>
-                <button class="category-nav-btn" onclick="openCategory('Mini Documentários')">Mini Documentários</button>
+                <button class="category-nav-btn" onclick="openCategory('Produções Documentais')">Produções Documentais</button>
                 <button class="category-nav-btn" onclick="openCategory('Aberturas')">Aberturas</button>
                 <button class="category-nav-btn" onclick="openCategory('Institucionais')">Institucionais</button>
             </div>
@@ -947,7 +963,7 @@
                         ${buildInlineVideo('f-2xznYjToI','Curadoria de 16 horas de material bruto distribuídas em 3 transmissões. A montagem priorizou a seleção criteriosa de momentos e a construção de ritmo, evitando a saturação sem perder os eventos relevantes.')}
                         ${buildCarousel('highlights-vol')}</div>`;
 
-                }else if(name==='Mini Documentários'){
+                }else if(name==='Produções Documentais'){
                     contentArea.innerHTML=`<div class="flex flex-col gap-12 w-full">
                         ${buildInlineVideo('yiK_Z7XGyBA','Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa. Edição construída para conduzir esse discurso do início ao fim, garantindo a unidade e a fluidez.')}
                         ${buildInlineVideo('qgXUQirQ7Bk','Montagem documental estruturada a partir de 1h30 de material bruto e extensa busca por mídias externas. O processo priorizou a integração de referências visuais para conduzir a narrativa, garantindo a unidade estética e a fluidez do discurso.')}</div>`;
