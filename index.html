@@ -72,6 +72,7 @@
             object-fit: cover; object-position: center; z-index: 0; opacity: 0; transition: opacity 1s ease;
         }
 
+        /* ── HEADER & MÁSCARA DE GRADIENTE SUAVE ── */
         .header-sticky {
             position: fixed;
             top: 0; left: 0;
@@ -79,12 +80,24 @@
             padding: 30px 10%;
             z-index: 100;
             background: transparent;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            border: none; 
             display: flex;
             gap: 3rem;
-            will-change: backdrop-filter, top, transform;
+            will-change: top, transform;
+        }
+
+        /* Camada fantasma responsável pelo Blur suave */
+        .header-sticky::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            /* Controlado via variáveis CSS injetadas pelo JS */
+            backdrop-filter: blur(var(--blur-val, 0px)) saturate(var(--sat-val, 1));
+            -webkit-backdrop-filter: blur(var(--blur-val, 0px)) saturate(var(--sat-val, 1));
+            /* Máscara: Sólido até 50% da header, e vai esmaecendo até o final (100%) */
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+            pointer-events: none;
         }
 
         #transition-overlay {
@@ -121,10 +134,9 @@
 
         .category-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
 
-        /* ── AJUSTE DE FONTE 9px PC / 7px MOBILE ── */
         .category-nav-btn {
             font-family: 'Oswald', sans-serif;
-            font-size: 9px;
+            font-size: 9px; 
             letter-spacing: 3px;
             text-transform: uppercase;
             color: rgba(255,255,255,0.3);
@@ -159,7 +171,6 @@
         .carousel-item:hover .carousel-play, .carousel-item.active .carousel-play { opacity: 1; }
         .carousel-play svg { width: 32px; height: 32px; fill: rgba(255,255,255,0.9); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7)); }
 
-        /* ── SETA ESQUERDA AGORA VISÍVEL TAMBÉM NO MOBILE ── */
         .carousel-nav-btn {
             background: rgba(0, 0, 0, 0.4);
             border-radius: 50%;
@@ -182,6 +193,13 @@
         .lightbox-close { position: absolute; top: -38px; right: 0; background: none; border: none; color: rgba(255,255,255,0.4); font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 4px; cursor: pointer; text-transform: uppercase; padding: 0; }
         .lightbox-close:hover { color: white; }
         .lightbox-player-wrap { width: 100%; aspect-ratio: 16/9; background: #0a0a0a; }
+
+        /* ── ANIMAÇÃO DE FADE PARA O TEXTO DO LIGHTBOX ── */
+        @keyframes fadeSlow {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in-slow { animation: fadeSlow 1s ease forwards; }
 
         .subcat-header { cursor: pointer; display: flex; align-items: center; gap: 16px; border-left: 1px solid rgba(255,255,255,0.2); padding: 10px 14px; transition: border-color 0.3s ease; width: max-content; }
         .subcat-header:hover { border-color: white; }
@@ -219,7 +237,7 @@
             .carousel-item.active { width: 240px; height: 135px; }
             
             .category-nav { gap: 6px; }
-            .category-nav-btn { font-size: 7px; padding: 5px 10px; } /* Ajuste 7px no Mobile */
+            .category-nav-btn { font-size: 7px; padding: 5px 10px; } 
         }
     </style>
 </head>
@@ -348,7 +366,7 @@
         <div class="lightbox-inner">
             <button class="lightbox-close" onclick="closeLightbox()">&#x2715; Fechar</button>
             <div class="lightbox-player-wrap" id="lightbox-player-wrap"></div>
-            <p id="lightbox-desc" class="font-['Roboto'] font-thin text-[13px] text-[#e3e3e3] mt-4 text-center hidden"></p>
+            <p id="lightbox-desc" class="font-['Roboto'] font-thin text-[13px] text-[#e3e3e3] mt-4 text-center opacity-0"></p>
         </div>
     </div>
 
@@ -366,35 +384,26 @@
         let currentPlayers     = [];
         let lastScrollPosition = 0;
 
-        /* ══════════════════════════════════════════════════════
-           AJUSTE 1: BLUR SÓ COMEÇA EM 80% E VAI ATÉ METADE DA INTENSIDADE (9px)
-        ══════════════════════════════════════════════════════ */
         function updateHeaderBlur() {
             const isModalActive = view.classList.contains('active');
             
             if (isModalActive) {
-                stickyHeader.style.backdropFilter = 'blur(9px) saturate(0.8)';
-                stickyHeader.style.webkitBackdropFilter = 'blur(9px) saturate(0.8)';
+                stickyHeader.style.setProperty('--blur-val', '9px');
+                stickyHeader.style.setProperty('--sat-val', '0.8');
             } else {
                 const capaH = capa.offsetHeight;
                 const scrollY = window.scrollY;
                 let blur = 0;
                 
-                // Começa em 80%
-                const startBlurAt = capaH * 0.8;
+                const startBlurAt = capaH * 0.8; // Apenas nos 20% finais do banner
                 
                 if (scrollY > startBlurAt) {
                     const progress = Math.min((scrollY - startBlurAt) / (capaH - startBlurAt), 1);
-                    blur = progress * 9; // Máximo 9px (metade de 18)
+                    blur = progress * 9; 
                 }
 
-                if (blur === 0) {
-                    stickyHeader.style.backdropFilter = 'none';
-                    stickyHeader.style.webkitBackdropFilter = 'none';
-                } else {
-                    stickyHeader.style.backdropFilter = `blur(${blur}px) saturate(0.8)`;
-                    stickyHeader.style.webkitBackdropFilter = `blur(${blur}px) saturate(0.8)`;
-                }
+                stickyHeader.style.setProperty('--blur-val', blur + 'px');
+                stickyHeader.style.setProperty('--sat-val', blur > 0 ? '0.8' : '1');
             }
 
             if (window.innerWidth <= 768) {
@@ -536,9 +545,6 @@
             </div>`;
         }
 
-        /* ══════════════════════════════════════════════════════
-           AJUSTE LÓGICO: FORÇAR DESLIZE REAL PARA A ESQUERDA 
-        ══════════════════════════════════════════════════════ */
         window.prevCarouselItem = function(id, event) {
             event.stopPropagation();
             const s = carouselState[id];
@@ -547,14 +553,12 @@
             const isLoop = s.itemsCount >= 6;
             const items = Array.from(s.track.children);
             
-            // Permite clicar mesmo em transição
             let currentItem = s.targetEl || items.find(item => item.classList.contains('active'));
 
             if (currentItem) {
                 let domIdx = items.indexOf(currentItem);
                 let realIdx = domIdx % s.itemsCount;
                 
-                // Pega o índice anterior
                 let prevRealIdx = realIdx - 1;
                 if (prevRealIdx < 0) prevRealIdx = s.itemsCount - 1;
 
@@ -581,23 +585,19 @@
                 const metrics = getCarouselMetrics();
                 let offset = prevRealIdx * metrics.step;
                 if (prevRealIdx >= s.itemsCount) offset += metrics.diff;
+                
+                // Sempre alinha à esquerda, tanto PC quanto Mobile
                 let baseX = -offset;
-
-                if (metrics.isMobile) {
-                    baseX += (s.track.parentElement.offsetWidth - metrics.activeW) / 2;
-                }
 
                 if (isLoop) {
                     const LW = s.itemsCount * metrics.step + metrics.diff;
                     s.targetX = baseX;
-                    // Força o alvo matemático para a DIREITA (o que move a pista para a ESQUERDA na tela)
                     while (s.targetX < s.pos + 10) s.targetX += LW;
-                    while (s.targetX > s.pos + LW + 10) s.targetX -= LW; // Limita o giro
+                    while (s.targetX > s.pos + LW + 10) s.targetX -= LW; 
                 } else {
                     s.targetX = baseX;
                 }
             } else {
-                // Se nenhum item selecionado, desliza livremente para a esquerda
                 s.currentSpeed = -25;
             }
         };
@@ -731,7 +731,9 @@
             let offset = domIdx*metrics.step;
             if (domIdx>=s.itemsCount) offset+=metrics.diff;
             let baseX = -offset;
-            if (metrics.isMobile) baseX += (s.track.parentElement.offsetWidth - metrics.activeW)/2;
+            
+            // Centralização Mobile removida para garantir foco sempre alinhado à esquerda.
+            
             if (isLoop) {
                 const LW = s.itemsCount*metrics.step + metrics.diff;
                 s.targetX = baseX;
@@ -796,8 +798,18 @@
             const wrap=document.getElementById('lightbox-player-wrap');
             const descEl=document.getElementById('lightbox-desc');
             wrap.innerHTML=`<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
-            if(description){descEl.innerHTML=description;descEl.classList.remove('hidden');}
-            else{descEl.innerHTML='';descEl.classList.add('hidden');}
+            
+            if(description){
+                descEl.innerHTML=description;
+                descEl.classList.remove('hidden', 'fade-in-slow');
+                void descEl.offsetWidth; // Reflow para forçar CSS reler a animação
+                descEl.classList.add('fade-in-slow');
+            } else {
+                descEl.innerHTML='';
+                descEl.classList.add('hidden');
+                descEl.classList.remove('fade-in-slow');
+            }
+
             lb.classList.add('active'); document.body.style.overflow='hidden';
             setTimeout(()=>{
                 lightboxPlayer=new Plyr('#lb-plyr',{
@@ -812,8 +824,12 @@
         function closeLightbox() {
             if(lightboxPlayer){try{lightboxPlayer.pause();lightboxPlayer.destroy();}catch(e){} lightboxPlayer=null;}
             document.getElementById('lightbox-player-wrap').innerHTML='';
-            document.getElementById('lightbox-desc').innerHTML='';
-            document.getElementById('lightbox-desc').classList.add('hidden');
+            
+            const descEl = document.getElementById('lightbox-desc');
+            descEl.innerHTML='';
+            descEl.classList.add('hidden');
+            descEl.classList.remove('fade-in-slow');
+
             document.getElementById('video-lightbox').classList.remove('active');
             document.body.style.overflow=view.classList.contains('active')?'hidden':'';
             Object.keys(carouselState).forEach(id=>{
@@ -867,7 +883,7 @@
                 descElement.innerText=descricoesPortfolio[name]||'';
                 updateCategoryNav(name);
                 document.body.style.overflow='hidden';
-                updateHeaderBlur();
+                updateHeaderBlur(); 
 
                 if(name==='Vídeos Diários'){
                     contentArea.innerHTML=
