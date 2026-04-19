@@ -162,7 +162,7 @@
             gap: 8px;
             margin-bottom: 30px;
             position: sticky;
-            top: 0;
+            top: 120px;
             z-index: 101;
             padding: 14px 0 16px;
         }
@@ -172,13 +172,14 @@
             position: absolute;
             top: 0; left: -10%; width: 120%; height: 100%;
             z-index: -1;
-            backdrop-filter: blur(0px) saturate(1);
-            -webkit-backdrop-filter: blur(0px) saturate(1);
-            background-color: transparent;
+            opacity: 0;
+            backdrop-filter: blur(4.5px) saturate(0.8);
+            -webkit-backdrop-filter: blur(4.5px) saturate(0.8);
+            background-color: rgba(37, 37, 37, 0.6);
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
             pointer-events: none;
-            transition: backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease, background-color 0.4s ease;
+            transition: opacity 0.4s ease;
         }
 
         .category-nav.no-transition::before {
@@ -186,9 +187,7 @@
         }
 
         .category-nav.is-stuck::before {
-            backdrop-filter: blur(4.5px) saturate(0.8);
-            -webkit-backdrop-filter: blur(4.5px) saturate(0.8);
-            background-color: rgba(37, 37, 37, 0.6);
+            opacity: 1;
         }
         /* ─────────────────────────────────────────────────── */
 
@@ -308,7 +307,7 @@
             .carousel-item { width: 110px; height: 62px; }
             .carousel-item.active { width: 240px; height: 135px; }
             
-            .category-nav { gap: 6px; }
+            .category-nav { gap: 6px; top: 140px; }
             .category-nav-btn { font-size: 8px; padding: 6px 10px; } 
         }
     </style>
