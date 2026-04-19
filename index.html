@@ -296,50 +296,43 @@
             position: relative;
             width: 100%;
             overflow: hidden;
-            padding: 15px 0; /* Espaço extra para o efeito 3D não cortar as bordas */
+            padding: 10px 0;
         }
 
         .carousel-track {
             display: flex;
             gap: 15px;
+            align-items: center; /* Impede que as thumbs menores estiquem verticalmente */
             width: max-content;
-            /* Transição será adicionada via JS durante o clique/slide */
+            will-change: transform;
         }
 
-        /* ── EFEITO CÂMERA E DESTAQUE ── */
+        /* ── EFEITO DE TAMANHO E OPACIDADE SEM CORTE E SEM DESFOQUE ── */
         .carousel-item {
             flex: 0 0 auto;
             width: 140px;
-            aspect-ratio: 16/9; /* Força 16:9 sempre, impedindo cortes */
+            aspect-ratio: 16/9; /* Garante a miniatura 100% visível sempre proporcional */
             position: relative;
             border: 1px solid rgba(255,255,255,0.04);
             border-radius: 4px;
             overflow: hidden;
             cursor: pointer;
-            
-            /* Efeito Inativo: Perspectiva suave, desfoque sutil e menos brilho */
-            transform: perspective(600px) rotateY(12deg) scale(0.95);
-            filter: blur(1.5px) brightness(0.65);
-            
-            transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                        transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                        filter 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                        border-color 0.45s ease;
+            opacity: 0.5; /* Escurece levemente os inativos */
+            transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+                        opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color 0.5s ease;
         }
 
-        /* O item destacado (Sempre o da extrema esquerda no visual do track) */
         .carousel-item.active {
             width: 320px;
-            transform: perspective(600px) rotateY(0deg) scale(1);
-            filter: blur(0) brightness(1);
+            opacity: 1; /* Ilumina o vídeo em destaque */
             border-color: rgba(255,255,255,0.2);
-            z-index: 2; /* Garante que ele fique acima dos outros durante a transição */
         }
 
         .carousel-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Como a div é perfeitamente 16:9, nada é cortado */
+            object-fit: cover;
             display: block;
             pointer-events: none;
         }
@@ -598,11 +591,10 @@
             'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
 
-        // ── LÓGICA DO CARROSSEL: DESLIZAMENTO, CLICK E AUTOPLAY ──
+        // ── LÓGICA DO CARROSSEL: DESLIZAMENTO FLUIDO SEM PULOS ──
         const carouselState = {};
         const ITEM_INACTIVE_WIDTH = 140; 
         const ITEM_GAP = 15;
-        const SHIFT_PER_STEP = ITEM_INACTIVE_WIDTH + ITEM_GAP;
 
         function buildCarousel(carouselId) {
             const ids = carouselData[carouselId];
@@ -652,9 +644,9 @@
             });
         }
 
+        // Função responsável por deslizar a trilha e reorganizar os vídeos por baixo dos panos
         function slideToItem(id, domIndex) {
             const state = carouselState[id];
-            // Se clicar no próprio ativo (0) ou estiver animando, interrompe o slide
             if (!state || state.isAnimating || domIndex === 0) return;
 
             const track = state.track;
@@ -662,27 +654,26 @@
 
             state.isAnimating = true;
 
-            // Calcula o deslocamento exato para puxar o vídeo clicado para a posição 0
-            const shift = domIndex * SHIFT_PER_STEP;
-
-            // Inicia o crescimento/diminuição ao mesmo tempo
+            // 1. Inicia o crescimento do vídeo alvo e o encolhimento do atual
             items[0].classList.remove('active');
             items[domIndex].classList.add('active');
 
-            // Desliza a trilha para a esquerda suavemente
-            track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
-            track.style.transform = `translateX(-${shift}px)`;
+            // 2. Calcula exatamente o quanto a trilha precisa se mover para que o vídeo alvo chegue no canto esquerdo
+            const shiftAmount = domIndex * (ITEM_INACTIVE_WIDTH + ITEM_GAP);
+            
+            // 3. Aplica o movimento CSS suavemente
+            track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+            track.style.transform = `translateX(-${shiftAmount}px)`;
 
-            // Quando a transição terminar, repassa os itens do DOM para trás criando o loop contínuo
+            // 4. Assim que a animação terminar, movemos os vídeos que ficaram pra trás para o final da fila (criando o loop)
             setTimeout(() => {
+                track.style.transition = 'none'; // Desliga a transição para fazer a mágica escondido
                 for (let i = 0; i < domIndex; i++) {
-                    track.appendChild(track.children[0]);
+                    track.appendChild(items[i]);
                 }
-                // Reseta a transição de forma invisível
-                track.style.transition = 'none';
-                track.style.transform = 'translateX(0)';
+                track.style.transform = 'translateX(0)'; // Devolve a trilha para a posição 0 instantaneamente
                 state.isAnimating = false;
-            }, 600);
+            }, 520); // Tempo sincronizado com a animação CSS (500ms + folga)
         }
 
         function slideNext(id) {
@@ -703,7 +694,7 @@
                 // Caso contrário, desliza a trilha até que ele vire o principal
                 slideToItem(id, domIndex);
                 
-                // Reinicia o tempo automático se houver
+                // Reinicia o timer se houver autoplay ativo
                 if (state.count >= 6) {
                     stopAutoSlide(id);
                     startAutoSlide(id);
@@ -713,7 +704,7 @@
 
         function startAutoSlide(id) {
             const state = carouselState[id];
-            if (!state || state.count < 6) return;
+            if (!state || state.count < 6) return; // Só roda com 6 vídeos ou mais
             stopAutoSlide(id);
             state.intervalId = setInterval(() => {
                 slideNext(id);
