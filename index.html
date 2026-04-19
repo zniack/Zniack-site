@@ -121,11 +121,13 @@
         .capa-img-full {
             position: absolute;
             top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            z-index: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+                z-index: 0;
+                opacity: 0;
+                transition: opacity 1s ease;
         }
 
         .banner-nav {
@@ -813,7 +815,13 @@
                 mainScroll.style.overflowY = 'auto';
             });
         }
-
+const capaImg = document.querySelector('.capa-img-full');
+capaImg.addEventListener('load', () => {
+    capaImg.style.opacity = '1';
+});
+if (capaImg.complete) {
+    capaImg.style.opacity = '1';
+}
         const contactForm = document.getElementById('contact-form');
         const formStatus = document.getElementById('form-status');
 
