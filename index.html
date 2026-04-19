@@ -277,7 +277,7 @@
         }
         .fade-up.is-visible { opacity: 1; transform: translateY(0); }
 
-        /* OCULTA A BOLA BRANCA DO PLAYER NATIVO (FORA DO CARROSSEL E DO LIGHTBOX) */
+        /* OCULTA A BOLA BRANCA DO PLAYER NATIVO (FORA DO LIGHTBOX) */
         #portfolio-content-area .plyr__control--overlaid {
             display: none !important;
         }
@@ -306,7 +306,7 @@
 
         .carousel-track {
             display: flex;
-            gap: 15px;
+            gap: 15px; /* IMPORTANTE: Mantido 15px para o cálculo da física (140 + 15 = 155) */
             align-items: center; 
             width: max-content;
             will-change: transform;
@@ -323,8 +323,11 @@
             overflow: hidden;
             cursor: pointer;
             opacity: 0.7; 
-            /* Transição base controlada via JS durante cliques, CSS reassume no fechamento */
-            transition: border-color 0.4s ease;
+            
+            /* Transição CSS age de volta pra "descanso" quando tira a classe active ao fechar o player */
+            transition: width 0.7s cubic-bezier(0.25, 1, 0.5, 1),
+                        opacity 0.7s ease,
+                        border-color 0.4s ease;
             will-change: width, opacity, transform;
         }
 
@@ -605,8 +608,9 @@
             'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
 
-        // ── LÓGICA DO CARROSSEL: FÍSICA DINÂMICA ──
+        // ── LÓGICA DO CARROSSEL: MOTOR FÍSICO COM GRADE FIXA ──
         const carouselState = {};
+        const ITEM_STEP = 155; // 140px (largura) + 15px (gap). Isso evita o glitch do offsetLeft!
 
         function buildCarousel(carouselId) {
             const ids = carouselData[carouselId];
@@ -618,7 +622,6 @@
                     <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
                 </div>`).join('');
                 
-            // Duplica os vídeos apenas se for >= 6 para criar o loop invisível
             const loopHTML = ids.length >= 6 ? itemsHTML + itemsHTML : itemsHTML;
 
             return `
@@ -652,7 +655,6 @@
                     isHovered: false,
                     itemsCount: itemsCount,
                     isSlidingToItem: false,
-                    lightboxOpened: false, 
                     targetEl: null,
                     syncTargetEl: null,
                     targetX: 0,
@@ -671,40 +673,57 @@
 
             function tick() {
                 const isLooping = state.itemsCount >= 6;
-                const totalScrollWidth = state.track.scrollWidth;
-                const currentHalfWidth = isLooping ? totalScrollWidth / 2 : totalScrollWidth;
+                const currentHalfWidth = state.itemsCount * ITEM_STEP;
 
-                // CENA 1: ALGUÉM CLICOU (Carrossel desliza e redimensiona simultaneamente)
+                // CENA 1: ALGUÉM CLICOU (O Carrossel Desliza para o Alvo)
                 if (state.isSlidingToItem && state.targetEl) {
                     
-                    // Tratamento de Loop Contínuo durante Cliques Rápidos para a Direita
+                    // Tratamento de Loop durante o deslize: Impede que acabe a fita
                     if (isLooping && state.pos <= -currentHalfWidth) {
                         state.pos += currentHalfWidth;
                         state.targetX += currentHalfWidth;
                         
-                        // Atualiza a referência principal se o usuário clicou num clone que ultrapassou o limite
-                        let domIdx = Array.from(state.track.children).indexOf(state.targetEl);
-                        if (domIdx >= state.itemsCount) {
-                            state.targetEl = state.track.children[domIdx - state.itemsCount];
+                        // Atualiza as referências pros clones corretos invisivelmente
+                        if (state.targetEl) {
+                            let domIdx = Array.from(state.track.children).indexOf(state.targetEl);
+                            if (domIdx >= state.itemsCount) {
+                                state.targetEl = state.track.children[domIdx - state.itemsCount];
+                            }
+                        }
+                        if (state.syncTargetEl) {
+                            let domIdxSync = Array.from(state.track.children).indexOf(state.syncTargetEl);
+                            if (domIdxSync >= state.itemsCount) {
+                                state.syncTargetEl = state.track.children[domIdxSync - state.itemsCount];
+                            }
                         }
                     }
 
-                    // FÍSICA: Velocidade Constante + Desaceleração Fina (O tempo é igual a distância)
+                    // FÍSICA SUPER SUAVE (Lerp amanteigado)
                     let diff = state.targetX - state.pos;
-                    let speedCap = 25; // Velocidade Máxima (Pixels por frame)
                     
-                    // Acelera baseado na distância, mas trava no speedCap
-                    let step = diff * 0.12; 
-                    if (step > speedCap) step = speedCap;
-                    if (step < -speedCap) step = -speedCap;
-                    
-                    if (Math.abs(diff) <= 1) {
+                    // Se estiver muito perto (menos de meio pixel), crava no local exato
+                    if (Math.abs(diff) < 0.5) {
                         state.pos = state.targetX;
+                        state.isSlidingToItem = false; // Parada total
+
+                        // Limpa estilos inline pra devolver o controle ao CSS perfeitamente
+                        const allItems = Array.from(state.track.children);
+                        allItems.forEach(item => {
+                            item.style.width = '';
+                            item.style.opacity = '';
+                            if (item === state.targetEl || item === state.syncTargetEl) {
+                                item.classList.add('active');
+                            } else {
+                                item.classList.remove('active');
+                            }
+                        });
+
                     } else {
-                        state.pos += step;
+                        // Movimento suave. Quanto mais perto, mais lento, igual elástico
+                        state.pos += diff * 0.05; 
                     }
                     
-                    // CÁLCULO DE CRESCIMENTO (Baseado 100% na Distância Percorrida)
+                    // CÁLCULO DE CRESCIMENTO ATRELADO À DISTÂNCIA DO ALVO
                     let currentDist = Math.abs(state.pos - state.targetX);
                     let progress = state.totalSlideDist > 0 ? 1 - (currentDist / state.totalSlideDist) : 1;
                     progress = Math.max(0, Math.min(1, progress));
@@ -721,44 +740,22 @@
                             item.style.width = newWidth + 'px';
                             item.style.opacity = newOpacity;
                         } else {
-                            // Se o usuário clicar em um outro, o anterior encolhe suavemente
+                            // Se era o antigo alvo e o usuário clicou num novo, ele encolhe suavemente pro tamanho normal
                             let currentW = parseFloat(item.style.width) || (item.classList.contains('active') ? 320 : 140);
                             let currentO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
-                            currentW += (140 - currentW) * 0.15;
-                            currentO += (0.7 - currentO) * 0.15;
+                            currentW += (140 - currentW) * 0.08; 
+                            currentO += (0.7 - currentO) * 0.08;
                             item.style.width = currentW + 'px';
                             item.style.opacity = currentO;
                         }
                     });
-
-                    // TRAVA DO PLAYER: Abre apenas quando chegou exatamente no destino (100%)
-                    if (state.pos === state.targetX && !state.lightboxOpened) {
-                        state.lightboxOpened = true;
-                        state.isSlidingToItem = false;
-                        
-                        // Limpa estilos inline pra devolver o controle ao CSS (Garante o 320px Perfeito)
-                        allItems.forEach(item => {
-                            item.style.width = '';
-                            item.style.opacity = '';
-                            item.classList.remove('active');
-                        });
-                        
-                        state.targetEl.classList.add('active');
-                        if (state.syncTargetEl) state.syncTargetEl.classList.add('active');
-
-                        // Player abrindo!
-                        setTimeout(() => {
-                            openLightbox(state.targetEl.dataset.vid);
-                        }, 50);
-                    }
                 } 
-                // CENA 2: CARROSSEL DESCANSANDO (Scroll Lento com Desaceleração de 50% no Hover)
+                // CENA 2: CARROSSEL DESCANSANDO (Scroll Automático com Hover Soft 50%)
                 else if (!state.isPaused && isLooping) {
                     const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
                     
                     // Transição suave de velocidade (Não freia no tranco)
                     state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.05;
-                    
                     state.pos -= state.currentSpeed;
                     
                     // Reinício Infinito
@@ -785,32 +782,39 @@
             const state = carouselState[id];
             if (!state) return;
 
-            // ABORTA TUDO E REDIRECIONA PARA O NOVO CLIQUE IMEDIATAMENTE
+            // REGRA DOS 2 CLIQUES: Se ele já for o alvo e JÁ CHEGOU (não tá deslizando), aí sim abre o player!
+            if (state.targetEl === el && !state.isSlidingToItem) {
+                openLightbox(el.dataset.vid);
+                return;
+            }
+
+            // SE FOR O 1º CLIQUE (ou se clicou em outro enquanto andava): 
+            // Aborta qualquer movimento anterior e foca no novo alvo
             state.isPaused = true;
             state.isSlidingToItem = true;
-            state.lightboxOpened = false;
             
             const isLooping = state.itemsCount >= 6;
             const items = Array.from(state.track.children);
             
-            // Retira as classes CSS ativas para permitir a fluidez do encolhimento no motor JS
+            // Retira a classe active do anterior para não brigar com a manipulação do JavaScript
             items.forEach(item => {
-                if (item.classList.contains('active')) {
-                    // Mantem a largura atual exata pra nao dar glitch visual ao remover a classe
+                if (item.classList.contains('active') && item !== el) {
                     item.style.width = window.getComputedStyle(item).width;
                     item.style.opacity = window.getComputedStyle(item).opacity;
                     item.classList.remove('active');
                 }
-                item.style.transition = 'none'; // Trava css
+                item.style.transition = 'none'; // Trava o CSS pra não dar tremida
             });
 
-            // Setando o alvo visual clicado
+            // Setando o alvo.
             state.targetEl = el;
-            state.targetX = -el.offsetLeft;
             
+            // MAGIA AQUI: O destino agora usa a posição exata da grade fixa (-Índice * 155px). 
+            // Acaba completamente com a falha de ir "pra fora da tela" se o usuário clica rápido demais
             const domIndex = items.indexOf(el);
+            state.targetX = -(domIndex * ITEM_STEP);
             
-            // Espelha no clone para manter proporção do trilho se tiver Loop
+            // Espelha no clone para manter proporção se tiver Loop
             if (isLooping) {
                 const realIndex = domIndex % state.itemsCount;
                 if (domIndex >= state.itemsCount) {
@@ -822,7 +826,7 @@
                 state.syncTargetEl = null;
             }
 
-            // Recalcula a distância total para zerar a contagem de progresso de aumento
+            // Recalcula a distância pra zerar o cronômetro do crescimento
             state.initialPos = state.pos;
             state.totalSlideDist = Math.abs(state.initialPos - state.targetX);
         }
@@ -898,15 +902,15 @@
             document.getElementById('video-lightbox').classList.remove('active');
             document.body.style.overflow = '';
 
-            // Limpa o inline devolvendo a vida natural pros elementos encolherem pelo CSS
+            // Quando o jogador fecha, devolve a vida natural pro CSS encolher a thumb suavemente
             document.querySelectorAll('.carousel-item').forEach(item => {
-                item.style.transition = ''; // Libera o freio do CSS
+                item.style.transition = ''; // Libera o CSS
                 item.style.width = '';
                 item.style.opacity = '';
                 item.classList.remove('active');
             });
             
-            // Carrossel volta a girar lento livremente
+            // O carrossel volta a girar lento livremente
             Object.keys(carouselState).forEach(id => {
                 const state = carouselState[id];
                 if (state) {
@@ -914,7 +918,6 @@
                     state.isSlidingToItem = false;
                     state.targetEl = null;
                     state.syncTargetEl = null;
-                    state.lightboxOpened = false;
                 }
             });
         }
