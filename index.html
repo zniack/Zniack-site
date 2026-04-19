@@ -72,14 +72,13 @@
             object-fit: cover; object-position: center; z-index: 0; opacity: 0; transition: opacity 1s ease;
         }
 
-        /* ── HEADER TRANSPARENTE E DINÂMICO ── */
         .header-sticky {
             position: fixed;
             top: 0; left: 0;
             width: 100%;
             padding: 30px 10%;
             z-index: 100;
-            background: transparent; /* Absolutamente limpo */
+            background: transparent;
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
             border: none; 
@@ -122,15 +121,15 @@
 
         .category-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 30px; }
 
-        /* ── CATEGORIAS DO PORTFOLIO (+2 PTS MAIORES) ── */
+        /* ── AJUSTE DE FONTE 9px PC / 7px MOBILE ── */
         .category-nav-btn {
             font-family: 'Oswald', sans-serif;
-            font-size: 12px; /* Aumentado (Era 10px) */
+            font-size: 9px;
             letter-spacing: 3px;
             text-transform: uppercase;
             color: rgba(255,255,255,0.3);
             border: 1px solid rgba(255,255,255,0.08);
-            padding: 8px 16px;
+            padding: 6px 14px;
             cursor: pointer;
             transition: color 0.2s ease, border-color 0.2s ease;
             background: none;
@@ -160,7 +159,7 @@
         .carousel-item:hover .carousel-play, .carousel-item.active .carousel-play { opacity: 1; }
         .carousel-play svg { width: 32px; height: 32px; fill: rgba(255,255,255,0.9); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7)); }
 
-        /* ── SETA ESQUERDA ALOCADA FISICAMENTE AO LADO DO CARROSSEL ── */
+        /* ── SETA ESQUERDA AGORA VISÍVEL TAMBÉM NO MOBILE ── */
         .carousel-nav-btn {
             background: rgba(0, 0, 0, 0.4);
             border-radius: 50%;
@@ -168,11 +167,13 @@
             transition: all 0.2s ease;
             padding: 8px;
             cursor: pointer;
-            display: none; /* Apenas no desktop */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 30;
+            opacity: 0.6;
         }
-        @media (min-width: 769px) { .carousel-nav-btn { display: flex; align-items: center; justify-content: center; } }
-        .carousel-nav-btn:hover { background: rgba(0, 0, 0, 0.8); }
+        .carousel-nav-btn:hover { background: rgba(0, 0, 0, 0.8); opacity: 1; }
         .carousel-nav-btn svg { color: white; display: block; width: 24px; height: 24px; }
 
         #video-lightbox { position: fixed; inset: 0; z-index: 99999; background: rgba(8,8,8,0.96); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease; }
@@ -197,7 +198,6 @@
 
         @media (max-width: 768px) {
             #capa { min-height: 80vh; height: 80vh; position: relative; }
-            /* Mobile: Controlado via JS para nascer no bottom e virar fixed no top */
             .header-sticky {
                 padding: 20px 5%; 
                 justify-content: center; 
@@ -219,7 +219,7 @@
             .carousel-item.active { width: 240px; height: 135px; }
             
             .category-nav { gap: 6px; }
-            .category-nav-btn { font-size: 11px; padding: 6px 12px; } /* Aumentado no Mobile */
+            .category-nav-btn { font-size: 7px; padding: 5px 10px; } /* Ajuste 7px no Mobile */
         }
     </style>
 </head>
@@ -235,7 +235,6 @@
     </header>
 
     <main class="snap-container" id="main-scroll">
-
         <section id="capa">
             <img src="capa.jpg" alt="Zniack - Portfólio de Edição de Vídeo e Alta Demanda" class="capa-img-full">
         </section>
@@ -368,30 +367,28 @@
         let lastScrollPosition = 0;
 
         /* ══════════════════════════════════════════════════════
-           HEADER DINÂMICO E 100% INVISÍVEL NO TOPO
+           AJUSTE 1: BLUR SÓ COMEÇA EM 80% E VAI ATÉ METADE DA INTENSIDADE (9px)
         ══════════════════════════════════════════════════════ */
         function updateHeaderBlur() {
             const isModalActive = view.classList.contains('active');
             
-            // 1. Estilização do Fundo / Blur
             if (isModalActive) {
-                stickyHeader.style.backdropFilter = 'blur(18px) saturate(0.8)';
-                stickyHeader.style.webkitBackdropFilter = 'blur(18px) saturate(0.8)';
+                stickyHeader.style.backdropFilter = 'blur(9px) saturate(0.8)';
+                stickyHeader.style.webkitBackdropFilter = 'blur(9px) saturate(0.8)';
             } else {
                 const capaH = capa.offsetHeight;
                 const scrollY = window.scrollY;
                 let blur = 0;
                 
-                // O Blur só começa da metade do banner pra baixo
-                const startBlurAt = capaH / 2;
+                // Começa em 80%
+                const startBlurAt = capaH * 0.8;
                 
                 if (scrollY > startBlurAt) {
                     const progress = Math.min((scrollY - startBlurAt) / (capaH - startBlurAt), 1);
-                    blur = progress * 18;
+                    blur = progress * 9; // Máximo 9px (metade de 18)
                 }
 
                 if (blur === 0) {
-                    // Garantia absoluta de zero renderização se estiver no topo
                     stickyHeader.style.backdropFilter = 'none';
                     stickyHeader.style.webkitBackdropFilter = 'none';
                 } else {
@@ -400,26 +397,22 @@
                 }
             }
 
-            // 2. Lógica de Posição Mobile (Ancorado embaixo -> Fixado no topo)
             if (window.innerWidth <= 768) {
                 const capaBottom = capa.offsetTop + capa.offsetHeight;
                 const triggerPoint = capaBottom - stickyHeader.offsetHeight;
 
                 if (window.scrollY >= triggerPoint || isModalActive) {
-                    // Se passou do banner, engata no topo
                     stickyHeader.classList.add('mobile-fixed');
                     stickyHeader.style.position = '';
                     stickyHeader.style.top = '';
                     stickyHeader.style.transform = '';
                 } else {
-                    // Fica grudado visualmente na parte de baixo do banner
                     stickyHeader.classList.remove('mobile-fixed');
                     stickyHeader.style.position = 'absolute';
                     stickyHeader.style.top = `${capaBottom}px`;
                     stickyHeader.style.transform = 'translateY(-100%)';
                 }
             } else {
-                // PC Reset
                 stickyHeader.classList.remove('mobile-fixed');
                 stickyHeader.style.position = '';
                 stickyHeader.style.top = '';
@@ -429,7 +422,7 @@
 
         window.addEventListener('scroll', updateHeaderBlur, { passive: true });
         window.addEventListener('resize', updateHeaderBlur, { passive: true });
-        updateHeaderBlur(); // Roda no Load
+        updateHeaderBlur(); 
 
         const carouselData = {
             'analises-vol':   ['wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk','3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro','nUKCw5Ejyao','0FwPnvvsKkE'],
@@ -543,24 +536,68 @@
             </div>`;
         }
 
-        /* ══ SETA: NAVEGA PARA O VÍDEO ANTERIOR ══ */
+        /* ══════════════════════════════════════════════════════
+           AJUSTE LÓGICO: FORÇAR DESLIZE REAL PARA A ESQUERDA 
+        ══════════════════════════════════════════════════════ */
         window.prevCarouselItem = function(id, event) {
             event.stopPropagation();
             const s = carouselState[id];
             if (!s) return;
 
+            const isLoop = s.itemsCount >= 6;
             const items = Array.from(s.track.children);
-            let activeIdx = items.findIndex(item => item.classList.contains('active'));
+            
+            // Permite clicar mesmo em transição
+            let currentItem = s.targetEl || items.find(item => item.classList.contains('active'));
 
-            if (activeIdx !== -1) {
-                // Há um vídeo aberto, vai pro anterior
-                let prevIdx = activeIdx - 1;
-                if (prevIdx < 0) {
-                    prevIdx = s.itemsCount >= 6 ? items.length - 1 : 0;
+            if (currentItem) {
+                let domIdx = items.indexOf(currentItem);
+                let realIdx = domIdx % s.itemsCount;
+                
+                // Pega o índice anterior
+                let prevRealIdx = realIdx - 1;
+                if (prevRealIdx < 0) prevRealIdx = s.itemsCount - 1;
+
+                const origEl = items[prevRealIdx];
+                const cloneEl = isLoop ? items[prevRealIdx + s.itemsCount] : null;
+
+                s.isPaused = true;
+                s.isSlidingToItem = true;
+                s.isClosing = false;
+
+                items.forEach(item => {
+                    if (item.classList.contains('active') && item !== origEl && item !== cloneEl) {
+                        item.style.width = window.getComputedStyle(item).width;
+                        item.style.height = window.getComputedStyle(item).height;
+                        item.style.opacity = window.getComputedStyle(item).opacity;
+                        item.classList.remove('active');
+                    }
+                    item.style.transition = 'none';
+                });
+
+                s.targetEl = origEl;
+                s.syncTargetEl = cloneEl;
+
+                const metrics = getCarouselMetrics();
+                let offset = prevRealIdx * metrics.step;
+                if (prevRealIdx >= s.itemsCount) offset += metrics.diff;
+                let baseX = -offset;
+
+                if (metrics.isMobile) {
+                    baseX += (s.track.parentElement.offsetWidth - metrics.activeW) / 2;
                 }
-                handleCarouselClick(items[prevIdx], id);
+
+                if (isLoop) {
+                    const LW = s.itemsCount * metrics.step + metrics.diff;
+                    s.targetX = baseX;
+                    // Força o alvo matemático para a DIREITA (o que move a pista para a ESQUERDA na tela)
+                    while (s.targetX < s.pos + 10) s.targetX += LW;
+                    while (s.targetX > s.pos + LW + 10) s.targetX -= LW; // Limita o giro
+                } else {
+                    s.targetX = baseX;
+                }
             } else {
-                // Nenhum aberto, apenas desliza
+                // Se nenhum item selecionado, desliza livremente para a esquerda
                 s.currentSpeed = -25;
             }
         };
@@ -830,7 +867,7 @@
                 descElement.innerText=descricoesPortfolio[name]||'';
                 updateCategoryNav(name);
                 document.body.style.overflow='hidden';
-                updateHeaderBlur(); // Força o header transparente a ter efeito de vidro na nova tela
+                updateHeaderBlur();
 
                 if(name==='Vídeos Diários'){
                     contentArea.innerHTML=
