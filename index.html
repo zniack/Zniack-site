@@ -92,7 +92,6 @@
             backdrop-filter: blur(var(--blur-val, 0px)) saturate(var(--sat-val, 1));
             -webkit-backdrop-filter: blur(var(--blur-val, 0px)) saturate(var(--sat-val, 1));
             
-            /* IMPLEMENTAÇÃO: Cor de fundo dinâmica (Fade) controlada via JS */
             background-color: var(--bg-fade-col, transparent);
 
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
@@ -158,18 +157,20 @@
         .carousel-wrapper { position: relative; width: 100%; overflow: hidden; padding: 10px 0; min-height: 200px; display: flex; align-items: center; contain: layout; }
         .carousel-track { display: flex; gap: 15px; align-items: center; width: max-content; will-change: transform; height: 180px; transform: translate3d(0,0,0); }
 
+        /* AJUSTE: Carrossel sem manipulação de opacidade. Sempre 100% visível. */
         .carousel-item {
             flex: 0 0 auto; width: 140px; height: 79px; position: relative;
             border: 1px solid rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden;
-            cursor: pointer; opacity: 0.7; transition: border-color 0.4s ease; transform: translateZ(0);
+            cursor: pointer; transition: border-color 0.4s ease; transform: translateZ(0);
         }
-        .carousel-item:hover { opacity: 1; border-color: rgba(255,255,255,0.15); }
-        .carousel-item.active { width: 320px; height: 180px; opacity: 1; border-color: rgba(255,255,255,0.3); }
+        .carousel-item:hover { border-color: rgba(255,255,255,0.15); }
+        .carousel-item.active { width: 320px; height: 180px; border-color: rgba(255,255,255,0.3); }
         .carousel-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
 
-        .carousel-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; background: rgba(0,0,0,0.15); }
-        .carousel-item:hover .carousel-play, .carousel-item.active .carousel-play { opacity: 1; }
-        .carousel-play svg { width: 32px; height: 32px; fill: rgba(255,255,255,0.9); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7)); }
+        /* AJUSTE: Fade de Play suave (0% -> 50%) */
+        .carousel-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease; background: rgba(0,0,0,0.4); }
+        .carousel-item:hover .carousel-play { opacity: 0.5; }
+        .carousel-play svg { width: 32px; height: 32px; fill: rgba(255,255,255,1); filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7)); }
 
         .carousel-nav-btn {
             background: rgba(0, 0, 0, 0.4);
@@ -389,26 +390,23 @@
             if (isModalActive) {
                 stickyHeader.style.setProperty('--blur-val', '4.5px');
                 stickyHeader.style.setProperty('--sat-val', '0.8');
-                // IMPLEMENTAÇÃO: Fade 50% no modal aberto (cor escura base do site)
                 stickyHeader.style.setProperty('--bg-fade-col', 'rgba(37, 37, 37, 0.5)'); 
             } else {
                 const capaH = capa.offsetHeight;
                 const scrollY = window.scrollY;
                 let blur = 0;
-                let opacity = 0; // Nova variável para opacidade do fade
+                let opacity = 0; 
                 
                 const startBlurAt = capaH * 0.8; 
                 
                 if (scrollY > startBlurAt) {
                     const progress = Math.min((scrollY - startBlurAt) / (capaH - startBlurAt), 1);
                     blur = progress * 4.5; 
-                    // IMPLEMENTAÇÃO: Opacidade progride até 0.5 (50%)
                     opacity = progress * 0.5; 
                 }
 
                 stickyHeader.style.setProperty('--blur-val', blur + 'px');
                 stickyHeader.style.setProperty('--sat-val', blur > 0 ? '0.8' : '1');
-                // IMPLEMENTAÇÃO: Aplica a cor de fundo com opacidade dinâmica
                 stickyHeader.style.setProperty('--bg-fade-col', `rgba(37, 37, 37, ${opacity})`);
             }
 
@@ -489,6 +487,7 @@
             };
         }
 
+        /* AJUSTE: Play button central modificado para o estilo minimalista (0 a 50% opacity). Thumb com 100% de opacidade fixa. */
         function buildInlineVideo(id, description='') {
             const descHTML = description
                 ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>`
@@ -498,8 +497,8 @@
             <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper" data-desc="${safeDesc}">
                 <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                     <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" onclick="handleInlineClick('${id}',this)">
-                        <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition duration-500 absolute inset-0 pointer-events-none">
-                        <div class="w-16 h-16 flex items-center justify-center rounded-full bg-white/5 border border-white/10 opacity-10 group-hover:opacity-30 group-hover:scale-105 transition duration-500 relative z-20 pointer-events-none">
+                        <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
+                        <div class="w-16 h-16 flex items-center justify-center rounded-full bg-black/40 border border-white/20 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
                             <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </div>
                     </div>
@@ -537,7 +536,7 @@
             const loopHTML = ids.length >= 6 ? itemsHTML + itemsHTML : itemsHTML;
             return `
             <div class="vitrine-section w-full">
-                <p class="vitrine-label">mais trabalhos</p>
+                <p class="vitrine-label">mais vídeos</p>
                 <div class="flex items-center w-full gap-2 md:gap-4 relative group">
                     <button class="carousel-nav-btn shrink-0" onclick="prevCarouselItem('${carouselId}', event)">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
@@ -579,7 +578,7 @@
                     if (item.classList.contains('active') && item !== origEl && item !== cloneEl) {
                         item.style.width = window.getComputedStyle(item).width;
                         item.style.height = window.getComputedStyle(item).height;
-                        item.style.opacity = window.getComputedStyle(item).opacity;
+                        // CSS opacity removido
                         item.classList.remove('active');
                     }
                     item.style.transition = 'none';
@@ -625,6 +624,7 @@
             });
         }
 
+        /* AJUSTE: Toda lógica manipulando item.style.opacity foi devidamente expurgada de todas as iterações do carrossel */
         function startTicker(id) {
             const s = carouselState[id];
             if (!s) return;
@@ -649,18 +649,18 @@
                         const isTgt = item===s.targetEl || item===s.syncTargetEl;
                         let cW = parseFloat(item.style.width)   || (item.classList.contains('active') ? metrics.activeW : metrics.baseW);
                         let cH = parseFloat(item.style.height)  || (item.classList.contains('active') ? metrics.activeH : metrics.baseH);
-                        let cO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
+                        
                         const tW = isTgt ? metrics.activeW : metrics.baseW;
                         const tH = isTgt ? metrics.activeH : metrics.baseH;
-                        const tO = isTgt ? 1 : 0.7;
-                        cW += (tW-cW)*0.15; cH += (tH-cH)*0.15; cO += (tO-cO)*0.15;
-                        item.style.width=cW+'px'; item.style.height=cH+'px'; item.style.opacity=cO;
+                        
+                        cW += (tW-cW)*0.15; cH += (tH-cH)*0.15;
+                        item.style.width=cW+'px'; item.style.height=cH+'px';
                         if (isTgt && item===s.targetEl && Math.abs(tW-cW)<0.5) sizeOk=true;
                     });
                     if (Math.abs(s.targetX-s.pos)<0.5 && sizeOk) {
                         s.pos=s.targetX; s.currentSpeed=0; s.isSlidingToItem=false;
                         items.forEach(item => {
-                            item.style.width=''; item.style.height=''; item.style.opacity='';
+                            item.style.width=''; item.style.height='';
                             if (item===s.targetEl||item===s.syncTargetEl) item.classList.add('active');
                             else item.classList.remove('active');
                         });
@@ -672,9 +672,8 @@
                         if (item===s.targetEl||item===s.syncTargetEl) {
                             let cW=parseFloat(item.style.width)||metrics.activeW;
                             let cH=parseFloat(item.style.height)||metrics.activeH;
-                            let cO=parseFloat(item.style.opacity)||1;
-                            cW+=(metrics.baseW-cW)*0.08; cH+=(metrics.baseH-cH)*0.08; cO+=(0.7-cO)*0.08;
-                            item.style.width=cW+'px'; item.style.height=cH+'px'; item.style.opacity=cO;
+                            cW+=(metrics.baseW-cW)*0.08; cH+=(metrics.baseH-cH)*0.08;
+                            item.style.width=cW+'px'; item.style.height=cH+'px';
                             if (Math.abs(metrics.baseW-cW)>0.5) done=false;
                         }
                     });
@@ -687,7 +686,7 @@
                     }
                     if (done) {
                         s.isClosing=false; s.isPaused=false; s.targetEl=null; s.syncTargetEl=null;
-                        items.forEach(item => { item.style.transition=''; item.style.width=''; item.style.height=''; item.style.opacity=''; item.classList.remove('active'); });
+                        items.forEach(item => { item.style.transition=''; item.style.width=''; item.style.height=''; item.classList.remove('active'); });
                     }
 
                 } else if (!s.isPaused && isLoop && !s.isClosing) {
@@ -726,7 +725,6 @@
                 if (item.classList.contains('active') && item!==origEl && item!==cloneEl) {
                     item.style.width=window.getComputedStyle(item).width;
                     item.style.height=window.getComputedStyle(item).height;
-                    item.style.opacity=window.getComputedStyle(item).opacity;
                     item.classList.remove('active');
                 }
                 item.style.transition='none';
@@ -757,7 +755,6 @@
                         if (item.classList.contains('active')) {
                             item.style.width=window.getComputedStyle(item).width;
                             item.style.height=window.getComputedStyle(item).height;
-                            item.style.opacity=window.getComputedStyle(item).opacity;
                             item.classList.remove('active');
                         }
                     });
@@ -840,7 +837,7 @@
                 if(s&&s.targetEl){ s.isClosing=true; s.currentSpeed=0;
                     Array.from(s.track.children).forEach(item=>{
                         item.style.transition='none';
-                        if(item.classList.contains('active')){item.style.width=window.getComputedStyle(item).width;item.style.height=window.getComputedStyle(item).height;item.style.opacity=window.getComputedStyle(item).opacity;item.classList.remove('active');}
+                        if(item.classList.contains('active')){item.style.width=window.getComputedStyle(item).width;item.style.height=window.getComputedStyle(item).height;item.classList.remove('active');}
                     });
                 }
             });
@@ -855,7 +852,7 @@
             if(isOpen){
                 Object.keys(carouselState).forEach(cId=>{
                     const s=carouselState[cId];
-                    if(s&&s.targetEl&&!s.isClosing){s.isClosing=true;s.currentSpeed=0;Array.from(s.track.children).forEach(item=>{item.style.transition='none';if(item.classList.contains('active')){item.style.width=window.getComputedStyle(item).width;item.style.height=window.getComputedStyle(item).height;item.style.opacity=window.getComputedStyle(item).opacity;item.classList.remove('active');}});}
+                    if(s&&s.targetEl&&!s.isClosing){s.isClosing=true;s.currentSpeed=0;Array.from(s.track.children).forEach(item=>{item.style.transition='none';if(item.classList.contains('active')){item.style.width=window.getComputedStyle(item).width;item.style.height=window.getComputedStyle(item).height;item.classList.remove('active');}});}
                 });
                 body.classList.remove('open'); headerEl.classList.remove('open');
             } else { body.classList.add('open'); headerEl.classList.add('open'); }
