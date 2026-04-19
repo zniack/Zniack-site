@@ -301,6 +301,8 @@
             width: 100%;
             overflow: hidden;
             padding: 10px 0;
+            /* FIX DE PERFORMANCE E PULO DE TELA DO CARROSSEL: */
+            overflow-anchor: none;
         }
 
         .carousel-track {
@@ -309,6 +311,8 @@
             align-items: center; 
             width: max-content;
             will-change: transform;
+            /* FIX DE SCROLL DO NAVEGADOR: */
+            overflow-anchor: none;
         }
 
         .carousel-item {
@@ -603,7 +607,21 @@
         };
 
         const carouselState = {};
-        const ITEM_STEP = 155; 
+
+        // Helper: Lê medidas reais com base na tela (Responsivo)
+        function getCarouselMetrics() {
+            const isMobile = window.innerWidth <= 768;
+            const baseW = isMobile ? 110 : 140;
+            const activeW = isMobile ? 240 : 320;
+            const gap = 15;
+            return {
+                isMobile,
+                baseW,
+                activeW,
+                step: baseW + gap,
+                diff: activeW - baseW
+            };
+        }
 
         function buildCarousel(carouselId) {
             const ids = carouselData[carouselId];
@@ -669,9 +687,11 @@
                 const allItems = Array.from(state.track.children);
                 let currentHalfWidth = 0;
                 
-                if (isLooping) {
+                if (isLooping && allItems[state.itemsCount]) {
                     currentHalfWidth = allItems[state.itemsCount].offsetLeft;
                 }
+
+                const metrics = getCarouselMetrics();
 
                 // ── CENA 1: DESLIZE PARA O ALVO (Cliques Livres) ──
                 if (state.isSlidingToItem && state.targetEl && !state.isClosing) {
@@ -704,10 +724,10 @@
                     allItems.forEach(item => {
                         let isTarget = (item === state.targetEl || item === state.syncTargetEl);
                         
-                        let currentW = parseFloat(item.style.width) || (item.classList.contains('active') ? 320 : 140);
+                        let currentW = parseFloat(item.style.width) || (item.classList.contains('active') ? metrics.activeW : metrics.baseW);
                         let currentO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
 
-                        let targetW = isTarget ? 320 : 140;
+                        let targetW = isTarget ? metrics.activeW : metrics.baseW;
                         let targetO = isTarget ? 1 : 0.7;
 
                         currentW += (targetW - currentW) * 0.1;
@@ -743,16 +763,16 @@
 
                     allItems.forEach(item => {
                         if (item === state.targetEl || item === state.syncTargetEl) {
-                            let currentW = parseFloat(item.style.width) || 320;
+                            let currentW = parseFloat(item.style.width) || metrics.activeW;
                             let currentO = parseFloat(item.style.opacity) || 1;
 
-                            currentW += (140 - currentW) * 0.015;
+                            currentW += (metrics.baseW - currentW) * 0.015;
                             currentO += (0.7 - currentO) * 0.015;
 
                             item.style.width = currentW + 'px';
                             item.style.opacity = currentO;
 
-                            if (Math.abs(140 - currentW) > 0.5) targetReached = false;
+                            if (Math.abs(metrics.baseW - currentW) > 0.5) targetReached = false;
                         }
                     });
 
@@ -841,14 +861,22 @@
             state.targetEl = originalEl;
             state.syncTargetEl = cloneEl;
             
-            let finalOffset = domIndex * ITEM_STEP;
+            const metrics = getCarouselMetrics();
+            
+            let finalOffset = domIndex * metrics.step;
             if (domIndex >= state.itemsCount) {
-                finalOffset += 180; 
+                finalOffset += metrics.diff; 
             }
             let baseTargetX = -finalOffset;
 
+            // UX Mobile: Centraliza perfeitamente o vídeo no meio da tela no celular
+            if (metrics.isMobile) {
+                const wrapperW = state.track.parentElement.offsetWidth;
+                baseTargetX += (wrapperW - metrics.activeW) / 2;
+            }
+
             if (isLooping) {
-                const LOOP_W = state.itemsCount * ITEM_STEP + 180;
+                const LOOP_W = state.itemsCount * metrics.step + metrics.diff;
                 state.targetX = baseTargetX;
                 
                 while (state.targetX > state.pos + 100) {
@@ -914,7 +942,10 @@
             const wrap = document.getElementById('lightbox-player-wrap');
             wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
             lb.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            
+            // UX SCROLL JUMP FIX: Trava o modal, não o body global
+            document.getElementById('portfolio-view').style.overflowY = 'hidden';
+
             setTimeout(() => {
                 lightboxPlayer = new Plyr('#lb-plyr', {
                     controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
@@ -922,8 +953,9 @@
                     autoplay: true
                 });
                 
+                // Volume Padrão UX: 75%
                 lightboxPlayer.on('ready', () => {
-                    lightboxPlayer.volume = 0.9;
+                    lightboxPlayer.volume = 0.75;
                 });
             }, 50);
         }
@@ -935,7 +967,9 @@
             }
             document.getElementById('lightbox-player-wrap').innerHTML = '';
             document.getElementById('video-lightbox').classList.remove('active');
-            document.body.style.overflow = '';
+            
+            // Destrava o modal
+            document.getElementById('portfolio-view').style.overflowY = 'auto';
 
             Object.keys(carouselState).forEach(id => {
                 const state = carouselState[id];
@@ -966,8 +1000,6 @@
             const container = document.getElementById(id);
             const indicator = element.querySelector('.indicator');
 
-            // UX: Quando o usuário interage com uma nova sanfona, avisa 
-            // os carrosseis ativos para derreterem e voltarem a se mover suavemente.
             Object.keys(carouselState).forEach(cId => {
                 const state = carouselState[cId];
                 if (state && state.targetEl && !state.isClosing) {
@@ -989,7 +1021,6 @@
                 container.classList.remove('hidden');
                 container.classList.add('flex');
                 indicator.innerText = 'FECHAR';
-                // Removido initCarousels() para não cortar as animações.
             } else {
                 container.classList.add('hidden');
                 container.classList.remove('flex');
@@ -1170,8 +1201,9 @@
                             youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
                         });
                         
+                        // Volume Padrão UX: Galerias ficam restritas a 75%
                         playerInst.on('ready', () => {
-                            playerInst.volume = 0.9;
+                            playerInst.volume = 0.75;
                         });
                         
                         return playerInst;
