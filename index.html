@@ -126,8 +126,8 @@
             object-fit: cover;
             object-position: center;
             z-index: 0;
-             opacity: 0;
-    transition: opacity 1s ease;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
         .banner-nav {
@@ -186,10 +186,10 @@
         }
 
         .comentario-trabalho {
-            font-family: 'Roboto', sans-serif; /* FONTE ATUALIZADA */
+            font-family: 'Roboto', sans-serif; 
             font-weight: 100;
             color: var(--text-sub);
-            font-size: 15px; /* TAMANHO AUMENTADO */
+            font-size: 16px; /* TAMANHO AUMENTADO PARA 16px PARA MAIOR CONFORTO */
             text-align: left;
             max-width: 600px;
             line-height: 1.8;
@@ -489,7 +489,7 @@
         
         <h3 id="category-title" class="font-['Oswald'] tracking-[5px] text-white text-lg uppercase mb-4 mt-8">TITULO</h3>
         
-        <p id="category-desc" class="font-['Roboto'] font-thin text-[15px] text-[#e3e3e3] mb-8 w-full max-w-[600px] text-left"></p>
+        <p id="category-desc" class="font-['Roboto'] font-thin text-[16px] text-[#e3e3e3] mb-8 w-full max-w-[600px] text-left"></p>
         
         <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px] pb-32">
         </div>
@@ -619,6 +619,14 @@
                                 </div>
                                 <div class="flex flex-col md:flex-row gap-6 w-full items-start">
                                     <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
+                                        <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="wELUjsyy5-8"></div>
+                                    </div>
+                                    <div class="w-full md:w-1/3 flex flex-col gap-3">
+                                        <p class="comentario-trabalho">Escreva aqui a descrição e o desafio da edição deste vídeo.</p>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col md:flex-row gap-6 w-full items-start">
+                                    <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                                         <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="82Ah3XW5Jg4"></div>
                                     </div>
                                     <div class="w-full md:w-1/3 flex flex-col gap-3">
@@ -628,7 +636,7 @@
                             </div>
                         </div>
                         
-                        <div class="flex flex-col w-full border-b border-white/5 pb-4">
+                        <div class="flex flex-col w-full border-b border-white/5 pb-4 mt-8">
                             <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-comentados', this)">
                                 <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Comentados</h4>
                                 <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
@@ -649,11 +657,11 @@
                                     <div class="w-full md:w-1/3 flex flex-col gap-3">
                                         <p class="comentario-trabalho"></p>
                                     </div>
-
+                                </div>
                             </div>
                         </div>
 
-                        <div class="flex flex-col w-full border-b border-white/5 pb-4">
+                        <div class="flex flex-col w-full border-b border-white/5 pb-4 mt-8">
                             <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-noticias', this)">
                                 <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Notícias</h4>
                                 <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
@@ -670,14 +678,6 @@
                                 <div class="flex flex-col md:flex-row gap-6 w-full items-start">
                                     <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                                         <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="AkrpKrpF3dc"></div>
-                                    </div>
-                                    <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                        <p class="comentario-trabalho"></p>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col md:flex-row gap-6 w-full items-start">
-                                    <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
-                                        <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="X7dJqS8XHNw"></div>
                                     </div>
                                     <div class="w-full md:w-1/3 flex flex-col gap-3">
                                         <p class="comentario-trabalho"></p>
@@ -807,13 +807,13 @@
                 mainScroll.style.overflowY = 'auto';
             });
         }
-const capaImg = document.querySelector('.capa-img-full');
-capaImg.addEventListener('load', () => {
-    capaImg.style.opacity = '1';
-});
-if (capaImg.complete) {
-    capaImg.style.opacity = '1';
-}
+        const capaImg = document.querySelector('.capa-img-full');
+        capaImg.addEventListener('load', () => {
+            capaImg.style.opacity = '1';
+        });
+        if (capaImg.complete) {
+            capaImg.style.opacity = '1';
+        }
         const contactForm = document.getElementById('contact-form');
         const formStatus = document.getElementById('form-status');
 
