@@ -296,36 +296,35 @@
             position: relative;
             width: 100%;
             overflow: hidden;
-            padding: 10px 0;
+            cursor: grab;
+            user-select: none;
         }
+        .carousel-wrapper:active { cursor: grabbing; }
 
         .carousel-track {
             display: flex;
-            gap: 15px;
-            align-items: center; /* Impede que as thumbs menores estiquem verticalmente */
-            width: max-content;
+            gap: 10px;
+            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             will-change: transform;
         }
 
-        /* ── EFEITO DE TAMANHO E OPACIDADE SEM CORTE E SEM DESFOQUE ── */
         .carousel-item {
             flex: 0 0 auto;
-            width: 140px;
-            aspect-ratio: 16/9; /* Garante a miniatura 100% visível sempre proporcional */
+            width: 170px;
+            aspect-ratio: 16/9;
             position: relative;
             border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 4px;
             overflow: hidden;
             cursor: pointer;
-            opacity: 0.5; /* Escurece levemente os inativos */
-            transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-                        opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-                        border-color 0.5s ease;
+            transition: width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        filter 0.45s ease,
+                        border-color 0.45s ease;
+            filter: brightness(0.4) saturate(0.2);
         }
 
         .carousel-item.active {
-            width: 320px;
-            opacity: 1; /* Ilumina o vídeo em destaque */
+            width: 255px;
+            filter: brightness(1) saturate(1);
             border-color: rgba(255,255,255,0.2);
         }
 
@@ -353,6 +352,27 @@
             height: 32px;
             fill: rgba(255,255,255,0.9);
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
+        }
+
+        .carousel-nav {
+            display: flex;
+            gap: 6px;
+            margin-top: 14px;
+        }
+        .carousel-nav button {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.4);
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding: 5px 13px;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .carousel-nav button:hover {
+            border-color: rgba(255,255,255,0.45);
+            color: white;
         }
 
         /* ── LIGHTBOX ── */
@@ -410,8 +430,8 @@
             section { padding: 15vh 5%; }
             .portfolio-modal { padding: 5vh 5%; }
             .nome-foto { margin-top: 15px; }
-            .carousel-item { width: 110px; }
-            .carousel-item.active { width: 240px; }
+            .carousel-item { width: 130px; }
+            .carousel-item.active { width: 190px; }
         }
     </style>
 </head>
@@ -527,6 +547,7 @@
 
     </main>
 
+    <!-- MODAL DE CATEGORIA -->
     <div id="portfolio-view" class="portfolio-modal">
         <button onclick="closeCategory()" class="btn-voltar-sticky font-['Oswald'] text-[12px] tracking-[3px] text-white/80 hover:text-white hover:bg-white/10 transition uppercase flex items-center gap-2">
             <span>&larr;</span> Voltar para Portfólio
@@ -536,6 +557,7 @@
         <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px] pb-32"></div>
     </div>
 
+    <!-- LIGHTBOX -->
     <div id="video-lightbox">
         <div class="lightbox-inner">
             <button class="lightbox-close" onclick="closeLightbox()">&#x2715; Fechar</button>
@@ -579,7 +601,7 @@
                 '2E97i-ChJVI','BsCDkg0lMek'
             ],
             'aberturas-vol': [
-                '7f7FDHkQjuQ' // Tem apenas 1 vídeo, então não terá auto-slide e loop
+                '7f7FDHkQjuQ'
             ]
         };
 
@@ -591,141 +613,7 @@
             'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
 
-        // ── LÓGICA DO CARROSSEL: DESLIZAMENTO FLUIDO SEM PULOS ──
-        const carouselState = {};
-        const ITEM_INACTIVE_WIDTH = 140; 
-        const ITEM_GAP = 15;
-
-        function buildCarousel(carouselId) {
-            const ids = carouselData[carouselId];
-            if (!ids || ids.length === 0) return '';
-            
-            const items = ids.map((id, i) => `
-                <div class="carousel-item ${i === 0 ? 'active' : ''}" data-vid="${id}" onclick="handleCarouselClick(this,'${carouselId}')">
-                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
-                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-                </div>`).join('');
-                
-            return `
-                <div class="vitrine-section">
-                    <p class="vitrine-label">mais trabalhos</p>
-                    <div class="carousel-wrapper" id="wrap-${carouselId}"
-                         onmouseenter="handleHoverIn('${carouselId}')"
-                         onmouseleave="handleHoverOut('${carouselId}')">
-                        <div class="carousel-track" id="track-${carouselId}">${items}</div>
-                    </div>
-                </div>`;
-        }
-
-        function initCarousels() {
-            Object.keys(carouselData).forEach(id => {
-                const track = document.getElementById('track-' + id);
-                if (!track) return;
-                const items = Array.from(track.children);
-                if (items.length === 0) return;
-
-                // Garante que o estado inicial está correto (Sempre o da esquerda é o active)
-                items.forEach((item, index) => {
-                    if (index === 0) item.classList.add('active');
-                    else item.classList.remove('active');
-                });
-
-                carouselState[id] = {
-                    track: track,
-                    count: items.length,
-                    isAnimating: false,
-                    intervalId: null
-                };
-
-                // Regra: Só move automaticamente se tiver pelo menos 6 vídeos
-                if (items.length >= 6) {
-                    startAutoSlide(id);
-                }
-            });
-        }
-
-        // Função responsável por deslizar a trilha e reorganizar os vídeos por baixo dos panos
-        function slideToItem(id, domIndex) {
-            const state = carouselState[id];
-            if (!state || state.isAnimating || domIndex === 0) return;
-
-            const track = state.track;
-            const items = Array.from(track.children);
-
-            state.isAnimating = true;
-
-            // 1. Inicia o crescimento do vídeo alvo e o encolhimento do atual
-            items[0].classList.remove('active');
-            items[domIndex].classList.add('active');
-
-            // 2. Calcula exatamente o quanto a trilha precisa se mover para que o vídeo alvo chegue no canto esquerdo
-            const shiftAmount = domIndex * (ITEM_INACTIVE_WIDTH + ITEM_GAP);
-            
-            // 3. Aplica o movimento CSS suavemente
-            track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
-            track.style.transform = `translateX(-${shiftAmount}px)`;
-
-            // 4. Assim que a animação terminar, movemos os vídeos que ficaram pra trás para o final da fila (criando o loop)
-            setTimeout(() => {
-                track.style.transition = 'none'; // Desliga a transição para fazer a mágica escondido
-                for (let i = 0; i < domIndex; i++) {
-                    track.appendChild(items[i]);
-                }
-                track.style.transform = 'translateX(0)'; // Devolve a trilha para a posição 0 instantaneamente
-                state.isAnimating = false;
-            }, 520); // Tempo sincronizado com a animação CSS (500ms + folga)
-        }
-
-        function slideNext(id) {
-            slideToItem(id, 1);
-        }
-
-        function handleCarouselClick(el, id) {
-            const state = carouselState[id];
-            if (!state || state.isAnimating) return;
-
-            const items = Array.from(state.track.children);
-            const domIndex = items.indexOf(el);
-
-            // Se for o vídeo destacado da esquerda (índice 0), abre no lightbox
-            if (domIndex === 0) {
-                openLightbox(el.dataset.vid);
-            } else {
-                // Caso contrário, desliza a trilha até que ele vire o principal
-                slideToItem(id, domIndex);
-                
-                // Reinicia o timer se houver autoplay ativo
-                if (state.count >= 6) {
-                    stopAutoSlide(id);
-                    startAutoSlide(id);
-                }
-            }
-        }
-
-        function startAutoSlide(id) {
-            const state = carouselState[id];
-            if (!state || state.count < 6) return; // Só roda com 6 vídeos ou mais
-            stopAutoSlide(id);
-            state.intervalId = setInterval(() => {
-                slideNext(id);
-            }, 3500); // Rola a cada 3.5s
-        }
-
-        function stopAutoSlide(id) {
-            const state = carouselState[id];
-            if (state && state.intervalId) {
-                clearInterval(state.intervalId);
-                state.intervalId = null;
-            }
-        }
-
-        function handleHoverIn(id) { stopAutoSlide(id); }
-        function handleHoverOut(id) {
-            const state = carouselState[id];
-            if (state && state.count >= 6) startAutoSlide(id);
-        }
-
-        // ── FADE OBSERVER E TRANSIÇÕES DE SEÇÃO ──
+        // ── FADE OBSERVER ──
         const fadeObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -742,6 +630,7 @@
             stickyHeader.classList.toggle('visible', bannerRect.bottom <= 0);
         });
 
+        // ── TRANSIÇÃO ──
         function triggerTransition(callback) {
             const overlay = document.getElementById('transition-overlay');
             overlay.style.display = 'block';
@@ -768,6 +657,124 @@
                 });
             });
         });
+
+        // ── CARROSSEL: BUILD ──
+        function buildCarousel(carouselId) {
+            const ids = carouselData[carouselId];
+            if (!ids || ids.length === 0) return '';
+            const items = ids.map((id, i) => `
+                <div class="carousel-item${i === 0 ? ' active' : ''}" data-vid="${id}" data-index="${i}" onclick="handleCarouselClick(this,'${carouselId}')">
+                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
+                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                </div>`).join('');
+            return `
+                <div class="vitrine-section">
+                    <p class="vitrine-label">mais trabalhos</p>
+                    <div class="carousel-wrapper" id="wrap-${carouselId}"
+                         onmousedown="cDragStart(event,'${carouselId}')"
+                         ontouchstart="cTouchStart(event,'${carouselId}')">
+                        <div class="carousel-track" id="track-${carouselId}">${items}</div>
+                    </div>
+                    <div class="carousel-nav">
+                        <button onclick="cStep('${carouselId}',-1)">&#8592;</button>
+                        <button onclick="cStep('${carouselId}',1)">&#8594;</button>
+                    </div>
+                </div>`;
+        }
+
+        // ── CARROSSEL: ESTADO E LÓGICA ──
+        const cState = {};
+
+        function cItems(id) {
+            const t = document.getElementById('track-' + id);
+            return t ? Array.from(t.querySelectorAll('.carousel-item')) : [];
+        }
+
+        function cInit(id) {
+            cState[id] = { active: 0, dragged: false };
+            cCenter(id, 0);
+        }
+
+        function cCenter(id, idx) {
+            const track = document.getElementById('track-' + id);
+            const wrap  = document.getElementById('wrap-' + id);
+            if (!track || !wrap) return;
+            const items = cItems(id);
+            if (!items.length) return;
+            let offset = 0;
+            for (let i = 0; i < idx; i++) offset += items[i].offsetWidth + 10;
+            const target = offset - (wrap.offsetWidth / 2) + (items[idx].offsetWidth / 2);
+            track.style.transform = `translateX(${-Math.max(0, target)}px)`;
+        }
+
+        function cSetActive(id, idx) {
+            const items = cItems(id);
+            if (!items.length) return;
+            idx = Math.max(0, Math.min(idx, items.length - 1));
+            cState[id].active = idx;
+            items.forEach((el, i) => el.classList.toggle('active', i === idx));
+            cCenter(id, idx);
+        }
+
+        function handleCarouselClick(el, id) {
+            if (cState[id] && cState[id].dragged) return;
+            const idx = parseInt(el.dataset.index);
+            if (idx === cState[id].active) openLightbox(el.dataset.vid);
+            else cSetActive(id, idx);
+        }
+
+        function cStep(id, dir) {
+            if (!cState[id]) return;
+            cSetActive(id, cState[id].active + dir);
+        }
+
+        function cDragStart(e, id) {
+            const state  = cState[id];
+            state.dragged = false;
+            const track  = document.getElementById('track-' + id);
+            const startX = e.clientX;
+            const startTX = new DOMMatrix(getComputedStyle(track).transform).m41;
+            const onMove = ev => {
+                const dx = ev.clientX - startX;
+                if (Math.abs(dx) > 5) state.dragged = true;
+                track.style.transition = 'none';
+                track.style.transform  = `translateX(${startTX + dx}px)`;
+            };
+            const onUp = ev => {
+                track.style.transition = '';
+                const dx = ev.clientX - startX;
+                if (Math.abs(dx) > 40) cStep(id, dx < 0 ? 1 : -1);
+                else cCenter(id, state.active);
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+            };
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        }
+
+        function cTouchStart(e, id) {
+            const state  = cState[id];
+            state.dragged = false;
+            const track  = document.getElementById('track-' + id);
+            const startX = e.touches[0].clientX;
+            const startTX = new DOMMatrix(getComputedStyle(track).transform).m41;
+            const onMove = ev => {
+                const dx = ev.touches[0].clientX - startX;
+                if (Math.abs(dx) > 5) state.dragged = true;
+                track.style.transition = 'none';
+                track.style.transform  = `translateX(${startTX + dx}px)`;
+            };
+            const onEnd = ev => {
+                track.style.transition = '';
+                const dx = ev.changedTouches[0].clientX - startX;
+                if (Math.abs(dx) > 40) cStep(id, dx < 0 ? 1 : -1);
+                else cCenter(id, state.active);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+            };
+            document.addEventListener('touchmove', onMove, { passive: true });
+            document.addEventListener('touchend', onEnd);
+        }
 
         // ── LIGHTBOX ──
         let lightboxPlayer = null;
@@ -802,7 +809,7 @@
         });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-        // ── ABRIR / FECHAR CATEGORIA E SUBCATEGORIAS ──
+        // ── SUBCATEGORIAS ──
         function toggleSubCategory(id, element) {
             const container = document.getElementById(id);
             const indicator = element.querySelector('.indicator');
@@ -810,7 +817,14 @@
                 container.classList.remove('hidden');
                 container.classList.add('flex');
                 indicator.innerText = 'FECHAR';
-                setTimeout(() => initCarousels(), 50);
+                // inicializa carrossel quando subcategoria abre
+                setTimeout(() => {
+                    const track = container.querySelector('.carousel-track');
+                    if (track) {
+                        const cid = track.id.replace('track-', '');
+                        if (!cState[cid]) cInit(cid);
+                    }
+                }, 50);
             } else {
                 container.classList.add('hidden');
                 container.classList.remove('flex');
@@ -818,6 +832,7 @@
             }
         }
 
+        // ── ABRIR CATEGORIA ──
         function openCategory(name) {
             triggerTransition(() => {
                 titleElement.innerText = name;
@@ -989,11 +1004,15 @@
                         controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
                         youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
                     }));
-                    initCarousels();
+                    // inicializa carrosseis imediatamente visíveis (Highlights, Aberturas)
+                    ['highlights-vol','aberturas-vol'].forEach(id => {
+                        if (document.getElementById('track-' + id)) cInit(id);
+                    });
                 }, 50);
             });
         }
 
+        // ── FECHAR CATEGORIA ──
         function closeCategory() {
             currentPlayers.forEach(player => {
                 if (player.playing) {
@@ -1011,18 +1030,18 @@
                     }, 50);
                 }
             });
-            Object.keys(carouselState).forEach(id => stopAutoSlide(id));
             triggerTransition(() => {
                 view.classList.remove('active');
                 mainScroll.style.overflowY = 'auto';
             });
         }
 
-        // ── FORMULÁRIO E CAPA ──
+        // ── CAPA ──
         const capaImg = document.querySelector('.capa-img-full');
         capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; });
         if (capaImg.complete) capaImg.style.opacity = '1';
 
+        // ── FORMULÁRIO ──
         const contactForm = document.getElementById('contact-form');
         const formStatus  = document.getElementById('form-status');
 
