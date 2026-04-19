@@ -237,7 +237,6 @@
             transform: translateX(10px); 
         }
 
-        /* ── MODAL SEM TRANSIÇÃO (Corte Seco e Perfeito no Escuro) ── */
         .portfolio-modal {
             position: fixed;
             top: 0; left: 0;
@@ -280,12 +279,11 @@
             width: 100%;
         }
 
-        /* Cor abaixada para cinza intermediário */
         .vitrine-label {
             font-family: 'Oswald', sans-serif;
             font-size: 11px;
             letter-spacing: 5px;
-            color: rgba(255, 255, 255, 0.4); 
+            color: rgba(255, 255, 255, 0.5); /* Aumentado 1 nível de branco */
             text-transform: uppercase;
             margin-bottom: 18px;
         }
@@ -312,7 +310,6 @@
             height: 180px; 
         }
 
-        /* ── MATEMÁTICA EM NÚMEROS INTEIROS PARA EVITAR SHAKE ── */
         .carousel-item {
             flex: 0 0 auto;
             width: 140px; 
@@ -418,8 +415,9 @@
             background: #0a0a0a;
         }
 
+        /* Padding inferior estendido para blindar a barra do mobile de sumir e tremer a tela */
         #portfolio-content-area {
-            padding-bottom: 25vh; 
+            padding-bottom: 35vh; 
         }
 
         @media (max-width: 768px) {
@@ -589,7 +587,7 @@
         const contentArea  = document.getElementById('portfolio-content-area');
 
         let currentPlayers = [];
-        let lastScrollPosition = 0; // Memória de posição do scroll para resolver o bug de teleporte
+        let lastScrollPosition = 0; 
 
         const carouselData = {
             'analises-vol': [
@@ -644,7 +642,6 @@
             const descHTML = description ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>` : '<div class="w-full md:w-1/3"></div>';
             const safeDesc = description.replace(/'/g, "\\'"); 
             
-            // hqdefault.jpg + object-fit: cover = Sem bordas pretas e thumb sempre existe!
             return `
             <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper" data-desc="${safeDesc}">
                 <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
@@ -675,7 +672,9 @@
                 mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
                 
                 const player = new Plyr(mount.querySelector('.js-player'), {
+                    // ARRAY COM 'settings' HABILITADO
                     controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
+                    settings: ['quality', 'speed'],
                     youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
                     autoplay: true
                 });
@@ -795,9 +794,10 @@
                         currentH += (targetH - currentH) * 0.1;
                         currentO += (targetO - currentO) * 0.1;
 
-                        item.style.width = currentW + 'px';
-                        item.style.height = currentH + 'px';
-                        item.style.opacity = currentO;
+                        // ToFixed garante a perfeição matemática e evita shake visual no mobile
+                        item.style.width = currentW.toFixed(2) + 'px';
+                        item.style.height = currentH.toFixed(2) + 'px';
+                        item.style.opacity = currentO.toFixed(3);
 
                         if (isTarget && item === state.targetEl) {
                             if (Math.abs(targetW - currentW) < 1.0) targetReachedSize = true;
@@ -831,9 +831,9 @@
                             currentH += (metrics.baseH - currentH) * 0.015;
                             currentO += (0.7 - currentO) * 0.015;
 
-                            item.style.width = currentW + 'px';
-                            item.style.height = currentH + 'px';
-                            item.style.opacity = currentO;
+                            item.style.width = currentW.toFixed(2) + 'px';
+                            item.style.height = currentH.toFixed(2) + 'px';
+                            item.style.opacity = currentO.toFixed(3);
 
                             if (Math.abs(metrics.baseW - currentW) > 0.5) targetReached = false;
                         }
@@ -872,7 +872,8 @@
                     }
                 }
 
-                state.track.style.transform = `translateX(${state.pos}px)`;
+                // GPU Acceleration via Translate3d
+                state.track.style.transform = `translate3d(${state.pos.toFixed(2)}px, 0, 0)`;
                 state.rafId = requestAnimationFrame(tick);
             }
             
@@ -960,7 +961,6 @@
                 overlay.style.opacity = '1';
                 setTimeout(() => {
                     callback();
-                    // Dip to black perfeito: Segura o fundo escuro por 50ms e retira
                     setTimeout(() => {
                         overlay.style.opacity = '0';
                         setTimeout(() => { overlay.style.display = 'none'; }, 200);
@@ -1006,6 +1006,7 @@
             setTimeout(() => {
                 lightboxPlayer = new Plyr('#lb-plyr', {
                     controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
+                    settings: ['quality', 'speed'],
                     youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
                     autoplay: true
                 });
@@ -1026,7 +1027,6 @@
             document.getElementById('lightbox-desc').classList.add('hidden');
             document.getElementById('video-lightbox').classList.remove('active');
             
-            // Retorna o scroll ao modal (se a pessoa estiver na galeria)
             if (view.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
             } else {
@@ -1091,7 +1091,7 @@
         }
 
         function openCategory(name) {
-            lastScrollPosition = window.scrollY; // Grava o Scroll de Origem
+            lastScrollPosition = window.scrollY; 
             
             triggerTransition(() => {
                 titleElement.innerText = name;
@@ -1196,7 +1196,6 @@
                 view.scrollTop = 0; 
                 view.classList.remove('active');
                 document.body.style.overflow = '';
-                // Restaura o Scroll Exato da raiz do Portfólio sem engasgo
                 window.scrollTo({ top: lastScrollPosition, behavior: 'instant' });
             });
         }
