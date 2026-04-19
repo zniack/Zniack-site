@@ -273,7 +273,6 @@
         }
         .fade-up.is-visible { opacity: 1; transform: translateY(0); }
 
-        /* ── CARROSSEL ── */
         .vitrine-section {
             margin-top: 56px;
             width: 100%;
@@ -283,7 +282,7 @@
             font-family: 'Oswald', sans-serif;
             font-size: 11px;
             letter-spacing: 5px;
-            color: rgba(255, 255, 255, 0.5); /* Aumentado 1 nível de branco */
+            color: rgba(255, 255, 255, 0.5); 
             text-transform: uppercase;
             margin-bottom: 18px;
         }
@@ -368,7 +367,6 @@
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
         }
 
-        /* ── LIGHTBOX ── */
         #video-lightbox {
             position: fixed;
             inset: 0;
@@ -415,7 +413,6 @@
             background: #0a0a0a;
         }
 
-        /* Padding inferior estendido para blindar a barra do mobile de sumir e tremer a tela */
         #portfolio-content-area {
             padding-bottom: 35vh; 
         }
@@ -672,9 +669,10 @@
                 mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
                 
                 const player = new Plyr(mount.querySelector('.js-player'), {
-                    // ARRAY COM 'settings' HABILITADO
+                    // CONFIGURAÇÃO EXPLÍCITA PARA FORÇAR O MENU DE QUALIDADE DO YOUTUBE
                     controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
                     settings: ['quality', 'speed'],
+                    quality: { default: 1080, options: [1080, 720, 480, 360] },
                     youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
                     autoplay: true
                 });
@@ -771,7 +769,7 @@
                     if (speed > maxSpeed) speed = maxSpeed;
                     if (speed < -maxSpeed) speed = -maxSpeed;
                     
-                    if (Math.abs(diff) < 0.5) {
+                    if (Math.abs(diff) < 0.2) {
                         state.pos = state.targetX;
                     } else {
                         state.pos += speed;
@@ -790,21 +788,21 @@
                         let targetH = isTarget ? metrics.activeH : metrics.baseH;
                         let targetO = isTarget ? 1 : 0.7;
 
-                        currentW += (targetW - currentW) * 0.1;
-                        currentH += (targetH - currentH) * 0.1;
-                        currentO += (targetO - currentO) * 0.1;
+                        currentW += (targetW - currentW) * 0.15;
+                        currentH += (targetH - currentH) * 0.15;
+                        currentO += (targetO - currentO) * 0.15;
 
-                        // ToFixed garante a perfeição matemática e evita shake visual no mobile
-                        item.style.width = currentW.toFixed(2) + 'px';
-                        item.style.height = currentH.toFixed(2) + 'px';
-                        item.style.opacity = currentO.toFixed(3);
+                        // SEM TOFIXED, Deixa o navegador rodar liso, mas o gatilho de parada é mais apertado
+                        item.style.width = currentW + 'px';
+                        item.style.height = currentH + 'px';
+                        item.style.opacity = currentO;
 
                         if (isTarget && item === state.targetEl) {
-                            if (Math.abs(targetW - currentW) < 1.0) targetReachedSize = true;
+                            if (Math.abs(targetW - currentW) < 0.1) targetReachedSize = true;
                         }
                     });
 
-                    if (Math.abs(state.targetX - state.pos) < 1.0 && targetReachedSize) {
+                    if (Math.abs(state.targetX - state.pos) < 0.2 && targetReachedSize) {
                         state.pos = state.targetX;
                         state.isSlidingToItem = false;
                         allItems.forEach(item => {
@@ -827,20 +825,20 @@
                             let currentH = parseFloat(item.style.height) || metrics.activeH;
                             let currentO = parseFloat(item.style.opacity) || 1;
 
-                            currentW += (metrics.baseW - currentW) * 0.015;
-                            currentH += (metrics.baseH - currentH) * 0.015;
-                            currentO += (0.7 - currentO) * 0.015;
+                            currentW += (metrics.baseW - currentW) * 0.08;
+                            currentH += (metrics.baseH - currentH) * 0.08;
+                            currentO += (0.7 - currentO) * 0.08;
 
-                            item.style.width = currentW.toFixed(2) + 'px';
-                            item.style.height = currentH.toFixed(2) + 'px';
-                            item.style.opacity = currentO.toFixed(3);
+                            item.style.width = currentW + 'px';
+                            item.style.height = currentH + 'px';
+                            item.style.opacity = currentO;
 
-                            if (Math.abs(metrics.baseW - currentW) > 0.5) targetReached = false;
+                            if (Math.abs(metrics.baseW - currentW) > 0.1) targetReached = false;
                         }
                     });
 
                     const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
-                    state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.015; 
+                    state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.08; 
                     state.pos -= state.currentSpeed;
 
                     if (isLooping && currentHalfWidth > 0) {
@@ -872,8 +870,8 @@
                     }
                 }
 
-                // GPU Acceleration via Translate3d
-                state.track.style.transform = `translate3d(${state.pos.toFixed(2)}px, 0, 0)`;
+                // USO FORÇADO DA GPU PARA ELIMINAR 100% O SHAKE NO MOBILE
+                state.track.style.transform = `translate3d(${state.pos}px, 0, 0)`;
                 state.rafId = requestAnimationFrame(tick);
             }
             
@@ -1005,8 +1003,10 @@
 
             setTimeout(() => {
                 lightboxPlayer = new Plyr('#lb-plyr', {
+                    // CONFIGURAÇÃO EXPLÍCITA PARA FORÇAR O MENU DE QUALIDADE DO YOUTUBE NO LIGHTBOX
                     controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
                     settings: ['quality', 'speed'],
+                    quality: { default: 1080, options: [1080, 720, 480, 360] },
                     youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
                     autoplay: true
                 });
