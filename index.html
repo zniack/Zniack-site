@@ -58,7 +58,6 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             opacity: 0.01; pointer-events: none; z-index: 9998;
             animation: noiseAnim 0.2s steps(2) infinite;
-            /* OTIMIZAÇÃO: Aceleração de hardware para o ruído não pesar no processador */
             will-change: transform;
             transform-style: preserve-3d;
         }
@@ -111,7 +110,6 @@
             pointer-events: none;
         }
 
-        /* CORREÇÃO DO TEXTO AZUL: Estilo base carregado nativamente */
         .nav-link {
             color: rgba(255, 255, 255, 0.7);
             font-family: 'Oswald', sans-serif;
@@ -243,7 +241,6 @@
         .subcat-header:hover .subcat-indicator { color: white; }
         .subcat-header.open .subcat-indicator { transform: translateX(6px); opacity: 0.5; }
         
-        /* TRANSFORMAÇÃO DE MARGIN: 6px iniciais para 32px totais (0 para 26 animado) */
         .subcat-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease, margin-bottom 0.4s ease; width: 100%; margin-bottom: 0px; }
         .subcat-body.open { grid-template-rows: 1fr; margin-bottom: 26px; }
         
@@ -258,7 +255,6 @@
                 justify-content: center; 
                 flex-wrap: wrap; 
                 gap: 15px;
-                /* CORREÇÃO PULO DO MOBILE */
                 position: absolute;
                 top: 80vh;
                 transform: translateY(-100%);
@@ -480,7 +476,8 @@
 
         const carouselData = {
             'analises-vol':   ['wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk','3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro','nUKCw5Ejyao','0FwPnvvsKkE'],
-            'comentados-vol': ['9EGPFtDVG3s','qxumGqBVclY','Hps6cf-9Ld4','7wYKFmQ7TMc','OhN7CmFrkrM','OIMWARx6nZA','K-HN5rFeDv8','ZZAvKcMFano','wfrHj0L9ccc','E60hFmhy4hk'],
+            // ID 'Oacodzw29CE' inserido aqui no array do carrossel:
+            'comentados-vol': ['Oacodzw29CE', '9EGPFtDVG3s','qxumGqBVclY','Hps6cf-9Ld4','7wYKFmQ7TMc','OhN7CmFrkrM','OIMWARx6nZA','K-HN5rFeDv8','ZZAvKcMFano','wfrHj0L9ccc','E60hFmhy4hk'],
             'noticias-vol':   ['VNNOvzWHpw8','kMDkKOBXsxg','xfEOq0u8d8k','4XrtZ5SD-jI','mxD0WFRvt7k','KErRxCP2fP0','zPP-6cOafdQ','_z1GkNuudqU','QOziuqM_FQA','xYxGu5smFOg'],
             'highlights-vol': ['KAKM9mEqtoc','w2WLKVPCNxY','kT3T1T7pbXU','GICsA2s6cDc','Rc3IYyWu2wE','v_ELfeP2WxY','6NpgsBK8JPI','ILaJ6TaO1X0','2E97i-ChJVI','BsCDkg0lMek'],
             'aberturas-vol':  ['7f7FDHkQjuQ']
@@ -949,12 +946,14 @@
                 updateHeaderBlur(); 
 
                 if(name==='Vídeos Diários'){
+                    // Código atualizado para remover o vídeo Oacodzw29CE (que estava sem comentário) do layout em linha 
+                    // e deixar apenas o buildCarousel('comentados-vol') após o vídeo que de fato tem comentário.
                     contentArea.innerHTML=
                         buildSubCategory('analises','Análises',
                             buildInlineVideo('csh7Z3dcb0g','Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.')+
                             buildInlineVideo('82Ah3XW5Jg4','Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.')+
                             buildCarousel('analises-vol'))+
-                        '<div style="margin-top:6px">'+buildSubCategory('comentados','Comentados',buildInlineVideo('ll3UYdXXhlE','Estruturação narrativa pautada na alternância entre relatos e acontecimentos. O processo priorizou o equilíbrio entre discurso e ação, garantindo a cadência e a imersão do início ao fim.')+buildInlineVideo('Oacodzw29CE')+buildCarousel('comentados-vol'))+'</div>'+
+                        '<div style="margin-top:6px">'+buildSubCategory('comentados','Comentados',buildInlineVideo('ll3UYdXXhlE','Estruturação narrativa pautada na alternância entre relatos e acontecimentos. O processo priorizou o equilíbrio entre discurso e ação, garantindo a cadência e a imersão do início ao fim.')+buildCarousel('comentados-vol'))+'</div>'+
                         '<div style="margin-top:6px">'+buildSubCategory('noticias','Notícias',buildInlineVideo('d0d43qkOE7A')+buildInlineVideo('AkrpKrpF3dc')+buildCarousel('noticias-vol'))+'</div>';
 
                 }else if(name==='Highlights'){
