@@ -162,7 +162,7 @@
             gap: 8px;
             margin-bottom: 30px;
             position: sticky;
-            top: var(--header-h, 80px);
+            top: 0;
             z-index: 101;
             padding: 14px 0 16px;
         }
@@ -463,7 +463,6 @@
             const nav = document.getElementById('category-nav');
             if (!nav) return;
 
-            // Atualiza CSS var com altura real da header
             const headerH = stickyHeader.offsetHeight;
             document.documentElement.style.setProperty('--header-h', headerH + 'px');
 
@@ -478,16 +477,13 @@
             nav.classList.remove('is-stuck');
             nav.classList.add('no-transition');
 
-            // Cria sentinel de 1px logo antes da nav (dentro do scroll container)
+            // Sentinel de 1px logo antes da nav
             const sentinel = document.createElement('div');
             sentinel.id = 'category-nav-sentinel';
-            // rootMargin negativo igual à altura da header: o sentinel "desaparece" 
-            // quando a nav está a headerH px do topo do modal
             sentinel.style.cssText = 'height:1px;margin-bottom:-1px;pointer-events:none;flex-shrink:0;';
             nav.parentNode.insertBefore(sentinel, nav);
 
-            // Deixa dois frames passarem antes de ligar o observer,
-            // evitando o disparo falso durante o scrollTop=0
+            // Dois frames para o scrollTop=0 estabilizar antes de ligar o observer
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     nav.classList.remove('no-transition');
@@ -496,9 +492,7 @@
                         nav.classList.toggle('is-stuck', !entry.isIntersecting);
                     }, {
                         root: view,
-                        // rootMargin top negativo = altura da header, para o observer
-                        // considerar "saiu" apenas quando o sentinel passou pela linha da header
-                        rootMargin: `-${headerH}px 0px 0px 0px`,
+                        rootMargin: '0px 0px 0px 0px',
                         threshold: 0
                     });
 
