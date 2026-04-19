@@ -49,7 +49,7 @@
             background-position: center !important;
         }
 
-        /* ── LIMPEZA DO BOTÃO GRANDE PLAY DO PLYR VIA CSS DE PREVENÇÃO ── */
+        /* ── LIMPEZA DO BOTÃO GRANDE PLAY DO PLYR ── */
         .plyr__control--overlaid {
             display: none !important;
         }
@@ -148,6 +148,7 @@
 
         .header-sticky.visible { top: 0; }
 
+        /* ── ACELERAÇÃO DA TRANSIÇÃO FADE ── */
         #transition-overlay {
             display: none;
             position: fixed;
@@ -155,7 +156,7 @@
             background: var(--bg-color);
             z-index: 10000;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.2s ease-in-out;
         }
 
         .titulo-secao {
@@ -285,7 +286,7 @@
             font-family: 'Oswald', sans-serif;
             font-size: 11px;
             letter-spacing: 5px;
-            color: rgba(255,255,255,0.2);
+            color: var(--text-sub); /* Igual aos comentários */
             text-transform: uppercase;
             margin-bottom: 18px;
         }
@@ -299,6 +300,8 @@
             min-height: 200px; 
             display: flex;
             align-items: center;
+            /* ISOLAMENTO DA RENDERIZAÇÃO PARA EVITAR SHAKE GLOBAL */
+            contain: layout; 
         }
 
         .carousel-track {
@@ -416,6 +419,11 @@
             background: #0a0a0a;
         }
 
+        /* Padding de proteção extra na modal para evitar choque do navegador no final da página */
+        #portfolio-content-area {
+            padding-bottom: 25vh; 
+        }
+
         @media (max-width: 768px) {
             #capa { min-height: 80vh; height: 80vh; }
             .capa-img-full { object-fit: cover; object-position: center 20%; }
@@ -428,7 +436,7 @@
             .portfolio-modal { padding: 5vh 5%; }
             .nome-foto { margin-top: 15px; }
             
-            .carousel-wrapper { min-height: 155px; }
+            .carousel-wrapper { min-height: 155px; contain: layout; }
             .carousel-track { height: 135px; }
             .carousel-item { width: 110px; height: 61.875px; }
             .carousel-item.active { width: 240px; height: 135px; }
@@ -553,7 +561,7 @@
         </button>
         <h3 id="category-title" class="font-['Oswald'] tracking-[5px] text-white text-lg uppercase mb-4 mt-8">TITULO</h3>
         <p id="category-desc" class="font-['Roboto'] font-thin text-[15px] text-[#e3e3e3] mb-8 w-full max-w-[600px] text-left"></p>
-        <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px] pb-32"></div>
+        <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px]"></div>
     </div>
 
     <div id="video-lightbox">
@@ -633,7 +641,6 @@
             };
         }
 
-        // ── UX PC & MOBILE: CAPA MINIMALISTA ──
         function buildInlineVideo(id, description = '') {
             const descHTML = description ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>` : '<div class="w-full md:w-1/3"></div>';
             const safeDesc = description.replace(/'/g, "\\'"); 
@@ -668,8 +675,8 @@
                 mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
                 
                 const player = new Plyr(mount.querySelector('.js-player'), {
-                    // ARRAY LIMPO: Sem 'play-large' para matar o botão branco gigante
-                    controls: ['play','progress','current-time','mute','volume','fullscreen'],
+                    // ADICIONADO 'settings' PARA SELETOR DE QUALIDADE E VELOCIDADE
+                    controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
                     youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
                     autoplay: true
                 });
@@ -947,7 +954,7 @@
             stickyHeader.classList.toggle('visible', bannerRect.bottom <= 0);
         });
 
-        // ── FIX FADE CROSSFADE: Transição cirúrgica em Dip to Black ──
+        // ── FADE MUITO MAIS RÁPIDO COM DIP-TO-BLACK PERFEITO ──
         function triggerTransition(callback) {
             const overlay = document.getElementById('transition-overlay');
             overlay.style.display = 'block';
@@ -955,15 +962,12 @@
                 overlay.style.opacity = '1';
                 setTimeout(() => {
                     callback();
-                    
-                    // Segura o fundo escuro por 150ms ANTES de começar a revelar. 
-                    // Fim do crossfade/glitch.
+                    // Apenas 50ms na tela preta (tempo pro DOM montar sem piscar)
                     setTimeout(() => {
                         overlay.style.opacity = '0';
-                        setTimeout(() => { overlay.style.display = 'none'; }, 300);
-                    }, 150);
-                    
-                }, 300);
+                        setTimeout(() => { overlay.style.display = 'none'; }, 200);
+                    }, 50);
+                }, 200);
             });
         }
 
@@ -1003,8 +1007,8 @@
 
             setTimeout(() => {
                 lightboxPlayer = new Plyr('#lb-plyr', {
-                    // LIMPO: Sem 'play-large' no lightbox também.
-                    controls: ['play','progress','current-time','mute','volume','fullscreen'],
+                    // ADICIONADO 'settings' PARA SELETOR DE QUALIDADE NO LIGHTBOX
+                    controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
                     youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
                     autoplay: true
                 });
