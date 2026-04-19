@@ -306,7 +306,7 @@
 
         .carousel-track {
             display: flex;
-            gap: 15px; /* Define o ITEM_STEP (140 + 15 = 155px) para cálculo da grade */
+            gap: 15px; /* A base da física: 140px (video) + 15px (gap) = 155px passo */
             align-items: center; 
             width: max-content;
             will-change: transform;
@@ -323,11 +323,8 @@
             overflow: hidden;
             cursor: pointer;
             opacity: 0.7; 
-            
-            /* CSS Transition atua só no fechamento ou hover, o JS controla o clique */
-            transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                        opacity 0.6s ease,
-                        border-color 0.4s ease;
+            /* Transição CSS age apénas nas cores agora, o motor JS cuida dos tamanhos/larguras */
+            transition: border-color 0.4s ease;
             will-change: width, opacity, transform;
         }
 
@@ -608,9 +605,9 @@
             'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
 
-        // ── LÓGICA DO CARROSSEL: MOTOR FÍSICO COM GRADE FIXA E REGRA DOS 2 CLIQUES ──
+        // ── LÓGICA DO CARROSSEL: CENA 1, CENA 2, CENA 3 (O FECHAMENTO LENTO) ──
         const carouselState = {};
-        const ITEM_STEP = 155; // 140px de largura + 15px de gap (Grade Rígida Matemática)
+        const ITEM_STEP = 155; // Matemática Base: 140px + 15px
 
         function buildCarousel(carouselId) {
             const ids = carouselData[carouselId];
@@ -655,6 +652,8 @@
                     isHovered: false,
                     itemsCount: itemsCount,
                     isSlidingToItem: false,
+                    isClosing: false, // O novo Estado 3 (Derretimento suave após fechar vídeo)
+                    lightboxOpened: false, 
                     targetEl: null,
                     syncTargetEl: null,
                     targetX: 0,
@@ -673,55 +672,14 @@
                 const isLooping = state.itemsCount >= 6;
                 let currentHalfWidth = 0;
                 
-                // Calcula o tamanho exato da metade baseando na DOM
                 if (isLooping) {
-                    currentHalfWidth = state.track.children[state.itemsCount].offsetLeft;
+                    currentHalfWidth = state.itemsCount * ITEM_STEP;
                 }
 
-                // CENA 1: ALGUÉM DEU O PRIMEIRO CLIQUE (Desliza e Cresce até travar)
-                if (state.isSlidingToItem && state.targetEl) {
+                // ── CENA 1: DESLIZE PARA O ALVO (Cliques Livres) ──
+                if (state.isSlidingToItem && state.targetEl && !state.isClosing) {
                     
-                    // Crescimento Exponencial Desacoplado: O vídeo cresce macio não importa a distância
-                    const allItems = Array.from(state.track.children);
-                    let targetReachedSize = false;
-
-                    allItems.forEach(item => {
-                        let isTarget = (item === state.targetEl || item === state.syncTargetEl);
-                        
-                        // Busca o tamanho e opacidade que ele tem AGORA nesse frame exato
-                        let currentW = parseFloat(item.style.width) || (item.classList.contains('active') ? 320 : 140);
-                        let currentO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
-
-                        let targetW = isTarget ? 320 : 140;
-                        let targetO = isTarget ? 1 : 0.7;
-
-                        // Cresce ou encolhe gradativamente de forma exponencial (Lerp)
-                        currentW += (targetW - currentW) * 0.08;
-                        currentO += (targetO - currentO) * 0.08;
-
-                        item.style.width = currentW + 'px';
-                        item.style.opacity = currentO;
-
-                        if (isTarget && item === state.targetEl) {
-                            if (Math.abs(targetW - currentW) < 1) targetReachedSize = true;
-                        }
-                    });
-
-                    // Sliding Logic (Física do deslizamento)
-                    let diff = state.targetX - state.pos;
-                    let speed = diff * 0.05; // Acelera e desacelera dependendo da distância restante
-                    let maxSpeed = 16;       // Trava de velocidade máxima (tempo atrelado a distância)
-                    
-                    if (speed > maxSpeed) speed = maxSpeed;
-                    if (speed < -maxSpeed) speed = -maxSpeed;
-                    
-                    if (Math.abs(diff) < 1) {
-                        state.pos = state.targetX;
-                    } else {
-                        state.pos += speed;
-                    }
-
-                    // Previne que o carrossel "acabe" se a pessoa clica num vídeo longe pra direita
+                    // Mantém o loop ativo durante o clique sem quebrar a tela
                     if (isLooping) {
                         if (state.pos <= -currentHalfWidth) {
                             state.pos += currentHalfWidth;
@@ -732,12 +690,50 @@
                         }
                     }
 
-                    // Só congela e termina tudo se chegar na esquerda perfeita E o tamanho chegar a 100%
-                    if (Math.abs(state.targetX - state.pos) < 1 && targetReachedSize) {
+                    // FÍSICA DO DESLIZE: O tempo é guiado pela distância. (Não pula).
+                    let diff = state.targetX - state.pos;
+                    let speed = diff * 0.08; 
+                    let maxSpeed = 25; 
+                    
+                    if (speed > maxSpeed) speed = maxSpeed;
+                    if (speed < -maxSpeed) speed = -maxSpeed;
+                    
+                    if (Math.abs(diff) < 0.5) {
+                        state.pos = state.targetX;
+                    } else {
+                        state.pos += speed;
+                    }
+
+                    // FÍSICA DO TAMANHO (Lerp Desacoplado Independente)
+                    let targetReachedSize = false;
+                    const allItems = Array.from(state.track.children);
+                    
+                    allItems.forEach(item => {
+                        let isTarget = (item === state.targetEl || item === state.syncTargetEl);
+                        
+                        let currentW = parseFloat(item.style.width) || (item.classList.contains('active') ? 320 : 140);
+                        let currentO = parseFloat(item.style.opacity) || (item.classList.contains('active') ? 1 : 0.7);
+
+                        let targetW = isTarget ? 320 : 140;
+                        let targetO = isTarget ? 1 : 0.7;
+
+                        currentW += (targetW - currentW) * 0.1;
+                        currentO += (targetO - currentO) * 0.1;
+
+                        item.style.width = currentW + 'px';
+                        item.style.opacity = currentO;
+
+                        if (isTarget && item === state.targetEl) {
+                            if (Math.abs(targetW - currentW) < 1.0) targetReachedSize = true;
+                        }
+                    });
+
+                    // TUDO 100% PRONTO? Aí sim ele "congela" na esquerda.
+                    if (Math.abs(state.targetX - state.pos) < 1.0 && targetReachedSize) {
                         state.pos = state.targetX;
                         state.isSlidingToItem = false;
                         
-                        // Devolve o controle pro CSS
+                        // Trava no CSS nativo garantindo perfeição
                         allItems.forEach(item => {
                             item.style.width = '';
                             item.style.opacity = '';
@@ -749,15 +745,60 @@
                         });
                     }
                 } 
-                // CENA 2: CARROSSEL DESCANSANDO (Scroll Automático com Hover Soft 50%)
-                else if (!state.isPaused && isLooping) {
+                // ── CENA 3: FECHANDO O PLAYER (Derretimento ultra-suave e retomada do slide) ──
+                else if (state.isClosing && state.targetEl) {
+                    
+                    let targetReached = true;
+                    const allItems = Array.from(state.track.children);
+
+                    allItems.forEach(item => {
+                        if (item === state.targetEl || item === state.syncTargetEl) {
+                            let currentW = parseFloat(item.style.width) || 320;
+                            let currentO = parseFloat(item.style.opacity) || 1;
+
+                            // Taxa EXTREMAMENTE SUAVE para diminuir a miniatura (0.015)
+                            currentW += (140 - currentW) * 0.015;
+                            currentO += (0.7 - currentO) * 0.015;
+
+                            item.style.width = currentW + 'px';
+                            item.style.opacity = currentO;
+
+                            if (Math.abs(140 - currentW) > 0.5) targetReached = false;
+                        }
+                    });
+
+                    // Retomada do deslize lentamente acompanhando o tamanho
+                    const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
+                    state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.015; 
+                    state.pos -= state.currentSpeed;
+
+                    if (isLooping) {
+                        if (state.pos <= -currentHalfWidth) state.pos += currentHalfWidth;
+                        else if (state.pos > 0) state.pos -= currentHalfWidth;
+                    }
+
+                    // Se tudo terminou de encolher, finaliza a Cena 3
+                    if (targetReached) {
+                        state.isClosing = false;
+                        state.isPaused = false;
+                        state.targetEl = null;
+                        state.syncTargetEl = null;
+
+                        allItems.forEach(item => {
+                            item.style.transition = '';
+                            item.style.width = '';
+                            item.style.opacity = '';
+                            item.classList.remove('active');
+                        });
+                    }
+                }
+                // ── CENA 2: CARROSSEL DESCANSANDO (Scroll Automático com Hover 50%) ──
+                else if (!state.isPaused && isLooping && !state.isClosing) {
                     const targetSpeed = state.isHovered ? (state.baseSpeed * 0.5) : state.baseSpeed;
                     
-                    // Transição suave de velocidade
                     state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.05;
                     state.pos -= state.currentSpeed;
                     
-                    // Loop infinito
                     if (Math.abs(state.pos) >= currentHalfWidth) {
                         state.pos += currentHalfWidth;
                     }
@@ -788,19 +829,23 @@
             const originalEl = items[realIndex];
             const cloneEl = isLooping ? items[realIndex + state.itemsCount] : null;
 
-            // A REGRA DOS 2 CLIQUES: Se ele clicou no que já está selecionado/indo ser selecionado, abre o player!
-            if (state.targetEl === originalEl || state.targetEl === cloneEl) {
+            // ── REGRA DE OURO (2 CLIQUES) ──
+            // Se o alvo for o mesmo que o já clicado, JÁ ESTIVER PARADO E 100%, E não estiver encolhendo
+            if ((state.targetEl === originalEl || state.targetEl === cloneEl) && !state.isSlidingToItem && !state.isClosing) {
                 openLightbox(el.dataset.vid);
                 return;
             }
 
-            // É UM VÍDEO NOVO: Aborta o que tava fazendo e recalcula o destino na hora
+            // ── PRIMEIRO CLIQUE OU NOVO VÍDEO ──
+            // Aborta estado anterior suavemente
             state.isPaused = true;
             state.isSlidingToItem = true;
+            state.isClosing = false; // Caso clique no meio de um encolhimento
+            state.lightboxOpened = false;
             
-            // Tira as classes do CSS antigo para não dar "trancos" na animação
+            // Remove as transições do CSS para o JS liderar a "física"
             items.forEach(item => {
-                if (item.classList.contains('active')) {
+                if (item.classList.contains('active') && item !== originalEl && item !== cloneEl) {
                     item.style.width = window.getComputedStyle(item).width;
                     item.style.opacity = window.getComputedStyle(item).opacity;
                     item.classList.remove('active');
@@ -808,19 +853,19 @@
                 item.style.transition = 'none';
             });
 
-            // Foca no original do primeiro bloco sempre para manter a matemática saudável
+            // Setando o alvo da vez
             state.targetEl = originalEl;
             state.syncTargetEl = cloneEl;
             
-            // Define a rota do destino pela grade (O índice real dele * o tamanho fixo da caixa)
-            let baseTargetX = -(realIndex * ITEM_STEP);
+            // Cálculo absoluto baseado na grade Fixa (O fim do bug do Pulo)
+            let baseTargetX = -(domIndex * ITEM_STEP);
             
-            // Lógica do Caminho Mais Curto: Se tiver em Loop, ele vê se compensa ir pela direita ou esquerda
+            // Se tiver em Loop, ele estuda pra onde é mais curto ir (Matemática Pura)
             if (isLooping) {
                 const halfW = state.itemsCount * ITEM_STEP;
                 let opt1 = baseTargetX;
-                let opt2 = baseTargetX - halfW; 
-                let opt3 = baseTargetX + halfW; 
+                let opt2 = baseTargetX - halfW;
+                let opt3 = baseTargetX + halfW;
 
                 let d1 = Math.abs(state.pos - opt1);
                 let d2 = Math.abs(state.pos - opt2);
@@ -878,7 +923,7 @@
             });
         });
 
-        // ── LIGHTBOX ──
+        // ── LIGHTBOX E O FECHAMENTO (CENA 3) ──
         let lightboxPlayer = null;
 
         function openLightbox(videoId) {
@@ -905,22 +950,23 @@
             document.getElementById('video-lightbox').classList.remove('active');
             document.body.style.overflow = '';
 
-            // Ao fechar, devolve o controle dos elementos para o CSS, encolhendo suavemente
-            document.querySelectorAll('.carousel-item').forEach(item => {
-                item.style.transition = ''; 
-                item.style.width = '';
-                item.style.opacity = '';
-                item.classList.remove('active');
-            });
-            
-            // O carrossel volta a girar livremente
+            // Aciona o Estado 3 (Fechamento) de TODOS os carrosseis para eles derreterem suavemente
             Object.keys(carouselState).forEach(id => {
                 const state = carouselState[id];
-                if (state) {
-                    state.isPaused = false;
-                    state.isSlidingToItem = false;
-                    state.targetEl = null;
-                    state.syncTargetEl = null;
+                if (state && state.targetEl) {
+                    state.isClosing = true;
+                    state.currentSpeed = 0; // Prepara a fita para acelerar lentamente do zero
+                    
+                    // Segura o tamanho do CSS para o JS derreter
+                    const allItems = Array.from(state.track.children);
+                    allItems.forEach(item => {
+                        item.style.transition = 'none';
+                        if (item.classList.contains('active')) {
+                            item.style.width = window.getComputedStyle(item).width;
+                            item.style.opacity = window.getComputedStyle(item).opacity;
+                            item.classList.remove('active');
+                        }
+                    });
                 }
             });
         }
