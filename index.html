@@ -296,45 +296,50 @@
             position: relative;
             width: 100%;
             overflow: hidden;
-            cursor: grab;
-            user-select: none;
-            padding: 10px 0; /* Espaço para expansão vertical se necessário */
+            padding: 15px 0; /* Espaço extra para o efeito 3D não cortar as bordas */
         }
-        .carousel-wrapper:active { cursor: grabbing; }
 
         .carousel-track {
             display: flex;
             gap: 15px;
             width: max-content;
-            /* Transição de transform removida do CSS pois o JS cuida disso por frame */
-            will-change: transform;
+            /* Transição será adicionada via JS durante o clique/slide */
         }
 
-        /* Ajustes de saturação e tamanho focados conforme solicitado */
+        /* ── EFEITO CÂMERA E DESTAQUE ── */
         .carousel-item {
             flex: 0 0 auto;
-            width: 140px; /* Tamanho base menor */
-            aspect-ratio: 16/9;
+            width: 140px;
+            aspect-ratio: 16/9; /* Força 16:9 sempre, impedindo cortes */
             position: relative;
             border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 4px;
             overflow: hidden;
             cursor: pointer;
+            
+            /* Efeito Inativo: Perspectiva suave, desfoque sutil e menos brilho */
+            transform: perspective(600px) rotateY(12deg) scale(0.95);
+            filter: blur(1.5px) brightness(0.65);
+            
             transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-                        border-color 0.45s ease,
-                        opacity 0.45s ease;
-            opacity: 0.8; /* Saturação normal, apenas leve foco visual */
+                        transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                        filter 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+                        border-color 0.45s ease;
         }
 
+        /* O item destacado (Sempre o da extrema esquerda no visual do track) */
         .carousel-item.active {
-            width: 320px; /* Expansão ampla no clique */
-            opacity: 1;
+            width: 320px;
+            transform: perspective(600px) rotateY(0deg) scale(1);
+            filter: blur(0) brightness(1);
             border-color: rgba(255,255,255,0.2);
+            z-index: 2; /* Garante que ele fique acima dos outros durante a transição */
         }
 
         .carousel-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Como a div é perfeitamente 16:9, nada é cortado */
             display: block;
             pointer-events: none;
         }
@@ -581,7 +586,7 @@
                 '2E97i-ChJVI','BsCDkg0lMek'
             ],
             'aberturas-vol': [
-                '7f7FDHkQjuQ'
+                '7f7FDHkQjuQ' // Tem apenas 1 vídeo, então não terá auto-slide e loop
             ]
         };
 
@@ -593,7 +598,143 @@
             'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
 
-        // ── FADE OBSERVER ──
+        // ── LÓGICA DO CARROSSEL: DESLIZAMENTO, CLICK E AUTOPLAY ──
+        const carouselState = {};
+        const ITEM_INACTIVE_WIDTH = 140; 
+        const ITEM_GAP = 15;
+        const SHIFT_PER_STEP = ITEM_INACTIVE_WIDTH + ITEM_GAP;
+
+        function buildCarousel(carouselId) {
+            const ids = carouselData[carouselId];
+            if (!ids || ids.length === 0) return '';
+            
+            const items = ids.map((id, i) => `
+                <div class="carousel-item ${i === 0 ? 'active' : ''}" data-vid="${id}" onclick="handleCarouselClick(this,'${carouselId}')">
+                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
+                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                </div>`).join('');
+                
+            return `
+                <div class="vitrine-section">
+                    <p class="vitrine-label">mais trabalhos</p>
+                    <div class="carousel-wrapper" id="wrap-${carouselId}"
+                         onmouseenter="handleHoverIn('${carouselId}')"
+                         onmouseleave="handleHoverOut('${carouselId}')">
+                        <div class="carousel-track" id="track-${carouselId}">${items}</div>
+                    </div>
+                </div>`;
+        }
+
+        function initCarousels() {
+            Object.keys(carouselData).forEach(id => {
+                const track = document.getElementById('track-' + id);
+                if (!track) return;
+                const items = Array.from(track.children);
+                if (items.length === 0) return;
+
+                // Garante que o estado inicial está correto (Sempre o da esquerda é o active)
+                items.forEach((item, index) => {
+                    if (index === 0) item.classList.add('active');
+                    else item.classList.remove('active');
+                });
+
+                carouselState[id] = {
+                    track: track,
+                    count: items.length,
+                    isAnimating: false,
+                    intervalId: null
+                };
+
+                // Regra: Só move automaticamente se tiver pelo menos 6 vídeos
+                if (items.length >= 6) {
+                    startAutoSlide(id);
+                }
+            });
+        }
+
+        function slideToItem(id, domIndex) {
+            const state = carouselState[id];
+            // Se clicar no próprio ativo (0) ou estiver animando, interrompe o slide
+            if (!state || state.isAnimating || domIndex === 0) return;
+
+            const track = state.track;
+            const items = Array.from(track.children);
+
+            state.isAnimating = true;
+
+            // Calcula o deslocamento exato para puxar o vídeo clicado para a posição 0
+            const shift = domIndex * SHIFT_PER_STEP;
+
+            // Inicia o crescimento/diminuição ao mesmo tempo
+            items[0].classList.remove('active');
+            items[domIndex].classList.add('active');
+
+            // Desliza a trilha para a esquerda suavemente
+            track.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+            track.style.transform = `translateX(-${shift}px)`;
+
+            // Quando a transição terminar, repassa os itens do DOM para trás criando o loop contínuo
+            setTimeout(() => {
+                for (let i = 0; i < domIndex; i++) {
+                    track.appendChild(track.children[0]);
+                }
+                // Reseta a transição de forma invisível
+                track.style.transition = 'none';
+                track.style.transform = 'translateX(0)';
+                state.isAnimating = false;
+            }, 600);
+        }
+
+        function slideNext(id) {
+            slideToItem(id, 1);
+        }
+
+        function handleCarouselClick(el, id) {
+            const state = carouselState[id];
+            if (!state || state.isAnimating) return;
+
+            const items = Array.from(state.track.children);
+            const domIndex = items.indexOf(el);
+
+            // Se for o vídeo destacado da esquerda (índice 0), abre no lightbox
+            if (domIndex === 0) {
+                openLightbox(el.dataset.vid);
+            } else {
+                // Caso contrário, desliza a trilha até que ele vire o principal
+                slideToItem(id, domIndex);
+                
+                // Reinicia o tempo automático se houver
+                if (state.count >= 6) {
+                    stopAutoSlide(id);
+                    startAutoSlide(id);
+                }
+            }
+        }
+
+        function startAutoSlide(id) {
+            const state = carouselState[id];
+            if (!state || state.count < 6) return;
+            stopAutoSlide(id);
+            state.intervalId = setInterval(() => {
+                slideNext(id);
+            }, 3500); // Rola a cada 3.5s
+        }
+
+        function stopAutoSlide(id) {
+            const state = carouselState[id];
+            if (state && state.intervalId) {
+                clearInterval(state.intervalId);
+                state.intervalId = null;
+            }
+        }
+
+        function handleHoverIn(id) { stopAutoSlide(id); }
+        function handleHoverOut(id) {
+            const state = carouselState[id];
+            if (state && state.count >= 6) startAutoSlide(id);
+        }
+
+        // ── FADE OBSERVER E TRANSIÇÕES DE SEÇÃO ──
         const fadeObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -610,7 +751,6 @@
             stickyHeader.classList.toggle('visible', bannerRect.bottom <= 0);
         });
 
-        // ── TRANSIÇÃO ──
         function triggerTransition(callback) {
             const overlay = document.getElementById('transition-overlay');
             overlay.style.display = 'block';
@@ -637,177 +777,6 @@
                 });
             });
         });
-
-        // ── CARROSSEL LÓGICA INFINITA ──
-        const cState = {};
-        const baseSpeed = 0.8; // Velocidade de rolagem padrão
-
-        function buildCarousel(carouselId) {
-            const ids = carouselData[carouselId];
-            if (!ids || ids.length === 0) return '';
-            
-            // Duplica os IDs para criar o efeito de loop infinito suave
-            const loopIds = [...ids, ...ids];
-            
-            const items = loopIds.map((id, i) => `
-                <div class="carousel-item${i === 0 ? ' active' : ''}" data-vid="${id}" data-index="${i}" onclick="handleCarouselClick(this,'${carouselId}')">
-                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
-                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-                </div>`).join('');
-                
-            return `
-                <div class="vitrine-section">
-                    <p class="vitrine-label">mais trabalhos</p>
-                    <div class="carousel-wrapper" id="wrap-${carouselId}"
-                         onmouseenter="cHoverIn('${carouselId}')"
-                         onmouseleave="cHoverOut('${carouselId}')"
-                         onmousedown="cDragStart(event,'${carouselId}')"
-                         ontouchstart="cDragStart(event,'${carouselId}')">
-                        <div class="carousel-track" id="track-${carouselId}">${items}</div>
-                    </div>
-                </div>`;
-        }
-
-        function cInit(id) {
-            const track = document.getElementById('track-' + id);
-            const wrap = document.getElementById('wrap-' + id);
-            if (!track || !wrap) return;
-
-            cState[id] = {
-                track: track,
-                wrap: wrap,
-                items: Array.from(track.querySelectorAll('.carousel-item')),
-                x: 0,
-                speed: baseSpeed,
-                targetSpeed: baseSpeed,
-                activeIdx: 0,
-                isHovered: false,
-                centering: false,
-                dragged: false
-            };
-        }
-
-        function cHoverIn(id) {
-            if (cState[id]) {
-                cState[id].isHovered = true;
-                if (!cState[id].centering) cState[id].targetSpeed = 0;
-            }
-        }
-
-        function cHoverOut(id) {
-            if (cState[id]) {
-                cState[id].isHovered = false;
-                cState[id].centering = false; // Libera o foco central para retomar o loop
-                cState[id].targetSpeed = baseSpeed;
-            }
-        }
-
-        function cSetActive(id, idx) {
-            const state = cState[id];
-            if (!state) return;
-            state.activeIdx = idx;
-
-            // Encontrar o par duplicado para manter a consistência visual no loop
-            const halfCount = state.items.length / 2;
-            const duplicateIdx = idx >= halfCount ? idx - halfCount : idx + halfCount;
-
-            state.items.forEach((el, i) => {
-                el.classList.toggle('active', i === idx || i === duplicateIdx);
-            });
-
-            // Ativa o deslizamento suave para o centro e pausa o carrossel temporariamente
-            state.centering = true;
-            state.targetSpeed = 0; 
-        }
-
-        function handleCarouselClick(el, id) {
-            const state = cState[id];
-            if (state && state.dragged) return; // Se arrastou, não abre vídeo
-            
-            const idx = parseInt(el.dataset.index);
-            if (state && state.activeIdx === idx) {
-                openLightbox(el.dataset.vid);
-            } else {
-                cSetActive(id, idx);
-            }
-        }
-
-        function cDragStart(e, id) {
-            const state = cState[id];
-            if (!state) return;
-            
-            state.dragged = false;
-            state.centering = false;
-            state.targetSpeed = 0;
-            state.speed = 0;
-
-            const startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-            const startXPos = state.x;
-
-            const onMove = ev => {
-                const clientX = ev.type.includes('touch') ? ev.touches[0].clientX : ev.clientX;
-                const dx = clientX - startX;
-                if (Math.abs(dx) > 5) state.dragged = true;
-                state.x = startXPos + dx;
-            };
-
-            const onEnd = ev => {
-                if (!state.isHovered) state.targetSpeed = baseSpeed;
-                document.removeEventListener('mousemove', onMove);
-                document.removeEventListener('mouseup', onEnd);
-                document.removeEventListener('touchmove', onMove);
-                document.removeEventListener('touchend', onEnd);
-            };
-
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseup', onEnd);
-            document.addEventListener('touchmove', onMove, { passive: true });
-            document.addEventListener('touchend', onEnd);
-        }
-
-        // Loop principal de animação responsável por rolagem, foco suave e repetição infinita
-        function animateCarousels() {
-            Object.keys(cState).forEach(id => {
-                const state = cState[id];
-                if (!state.track || !state.items.length) return;
-
-                const halfCount = state.items.length / 2;
-                // O ponto exato de reinício com base nos layouts dinâmicos dos itens
-                const midpoint = state.items[halfCount].offsetLeft;
-
-                if (state.centering) {
-                    const item = state.items[state.activeIdx];
-                    const wrapWidth = state.wrap.offsetWidth;
-                    // Calcula o posicionamento exato pro centro da tela
-                    let targetX = -item.offsetLeft + (wrapWidth / 2) - (item.offsetWidth / 2);
-
-                    // Interpolação suave para a posição de foco
-                    state.x += (targetX - state.x) * 0.08;
-
-                    if (!state.isHovered && Math.abs(targetX - state.x) < 2) {
-                        state.centering = false;
-                        state.targetSpeed = baseSpeed;
-                    }
-                } else {
-                    // Atualiza suavemente a velocidade respeitando pausas
-                    state.speed += (state.targetSpeed - state.speed) * 0.05;
-                    state.x -= state.speed;
-
-                    // Lógica do Scroll Infinito
-                    if (state.x <= -midpoint) {
-                        state.x += midpoint;
-                    } else if (state.x > 0 && state.speed < 0) { 
-                        state.x -= midpoint;
-                    }
-                }
-
-                state.track.style.transform = `translateX(${state.x}px)`;
-            });
-            requestAnimationFrame(animateCarousels);
-        }
-
-        // Inicia o motor de animação do carrossel
-        requestAnimationFrame(animateCarousels);
 
         // ── LIGHTBOX ──
         let lightboxPlayer = null;
@@ -842,7 +811,7 @@
         });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-        // ── SUBCATEGORIAS ──
+        // ── ABRIR / FECHAR CATEGORIA E SUBCATEGORIAS ──
         function toggleSubCategory(id, element) {
             const container = document.getElementById(id);
             const indicator = element.querySelector('.indicator');
@@ -850,13 +819,7 @@
                 container.classList.remove('hidden');
                 container.classList.add('flex');
                 indicator.innerText = 'FECHAR';
-                setTimeout(() => {
-                    const track = container.querySelector('.carousel-track');
-                    if (track) {
-                        const cid = track.id.replace('track-', '');
-                        if (!cState[cid]) cInit(cid);
-                    }
-                }, 50);
+                setTimeout(() => initCarousels(), 50);
             } else {
                 container.classList.add('hidden');
                 container.classList.remove('flex');
@@ -864,7 +827,6 @@
             }
         }
 
-        // ── ABRIR CATEGORIA ──
         function openCategory(name) {
             triggerTransition(() => {
                 titleElement.innerText = name;
@@ -1036,15 +998,11 @@
                         controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
                         youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
                     }));
-                    // Inicializa carrosseis logo na abertura
-                    ['highlights-vol','aberturas-vol'].forEach(id => {
-                        if (document.getElementById('track-' + id)) cInit(id);
-                    });
+                    initCarousels();
                 }, 50);
             });
         }
 
-        // ── FECHAR CATEGORIA ──
         function closeCategory() {
             currentPlayers.forEach(player => {
                 if (player.playing) {
@@ -1062,18 +1020,18 @@
                     }, 50);
                 }
             });
+            Object.keys(carouselState).forEach(id => stopAutoSlide(id));
             triggerTransition(() => {
                 view.classList.remove('active');
                 mainScroll.style.overflowY = 'auto';
             });
         }
 
-        // ── CAPA ──
+        // ── FORMULÁRIO E CAPA ──
         const capaImg = document.querySelector('.capa-img-full');
         capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; });
         if (capaImg.complete) capaImg.style.opacity = '1';
 
-        // ── FORMULÁRIO ──
         const contactForm = document.getElementById('contact-form');
         const formStatus  = document.getElementById('form-status');
 
