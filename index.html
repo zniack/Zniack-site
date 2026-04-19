@@ -107,7 +107,7 @@
             height: 100vh;
             min-height: 100vh;
             padding: 0;
-            justify-content: flex-end; /* Mobile padrão: Embaixo */
+            justify-content: flex-end;
         }
 
         .capa-img-full {
@@ -132,14 +132,17 @@
             gap: 3rem;
         }
 
+        /* ── HEADER STICKY COM VIDRO FOSCO ── */
         .header-sticky {
             position: fixed;
             top: -100px; left: 0;
             width: 100%;
             padding: 30px 10%;
             z-index: 100;
-            background: rgba(37, 37, 37, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(37, 37, 37, 0.55);
+            backdrop-filter: blur(18px) saturate(0.8);
+            -webkit-backdrop-filter: blur(18px) saturate(0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             transition: top 0.4s ease, opacity 0.4s ease;
             display: flex;
             gap: 3rem;
@@ -288,14 +291,13 @@
             border-color: rgba(255,255,255,0.4);
         }
 
-        /* AJUSTE 1: Header no topo esquerdo estritamente no Desktop */
         @media (min-width: 769px) {
             #capa {
-                justify-content: flex-start; /* Alinha ao topo */
+                justify-content: flex-start;
                 padding-top: 100px;
             }
             .banner-nav {
-                background: none; /* Remove a sombra inferior */
+                background: none;
                 padding-top: 0;
             }
         }
@@ -450,6 +452,76 @@
 
         #portfolio-content-area {
             padding-bottom: 35vh; 
+        }
+
+        /* ── SUBCATEGORIA: TOGGLE COM ANIMAÇÃO ── */
+        .subcat-header {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 16px;
+            border-left: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 14px;
+            transition: border-color 0.3s ease;
+            width: max-content;
+            max-width: 100%;
+        }
+        .subcat-header:hover { border-color: white; }
+
+        .subcat-title {
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+        }
+        .subcat-header:hover .subcat-title { color: white; }
+
+        .subcat-indicator {
+            font-family: 'Oswald', sans-serif;
+            color: rgba(255,255,255,0.3);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s ease, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+            transform: translateX(0px);
+            opacity: 1;
+            white-space: nowrap;
+        }
+        .subcat-header:hover .subcat-indicator { color: white; }
+        .subcat-header.open .subcat-indicator {
+            transform: translateX(6px);
+            opacity: 0.5;
+        }
+
+        /* Container de conteúdo da subcategoria com animação de abertura */
+        .subcat-body {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+            width: 100%;
+        }
+        .subcat-body.open {
+            grid-template-rows: 1fr;
+        }
+        .subcat-body-inner {
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.4s ease 0.05s, transform 0.4s cubic-bezier(0.25, 1, 0.5, 1) 0.05s;
+        }
+        .subcat-body.open .subcat-body-inner {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .subcat-body-inner-pad {
+            padding-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
         }
 
         @media (max-width: 768px) {
@@ -778,13 +850,45 @@
                 </div>`;
         }
 
-        // AJUSTE 2: Nova lógica física para transição da seta preservando loop infinito
+        /* ── CARROSSEL: VOLTAR COM ITEM SELECIONADO ── */
         window.scrollCarouselLeft = function(id, event) {
             event.stopPropagation();
             const state = carouselState[id];
-            if(state) {
-                state.currentSpeed = -25; // Impulso físico negativo (move para a esquerda)
+            if (!state) return;
+
+            if (state.targetEl || state.isSlidingToItem) {
+                state.isSlidingToItem = false;
+                state.isClosing = true;
+                const allItems = Array.from(state.track.children);
+                allItems.forEach(item => {
+                    item.style.transition = 'none';
+                    if (item.classList.contains('active')) {
+                        item.style.width = window.getComputedStyle(item).width;
+                        item.style.height = window.getComputedStyle(item).height;
+                        item.style.opacity = window.getComputedStyle(item).opacity;
+                        item.classList.remove('active');
+                    }
+                });
             }
+
+            setTimeout(() => {
+                state.isClosing = false;
+                state.isPaused = false;
+                state.targetEl = null;
+                state.syncTargetEl = null;
+                state.currentSpeed = -20;
+                const releaseImpulse = () => {
+                    if (state.currentSpeed < state.baseSpeed) {
+                        state.currentSpeed += 0.5;
+                        if (state.currentSpeed < state.baseSpeed) {
+                            requestAnimationFrame(releaseImpulse);
+                        } else {
+                            state.currentSpeed = state.baseSpeed;
+                        }
+                    }
+                };
+                setTimeout(releaseImpulse, 300);
+            }, 80);
         };
 
         function initCarousels() {
@@ -947,7 +1051,6 @@
                     state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.05;
                     state.pos -= state.currentSpeed;
                     
-                    // Ajuste de Reset Físico Robusto bidirecional
                     if (currentHalfWidth > 0) {
                         if (state.pos <= -currentHalfWidth) {
                             state.pos += currentHalfWidth;
@@ -1057,8 +1160,9 @@
 
         document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
 
-        // Ajuste: Menu sticky reage apenas quando a tela de hero sai da view
+        /* ── HEADER: ignora scroll enquanto modal está aberto ── */
         window.addEventListener('scroll', () => {
+            if (view.classList.contains('active')) return;
             const capaRect = document.getElementById('capa').getBoundingClientRect();
             stickyHeader.classList.toggle('visible', capaRect.bottom <= 100);
         });
@@ -1078,7 +1182,6 @@
             });
         }
 
-        // AJUSTE 4: Fechamento suave alinhado à transição preta global
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1090,7 +1193,7 @@
                     if (isModalOpen) {
                         view.classList.remove('active');
                         document.body.style.overflow = '';
-                        currentPlayers.forEach(p => { try { p.pause(); } catch(e){} }); // Pausa videos abertos
+                        currentPlayers.forEach(p => { try { p.pause(); } catch(e){} });
                     }
                     window.scrollTo({ top: targetSection.offsetTop, behavior: 'auto' });
                 });
@@ -1172,37 +1275,56 @@
         });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-        function toggleSubCategory(id, element) {
-            const container = document.getElementById(id);
-            const indicator = element.querySelector('.indicator');
+        /* ── SUBCATEGORIA: TOGGLE COM ANIMAÇÃO DE SLIDE + FADE ── */
+        function toggleSubCategory(id, headerEl) {
+            const body = document.getElementById('body-' + id);
+            if (!body) return;
 
-            Object.keys(carouselState).forEach(cId => {
-                const state = carouselState[cId];
-                if (state && state.targetEl && !state.isClosing) {
-                    state.isClosing = true;
-                    state.currentSpeed = 0; 
-                    const allItems = Array.from(state.track.children);
-                    allItems.forEach(item => {
-                        item.style.transition = 'none';
-                        if (item.classList.contains('active')) {
-                            item.style.width = window.getComputedStyle(item).width;
-                            item.style.height = window.getComputedStyle(item).height;
-                            item.style.opacity = window.getComputedStyle(item).opacity;
-                            item.classList.remove('active');
-                        }
-                    });
-                }
-            });
+            const isOpen = body.classList.contains('open');
 
-            if (container.classList.contains('hidden')) {
-                container.classList.remove('hidden');
-                container.classList.add('flex');
-                indicator.innerText = 'FECHAR';
+            /* Fecha carrosseis ativos ao recolher */
+            if (isOpen) {
+                Object.keys(carouselState).forEach(cId => {
+                    const state = carouselState[cId];
+                    if (state && state.targetEl && !state.isClosing) {
+                        state.isClosing = true;
+                        state.currentSpeed = 0;
+                        const allItems = Array.from(state.track.children);
+                        allItems.forEach(item => {
+                            item.style.transition = 'none';
+                            if (item.classList.contains('active')) {
+                                item.style.width = window.getComputedStyle(item).width;
+                                item.style.height = window.getComputedStyle(item).height;
+                                item.style.opacity = window.getComputedStyle(item).opacity;
+                                item.classList.remove('active');
+                            }
+                        });
+                    }
+                });
+                body.classList.remove('open');
+                headerEl.classList.remove('open');
             } else {
-                container.classList.add('hidden');
-                container.classList.remove('flex');
-                indicator.innerText = 'ABRIR';
+                body.classList.add('open');
+                headerEl.classList.add('open');
             }
+        }
+
+        /* ── helper para montar bloco de subcategoria ── */
+        function buildSubCategory(id, label, videosHTML) {
+            return `
+            <div class="flex flex-col w-full border-b border-white/5 pb-4">
+                <div class="subcat-header" onclick="toggleSubCategory('${id}', this)">
+                    <span class="subcat-title">${label}</span>
+                    <span class="subcat-indicator">ABRIR</span>
+                </div>
+                <div class="subcat-body" id="body-${id}">
+                    <div class="subcat-body-inner">
+                        <div class="subcat-body-inner-pad">
+                            ${videosHTML}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
         }
 
         function openCategory(name) {
@@ -1222,50 +1344,32 @@
                 
                 stickyHeader.classList.add('visible');
                 
-                // Título foi removido conforme solicitação
                 descElement.innerText  = descricoesPortfolio[name] || '';
                 updateCategoryNav(name);
 
                 document.body.style.overflow = 'hidden';
 
                 if (name === 'Vídeos Diários') {
-                    contentArea.innerHTML = `
-                        <div class="flex flex-col w-full border-b border-white/5 pb-4">
-                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-analises', this)">
-                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Análises</h4>
-                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
-                            </div>
-                            <div id="cat-analises" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildInlineVideo('csh7Z3dcb0g', 'Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.')}
-                                ${buildInlineVideo('82Ah3XW5Jg4', 'Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.')}
-                                ${buildCarousel('analises-vol')}
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col w-full border-b border-white/5 pb-4 mt-8">
-                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-comentados', this)">
-                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Comentados</h4>
-                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
-                            </div>
-                            <div id="cat-comentados" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildInlineVideo('ll3UYdXXhlE')}
-                                ${buildInlineVideo('Oacodzw29CE')}
-                                ${buildCarousel('comentados-vol')}
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col w-full border-b border-white/5 pb-4 mt-8">
-                            <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-noticias', this)">
-                                <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Notícias</h4>
-                                <span class="indicator font-['Oswald'] text-white/30 text-xs tracking-[2px] group-hover:text-white transition">ABRIR</span>
-                            </div>
-                            <div id="cat-noticias" class="hidden flex-col gap-12 w-full mt-8">
-                                ${buildInlineVideo('d0d43qkOE7A')}
-                                ${buildInlineVideo('AkrpKrpF3dc')}
-                                ${buildCarousel('noticias-vol')}
-                            </div>
-                        </div>
-                    `;
+                    contentArea.innerHTML =
+                        buildSubCategory('analises', 'Análises',
+                            buildInlineVideo('csh7Z3dcb0g', 'Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.') +
+                            buildInlineVideo('82Ah3XW5Jg4', 'Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.') +
+                            buildCarousel('analises-vol')
+                        ) +
+                        '<div style="margin-top:32px">' +
+                        buildSubCategory('comentados', 'Comentados',
+                            buildInlineVideo('ll3UYdXXhlE') +
+                            buildInlineVideo('Oacodzw29CE') +
+                            buildCarousel('comentados-vol')
+                        ) +
+                        '</div>' +
+                        '<div style="margin-top:32px">' +
+                        buildSubCategory('noticias', 'Notícias',
+                            buildInlineVideo('d0d43qkOE7A') +
+                            buildInlineVideo('AkrpKrpF3dc') +
+                            buildCarousel('noticias-vol')
+                        ) +
+                        '</div>';
 
                 } else if (name === 'Highlights') {
                     contentArea.innerHTML = `
