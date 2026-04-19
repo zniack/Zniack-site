@@ -107,7 +107,7 @@
             height: 100vh;
             min-height: 100vh;
             padding: 0;
-            justify-content: flex-end; 
+            justify-content: flex-end; /* Mobile padrão: Embaixo */
         }
 
         .capa-img-full {
@@ -237,7 +237,6 @@
             transform: translateX(10px); 
         }
 
-        /* AJUSTE 3: Z-index ajustado para o header ficar visível e padding ajustado */
         .portfolio-modal {
             position: fixed;
             top: 0; left: 0;
@@ -253,19 +252,19 @@
         .portfolio-modal.active { opacity: 1; visibility: visible; }
         .portfolio-modal::-webkit-scrollbar { display: none; }
 
-        /* AJUSTE 1: Container layout para Sidebar e Conteúdo */
         .portfolio-layout-container {
             display: flex;
             flex-direction: column;
             width: 100%;
         }
 
-        /* ── NAV DE CATEGORIAS ── */
+        /* ── NAV DE CATEGORIAS (TOPO) ── */
         .category-nav {
             display: flex;
+            flex-direction: row;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .category-nav-btn {
@@ -279,7 +278,6 @@
             cursor: pointer;
             transition: color 0.2s ease, border-color 0.2s ease;
             background: none;
-            text-align: left; /* Garante alinhamento quando em coluna */
         }
         .category-nav-btn:hover {
             color: rgba(255,255,255,0.7);
@@ -290,27 +288,18 @@
             border-color: rgba(255,255,255,0.4);
         }
 
-        /* AJUSTE 1: Sidebar fixa apenas no Desktop */
+        /* AJUSTE 1: Header no topo esquerdo estritamente no Desktop */
         @media (min-width: 769px) {
-            .portfolio-layout-container {
-                flex-direction: row;
-                gap: 60px;
-                align-items: flex-start;
+            #capa {
+                justify-content: flex-start; /* Alinha ao topo */
+                padding-top: 100px;
             }
-            .category-nav {
-                flex-direction: column;
-                position: sticky;
-                top: 120px; 
-                width: 200px;
-                flex-shrink: 0;
-                margin-bottom: 0;
-            }
-            .portfolio-content-wrapper {
-                flex: 1;
+            .banner-nav {
+                background: none; /* Remove a sombra inferior */
+                padding-top: 0;
             }
         }
 
-        /* AJUSTE 2: Transição mais rápida e responsiva */
         .fade-up {
             opacity: 0;
             transform: translateY(30px);
@@ -472,7 +461,7 @@
             }
             .nav-link { font-size: 11px !important; letter-spacing: 3px !important; }
             section { padding: 15vh 5%; }
-            .portfolio-modal { padding: 100px 5% 5vh 5%; } /* Padding no mobile para evitar o header */
+            .portfolio-modal { padding: 100px 5% 5vh 5%; }
             .nome-foto { margin-top: 15px; }
             
             .carousel-wrapper { min-height: 155px; contain: layout; }
@@ -609,7 +598,6 @@
             </div>
 
             <div class="portfolio-content-wrapper">
-                <h3 id="category-title" class="font-['Oswald'] tracking-[5px] text-white text-lg uppercase mb-4">TITULO</h3>
                 <p id="category-desc" class="font-['Roboto'] font-thin text-[15px] text-[#e3e3e3] mb-8 w-full max-w-[600px] text-left"></p>
                 <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px]"></div>
             </div>
@@ -639,7 +627,6 @@
         const stickyHeader = document.getElementById('sticky-header');
         const bannerNav    = document.querySelector('.banner-nav');
         const view         = document.getElementById('portfolio-view');
-        const titleElement = document.getElementById('category-title');
         const descElement  = document.getElementById('category-desc');
         const contentArea  = document.getElementById('portfolio-content-area');
 
@@ -763,7 +750,6 @@
             }
         }
 
-        // AJUSTE 4: Seta esquerda injetada no HTML do carrossel
         function buildCarousel(carouselId) {
             const ids = carouselData[carouselId];
             if (!ids || ids.length === 0) return '';
@@ -792,12 +778,12 @@
                 </div>`;
         }
 
-        // AJUSTE 4: Função para arrastar o carrossel para a esquerda
+        // AJUSTE 2: Nova lógica física para transição da seta preservando loop infinito
         window.scrollCarouselLeft = function(id, event) {
             event.stopPropagation();
             const state = carouselState[id];
             if(state) {
-                state.pos += 250; 
+                state.currentSpeed = -25; // Impulso físico negativo (move para a esquerda)
             }
         };
 
@@ -961,8 +947,13 @@
                     state.currentSpeed += (targetSpeed - state.currentSpeed) * 0.05;
                     state.pos -= state.currentSpeed;
                     
-                    if (currentHalfWidth > 0 && Math.abs(state.pos) >= currentHalfWidth) {
-                        state.pos += currentHalfWidth;
+                    // Ajuste de Reset Físico Robusto bidirecional
+                    if (currentHalfWidth > 0) {
+                        if (state.pos <= -currentHalfWidth) {
+                            state.pos += currentHalfWidth;
+                        } else if (state.pos > 0) {
+                            state.pos -= currentHalfWidth;
+                        }
                     }
                 }
 
@@ -1031,7 +1022,6 @@
             }
         }
 
-        // AJUSTE 4: Fechar carrossel ao clicar fora
         document.addEventListener('click', (e) => {
             if (document.getElementById('portfolio-view').classList.contains('active')) {
                 if (!e.target.closest('.carousel-item') && !e.target.closest('.carousel-nav-btn')) {
@@ -1056,7 +1046,6 @@
             }
         });
 
-        // AJUSTE 2: Observer atualizado para carregar de forma antecipada (mais natural)
         const fadeObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1068,9 +1057,10 @@
 
         document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
 
+        // Ajuste: Menu sticky reage apenas quando a tela de hero sai da view
         window.addEventListener('scroll', () => {
-            const bannerRect = bannerNav.getBoundingClientRect();
-            stickyHeader.classList.toggle('visible', bannerRect.bottom <= 0);
+            const capaRect = document.getElementById('capa').getBoundingClientRect();
+            stickyHeader.classList.toggle('visible', capaRect.bottom <= 100);
         });
 
         function triggerTransition(callback) {
@@ -1088,18 +1078,20 @@
             });
         }
 
-        // AJUSTE 3: Links do header agora fecham o modal corretamente
+        // AJUSTE 4: Fechamento suave alinhado à transição preta global
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 const targetSection = document.querySelector(this.getAttribute('href'));
                 
-                if (view.classList.contains('active')) {
-                    view.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
+                const isModalOpen = view.classList.contains('active');
 
                 triggerTransition(() => {
+                    if (isModalOpen) {
+                        view.classList.remove('active');
+                        document.body.style.overflow = '';
+                        currentPlayers.forEach(p => { try { p.pause(); } catch(e){} }); // Pausa videos abertos
+                    }
                     window.scrollTo({ top: targetSection.offsetTop, behavior: 'auto' });
                 });
             });
@@ -1228,10 +1220,9 @@
 
             triggerTransition(() => {
                 
-                // AJUSTE 3: Força o Header visível no modal
                 stickyHeader.classList.add('visible');
-
-                titleElement.innerText = name;
+                
+                // Título foi removido conforme solicitação
                 descElement.innerText  = descricoesPortfolio[name] || '';
                 updateCategoryNav(name);
 
