@@ -282,7 +282,7 @@
             font-family: 'Oswald', sans-serif;
             font-size: 11px;
             letter-spacing: 5px;
-            color: rgba(255, 255, 255, 0.5); 
+            color: rgba(255, 255, 255, 0.6); 
             text-transform: uppercase;
             margin-bottom: 18px;
         }
@@ -622,6 +622,24 @@
 
         const carouselState = {};
 
+        // ── INJETOR DE QUALIDADE YOUTUBE ──
+        function forceYouTubeHD(container) {
+            const tryForce = setInterval(() => {
+                const iframe = container.querySelector('iframe');
+                if (!iframe) return;
+                clearInterval(tryForce);
+                const send = () => {
+                    if(iframe.contentWindow) {
+                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setPlaybackQualityRange', args: ['hd1080', 'hd1080'] }), '*');
+                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }), '*');
+                    }
+                };
+                send();
+                setTimeout(send, 800);
+                setTimeout(send, 2000);
+            }, 100);
+        }
+
         function getCarouselMetrics() {
             const isMobile = window.innerWidth <= 768;
             return {
@@ -669,15 +687,16 @@
                 mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
                 
                 const player = new Plyr(mount.querySelector('.js-player'), {
-                    // CONFIGURAÇÃO EXPLÍCITA PARA FORÇAR O MENU DE QUALIDADE DO YOUTUBE
                     controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
                     settings: ['quality', 'speed'],
-                    quality: { default: 1080, options: [1080, 720, 480, 360] },
                     youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
                     autoplay: true
                 });
                 
-                player.on('ready', () => { player.volume = 0.75; });
+                player.on('ready', () => { 
+                    player.volume = 0.75; 
+                    forceYouTubeHD(mount); // Chamada do hack no InLine
+                });
                 currentPlayers.push(player);
             }
         }
@@ -769,7 +788,8 @@
                     if (speed > maxSpeed) speed = maxSpeed;
                     if (speed < -maxSpeed) speed = -maxSpeed;
                     
-                    if (Math.abs(diff) < 0.2) {
+                    // LÓGICA DO HARD-STOP (Tolerância aumentada para matar o shake)
+                    if (Math.abs(diff) < 0.5) {
                         state.pos = state.targetX;
                     } else {
                         state.pos += speed;
@@ -792,18 +812,19 @@
                         currentH += (targetH - currentH) * 0.15;
                         currentO += (targetO - currentO) * 0.15;
 
-                        // SEM TOFIXED, Deixa o navegador rodar liso, mas o gatilho de parada é mais apertado
                         item.style.width = currentW + 'px';
                         item.style.height = currentH + 'px';
                         item.style.opacity = currentO;
 
                         if (isTarget && item === state.targetEl) {
-                            if (Math.abs(targetW - currentW) < 0.1) targetReachedSize = true;
+                            if (Math.abs(targetW - currentW) < 0.5) targetReachedSize = true;
                         }
                     });
 
-                    if (Math.abs(state.targetX - state.pos) < 0.2 && targetReachedSize) {
+                    // FINALIZAÇÃO EXATA SEM SOBRAS (HARD STOP)
+                    if (Math.abs(state.targetX - state.pos) < 0.5 && targetReachedSize) {
                         state.pos = state.targetX;
+                        state.currentSpeed = 0; 
                         state.isSlidingToItem = false;
                         allItems.forEach(item => {
                             item.style.width = '';
@@ -833,7 +854,7 @@
                             item.style.height = currentH + 'px';
                             item.style.opacity = currentO;
 
-                            if (Math.abs(metrics.baseW - currentW) > 0.1) targetReached = false;
+                            if (Math.abs(metrics.baseW - currentW) > 0.5) targetReached = false;
                         }
                     });
 
@@ -870,7 +891,6 @@
                     }
                 }
 
-                // USO FORÇADO DA GPU PARA ELIMINAR 100% O SHAKE NO MOBILE
                 state.track.style.transform = `translate3d(${state.pos}px, 0, 0)`;
                 state.rafId = requestAnimationFrame(tick);
             }
@@ -1003,16 +1023,15 @@
 
             setTimeout(() => {
                 lightboxPlayer = new Plyr('#lb-plyr', {
-                    // CONFIGURAÇÃO EXPLÍCITA PARA FORÇAR O MENU DE QUALIDADE DO YOUTUBE NO LIGHTBOX
                     controls: ['play','progress','current-time','mute','volume','settings','fullscreen'],
                     settings: ['quality', 'speed'],
-                    quality: { default: 1080, options: [1080, 720, 480, 360] },
                     youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
                     autoplay: true
                 });
                 
                 lightboxPlayer.on('ready', () => {
                     lightboxPlayer.volume = 0.75; 
+                    forceYouTubeHD(wrap); // Chamada do hack no Lightbox
                 });
             }, 50);
         }
