@@ -92,13 +92,8 @@
             position: relative; 
         }
 
-        .snap-container::-webkit-scrollbar {
-            display: none;
-        }
-        .snap-container {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .snap-container::-webkit-scrollbar { display: none; }
+        .snap-container { -ms-overflow-style: none; scrollbar-width: none; }
 
         section {
             min-height: 100vh; 
@@ -153,9 +148,7 @@
             gap: 3rem;
         }
 
-        .header-sticky.visible {
-            top: 0;
-        }
+        .header-sticky.visible { top: 0; }
 
         #transition-overlay {
             display: none;
@@ -186,10 +179,10 @@
         }
 
         .comentario-trabalho {
-            font-family: 'Roboto', sans-serif; 
+            font-family: 'Roboto', sans-serif;
             font-weight: 100;
             color: var(--text-sub);
-            font-size: 15px; /* TAMANHO AUMENTADO PARA 16px PARA MAIOR CONFORTO */
+            font-size: 15px;
             text-align: left;
             max-width: 600px;
             line-height: 1.8;
@@ -224,10 +217,7 @@
             text-align: left;
             font-size: 14px;
         }
-        
-        .list-item:last-child {
-            margin-bottom: 0;
-        }
+        .list-item:last-child { margin-bottom: 0; }
 
         .list-item b { 
             font-family: 'Oswald', sans-serif;
@@ -252,8 +242,7 @@
 
         .portfolio-modal {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: 100%;
             height: 100vh;
             background-color: var(--bg-color);
@@ -264,13 +253,8 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .portfolio-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .portfolio-modal::-webkit-scrollbar {
-            display: none;
-        }
+        .portfolio-modal.active { opacity: 1; visibility: visible; }
+        .portfolio-modal::-webkit-scrollbar { display: none; }
 
         .btn-voltar-sticky {
             position: sticky;
@@ -291,42 +275,164 @@
             transition: opacity 0.8s ease-out, transform 0.8s ease-out;
             will-change: opacity, transform;
         }
-        .fade-up.is-visible {
-            opacity: 1;
-            transform: translateY(0);
+        .fade-up.is-visible { opacity: 1; transform: translateY(0); }
+
+        /* ── CARROSSEL ── */
+        .vitrine-section {
+            margin-top: 56px;
+            width: 100%;
+        }
+
+        .vitrine-label {
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 5px;
+            color: rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            cursor: grab;
+            user-select: none;
+        }
+        .carousel-wrapper:active { cursor: grabbing; }
+
+        .carousel-track {
+            display: flex;
+            gap: 10px;
+            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        .carousel-item {
+            flex: 0 0 auto;
+            width: 170px;
+            aspect-ratio: 16/9;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.04);
+            overflow: hidden;
+            cursor: pointer;
+            transition: width 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        filter 0.45s ease,
+                        border-color 0.45s ease;
+            filter: brightness(0.4) saturate(0.2);
+        }
+
+        .carousel-item.active {
+            width: 255px;
+            filter: brightness(1) saturate(1);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .carousel-play {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: rgba(0,0,0,0.15);
+        }
+        .carousel-item.active .carousel-play { opacity: 1; }
+        .carousel-play svg {
+            width: 32px;
+            height: 32px;
+            fill: rgba(255,255,255,0.9);
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.7));
+        }
+
+        .carousel-nav {
+            display: flex;
+            gap: 6px;
+            margin-top: 14px;
+        }
+        .carousel-nav button {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.4);
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            padding: 5px 13px;
+            cursor: pointer;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        .carousel-nav button:hover {
+            border-color: rgba(255,255,255,0.45);
+            color: white;
+        }
+
+        /* ── LIGHTBOX ── */
+        #video-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(8,8,8,0.96);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #video-lightbox.active { opacity: 1; visibility: visible; }
+
+        .lightbox-inner {
+            width: 90%;
+            max-width: 860px;
+            position: relative;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -38px;
+            right: 0;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.4);
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            letter-spacing: 4px;
+            cursor: pointer;
+            transition: color 0.2s;
+            text-transform: uppercase;
+            padding: 0;
+        }
+        .lightbox-close:hover { color: white; }
+
+        .lightbox-player-wrap {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #0a0a0a;
         }
 
         @media (max-width: 768px) {
-            #capa {
-                min-height: 80vh; 
-                height: 80vh;
-            }
-            .capa-img-full {
-                object-fit: cover; 
-                object-position: center 20%; 
-            }
-
+            #capa { min-height: 80vh; height: 80vh; }
+            .capa-img-full { object-fit: cover; object-position: center 20%; }
             .banner-nav, .header-sticky {
-                gap: 15px; 
-                padding: 20px 5%; 
-                justify-content: center; 
-                flex-wrap: wrap; 
+                gap: 15px; padding: 20px 5%;
+                justify-content: center; flex-wrap: wrap;
             }
-            .nav-link {
-                font-size: 11px !important; 
-                letter-spacing: 3px !important; 
-            }
-            section {
-                padding: 15vh 5%; 
-            }
-            .portfolio-modal {
-                padding: 5vh 5%;
-            }
-            .nome-foto {
-                margin-top: 15px;
-            }
+            .nav-link { font-size: 11px !important; letter-spacing: 3px !important; }
+            section { padding: 15vh 5%; }
+            .portfolio-modal { padding: 5vh 5%; }
+            .nome-foto { margin-top: 15px; }
+            .carousel-item { width: 130px; }
+            .carousel-item.active { width: 190px; }
         }
-        
     </style>
 </head>
 <body class="noise">
@@ -344,7 +450,6 @@
         
         <section id="capa">
             <img src="capa.jpg" alt="Zniack - Portfólio de Edição de Vídeo e Alta Demanda" class="capa-img-full">
-            
             <nav class="banner-nav">
                 <a href="#sobre" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Quem sou eu</a>
                 <a href="#trabalho" class="nav-link font-['Oswald'] text-[16px] tracking-[7px] uppercase text-white/70 hover:text-white transition">Como trabalho</a>
@@ -355,14 +460,12 @@
 
         <section id="sobre">
             <div class="flex flex-col md:flex-row gap-12 items-start w-full fade-up"> 
-                
                 <div class="w-full max-w-[600px]">
                     <h2 class="titulo-secao">Quem sou eu</h2>
                     <div class="texto-corpo">
                         Editor de vídeo com <span class="text-white">3+ anos</span> de experiência, focado em operações de alta demanda. São mais de <span class="text-white">800 vídeos finalizados</span>, mantendo um ritmo de entrega constante que se ajusta à complexidade de cada projeto.
                     </div>
                 </div>
-
                 <div class="flex flex-col items-center flex-none mt-8 md:mt-0 w-full md:w-auto">
                     <div class="w-full aspect-[4/5] md:w-[280px] md:h-[340px] bg-[#1a1a1a] border border-white/10 overflow-hidden flex items-center justify-center text-white/30 text-xs">
                         <img src="main.jpg" alt="Felipe Souza Zniack - Editor de Vídeo Profissional" class="w-full h-full object-cover object-center saturate-[.0] hover:saturate-100 transition duration-500 cursor-pointer">
@@ -370,63 +473,30 @@
                     <span class="nome-foto">Felipe Souza</span>
                     <span class="signature">Zniack</span>
                 </div>
-                
             </div>
         </section>
 
         <section id="trabalho">
             <div class="w-full fade-up">
                 <h2 class="titulo-secao" style="margin-bottom: 25px;">Como trabalho</h2>
-                
-                <p class="comentario-trabalho mb-16">
-                    Após o briefing e alinhamento, assumo a gestão da pós-produção.
-                </p>
-                
+                <p class="comentario-trabalho mb-16">Após o briefing e alinhamento, assumo a gestão da pós-produção.</p>
                 <div class="flex flex-col gap-2 max-w-[600px]">
-                    <div class="list-item">
-                        <b>Organização</b>
-                        Download e estruturação dos arquivos brutos e assets.
-                    </div>
-                    <div class="list-item">
-                        <b>Decupagem</b>
-                        Limpeza do material, removendo erros, pausas desnecessárias e vícios de linguagem.
-                    </div>
-                    <div class="list-item">
-                        <b>Curadoria de Mídia</b>
-                        Busca e seleção de b-rolls, inserts e mídias de apoio.
-                    </div>
-                    <div class="list-item">
-                        <b>Edição</b>
-                        Construção da narrativa, ritmo e pacing.
-                    </div>
-                    <div class="list-item">
-                        <b>Lettering</b>
-                        Aplicação de textos e elementos alinhados à identidade visual.
-                    </div>
-                    <div class="list-item">
-                        <b>Sonorização</b>
-                        Tratamento de áudio, inserção e mixagem de SFX e trilha sonora.
-                    </div>
-                    <div class="list-item">
-                        <b>Finalização</b>
-                        Aplicação de VFX e color grading.
-                    </div>
-                    <div class="list-item">
-                        <b>Entrega</b>
-                        Renderização, conferência técnica final, aprovação e entrega.
-                    </div>
+                    <div class="list-item"><b>Organização</b>Download e estruturação dos arquivos brutos e assets.</div>
+                    <div class="list-item"><b>Decupagem</b>Limpeza do material, removendo erros, pausas desnecessárias e vícios de linguagem.</div>
+                    <div class="list-item"><b>Curadoria de Mídia</b>Busca e seleção de b-rolls, inserts e mídias de apoio.</div>
+                    <div class="list-item"><b>Edição</b>Construção da narrativa, ritmo e pacing.</div>
+                    <div class="list-item"><b>Lettering</b>Aplicação de textos e elementos alinhados à identidade visual.</div>
+                    <div class="list-item"><b>Sonorização</b>Tratamento de áudio, inserção e mixagem de SFX e trilha sonora.</div>
+                    <div class="list-item"><b>Finalização</b>Aplicação de VFX e color grading.</div>
+                    <div class="list-item"><b>Entrega</b>Renderização, conferência técnica final, aprovação e entrega.</div>
                 </div>
-
-                <p class="comentario-trabalho mt-16">
-                    Entendo que cada tipo de projeto exige uma abordagem específica. Em trailers, por exemplo, a trilha sonora frequentemente orienta a construção do ritmo e da narrativa desde as etapas iniciais.
-                </p>
+                <p class="comentario-trabalho mt-16">Entendo que cada tipo de projeto exige uma abordagem específica. Em trailers, por exemplo, a trilha sonora frequentemente orienta a construção do ritmo e da narrativa desde as etapas iniciais.</p>
             </div>
         </section>
 
         <section id="portfolio">
             <div class="w-full relative fade-up">
                 <h2 class="titulo-secao portfolio-title">Portfolio</h2>
-                
                 <div id="portfolio-grid" class="flex flex-col gap-6 w-full max-w-[400px]">
                     <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer" onclick="openCategory('Vídeos Diários')">
                         <span class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">VÍDEOS DIÁRIOS</span>
@@ -450,21 +520,16 @@
         <section id="contato">
             <div class="w-full fade-up">
                 <h2 class="titulo-secao">Contato</h2>
-                
                 <div class="flex flex-col gap-16 w-full max-w-[600px]">
                     <form id="contact-form" action="https://formspree.io/f/mzdyewrp" method="POST" class="flex flex-col gap-8 w-full">
                         <input type="text" name="name" required placeholder="NOME" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
                         <input type="email" name="email" required placeholder="EMAIL" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
                         <textarea name="message" required placeholder="MENSAGEM" class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
-                        <button type="submit" class="font-['Oswald'] text-[12px] tracking-[4px] border border-white p-4 hover:bg-white hover:text-black transition uppercase w-max mt-4">
-                            Enviar
-                        </button>
+                        <button type="submit" class="font-['Oswald'] text-[12px] tracking-[4px] border border-white p-4 hover:bg-white hover:text-black transition uppercase w-max mt-4">Enviar</button>
                         <p id="form-status" class="hidden font-['Oswald'] tracking-[2px] text-sm mt-2 text-[#d9d9d9]"></p>
                     </form>
-
                     <div class="flex flex-col gap-6 w-full">
                         <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase">Informações de contato</h4>
-                        
                         <div class="flex flex-col gap-4">
                             <div class="flex items-center gap-4 text-[#d9d9d9] font-thin text-sm">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
@@ -482,33 +547,63 @@
 
     </main>
 
+    <!-- MODAL DE CATEGORIA -->
     <div id="portfolio-view" class="portfolio-modal">
         <button onclick="closeCategory()" class="btn-voltar-sticky font-['Oswald'] text-[12px] tracking-[3px] text-white/80 hover:text-white hover:bg-white/10 transition uppercase flex items-center gap-2">
             <span>&larr;</span> Voltar para Portfólio
         </button>
-        
         <h3 id="category-title" class="font-['Oswald'] tracking-[5px] text-white text-lg uppercase mb-4 mt-8">TITULO</h3>
-        
         <p id="category-desc" class="font-['Roboto'] font-thin text-[15px] text-[#e3e3e3] mb-8 w-full max-w-[600px] text-left"></p>
-        
-        <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px] pb-32">
+        <div id="portfolio-content-area" class="w-full flex flex-col gap-16 max-w-[1050px] pb-32"></div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div id="video-lightbox">
+        <div class="lightbox-inner">
+            <button class="lightbox-close" onclick="closeLightbox()">&#x2715; Fechar</button>
+            <div class="lightbox-player-wrap" id="lightbox-player-wrap"></div>
         </div>
     </div>
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-    
-    <script>
-        const mainScroll = document.getElementById('main-scroll');
-        const stickyHeader = document.getElementById('sticky-header');
-        const bannerNav = document.querySelector('.banner-nav');
-        
-        const view = document.getElementById('portfolio-view');
-        const titleElement = document.getElementById('category-title');
-        const descElement = document.getElementById('category-desc');
-        const contentArea = document.getElementById('portfolio-content-area');
 
-        // VARIÁVEL GLOBAL PARA GUARDAR OS PLAYERS ATIVOS
+    <script>
+        const mainScroll   = document.getElementById('main-scroll');
+        const stickyHeader = document.getElementById('sticky-header');
+        const bannerNav    = document.querySelector('.banner-nav');
+        const view         = document.getElementById('portfolio-view');
+        const titleElement = document.getElementById('category-title');
+        const descElement  = document.getElementById('category-desc');
+        const contentArea  = document.getElementById('portfolio-content-area');
+
         let currentPlayers = [];
+
+        // ── DADOS DOS CARROSSEIS ──
+        const carouselData = {
+            'analises-vol': [
+                'wELUjsyy5-8','lKtjZ5iy3WM','QrmMlRYB4Lo','7ZmEmWEqsyk',
+                '3AUUWBWmXpE','mg33hNaoqO4','nmSxCNGAmV8','UYXG_CWDNro',
+                'nUKCw5Ejyao','0FwPnvvsKkE'
+            ],
+            'comentados-vol': [
+                '9EGPFtDVG3s','qxumGqBVclY','Hps6cf-9Ld4','7wYKFmQ7TMc',
+                'OhN7CmFrkrM','OIMWARx6nZA','K-HN5rFeDv8',
+                'ZZAvKcMFano','wfrHj0L9ccc','E60hFmhy4hk'
+            ],
+            'noticias-vol': [
+                'VNNOvzWHpw8','kMDkKOBXsxg','xfEOq0u8d8k','4XrtZ5SD-jI',
+                'mxD0WFRvt7k','KErRxCP2fP0','zPP-6cOafdQ','_z1GkNuudqU',
+                'QOziuqM_FQA','xYxGu5smFOg'
+            ],
+            'highlights-vol': [
+                'KAKM9mEqtoc','w2WLKVPCNxY','kT3T1T7pbXU','GICsA2s6cDc',
+                'Rc3IYyWu2wE','v_ELfeP2WxY','6NpgsBK8JPI','ILaJ6TaO1X0',
+                '2E97i-ChJVI','BsCDkg0lMek'
+            ],
+            'aberturas-vol': [
+                '7f7FDHkQjuQ'
+            ]
+        };
 
         const descricoesPortfolio = {
             'Vídeos Diários': 'Vídeos recebidos, editados e entregues em menos de 24 horas.',
@@ -517,7 +612,8 @@
             'Aberturas': 'Aberturas para campeonatos e eventos.',
             'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
-        
+
+        // ── FADE OBSERVER ──
         const fadeObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -525,68 +621,210 @@
                     observer.unobserve(entry.target);
                 }
             });
-        }, {
-            root: mainScroll,
-            threshold: 0.15 
-        });
+        }, { root: mainScroll, threshold: 0.15 });
 
-        document.querySelectorAll('.fade-up').forEach(element => {
-            fadeObserver.observe(element);
-        });
+        document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
 
         mainScroll.addEventListener('scroll', () => {
             const bannerRect = bannerNav.getBoundingClientRect();
-            if (bannerRect.bottom <= 0) {
-                stickyHeader.classList.add('visible');
-            } else {
-                stickyHeader.classList.remove('visible');
-            }
+            stickyHeader.classList.toggle('visible', bannerRect.bottom <= 0);
         });
 
+        // ── TRANSIÇÃO ──
         function triggerTransition(callback) {
             const overlay = document.getElementById('transition-overlay');
             overlay.style.display = 'block';
-            
             requestAnimationFrame(() => {
-                overlay.style.opacity = '1'; 
+                overlay.style.opacity = '1';
                 setTimeout(() => {
-                    callback(); 
-                    overlay.style.opacity = '0'; 
-                    setTimeout(() => {
-                        overlay.style.display = 'none'; 
-                    }, 300); 
-                }, 300); 
+                    callback();
+                    overlay.style.opacity = '0';
+                    setTimeout(() => { overlay.style.display = 'none'; }, 300);
+                }, 300);
             });
         }
 
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetSection = document.querySelector(targetId);
-                
+                const targetSection = document.querySelector(this.getAttribute('href'));
                 if (view.classList.contains('active')) {
                     view.classList.remove('active');
                     mainScroll.style.overflowY = 'auto';
                 }
-
                 triggerTransition(() => {
-                    mainScroll.scrollTo({
-                        top: targetSection.offsetTop,
-                        behavior: 'auto'
-                    });
+                    mainScroll.scrollTo({ top: targetSection.offsetTop, behavior: 'auto' });
                 });
             });
         });
 
+        // ── CARROSSEL: BUILD ──
+        function buildCarousel(carouselId) {
+            const ids = carouselData[carouselId];
+            if (!ids || ids.length === 0) return '';
+            const items = ids.map((id, i) => `
+                <div class="carousel-item${i === 0 ? ' active' : ''}" data-vid="${id}" data-index="${i}" onclick="handleCarouselClick(this,'${carouselId}')">
+                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
+                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                </div>`).join('');
+            return `
+                <div class="vitrine-section">
+                    <p class="vitrine-label">mais trabalhos</p>
+                    <div class="carousel-wrapper" id="wrap-${carouselId}"
+                         onmousedown="cDragStart(event,'${carouselId}')"
+                         ontouchstart="cTouchStart(event,'${carouselId}')">
+                        <div class="carousel-track" id="track-${carouselId}">${items}</div>
+                    </div>
+                    <div class="carousel-nav">
+                        <button onclick="cStep('${carouselId}',-1)">&#8592;</button>
+                        <button onclick="cStep('${carouselId}',1)">&#8594;</button>
+                    </div>
+                </div>`;
+        }
+
+        // ── CARROSSEL: ESTADO E LÓGICA ──
+        const cState = {};
+
+        function cItems(id) {
+            const t = document.getElementById('track-' + id);
+            return t ? Array.from(t.querySelectorAll('.carousel-item')) : [];
+        }
+
+        function cInit(id) {
+            cState[id] = { active: 0, dragged: false };
+            cCenter(id, 0);
+        }
+
+        function cCenter(id, idx) {
+            const track = document.getElementById('track-' + id);
+            const wrap  = document.getElementById('wrap-' + id);
+            if (!track || !wrap) return;
+            const items = cItems(id);
+            if (!items.length) return;
+            let offset = 0;
+            for (let i = 0; i < idx; i++) offset += items[i].offsetWidth + 10;
+            const target = offset - (wrap.offsetWidth / 2) + (items[idx].offsetWidth / 2);
+            track.style.transform = `translateX(${-Math.max(0, target)}px)`;
+        }
+
+        function cSetActive(id, idx) {
+            const items = cItems(id);
+            if (!items.length) return;
+            idx = Math.max(0, Math.min(idx, items.length - 1));
+            cState[id].active = idx;
+            items.forEach((el, i) => el.classList.toggle('active', i === idx));
+            cCenter(id, idx);
+        }
+
+        function handleCarouselClick(el, id) {
+            if (cState[id] && cState[id].dragged) return;
+            const idx = parseInt(el.dataset.index);
+            if (idx === cState[id].active) openLightbox(el.dataset.vid);
+            else cSetActive(id, idx);
+        }
+
+        function cStep(id, dir) {
+            if (!cState[id]) return;
+            cSetActive(id, cState[id].active + dir);
+        }
+
+        function cDragStart(e, id) {
+            const state  = cState[id];
+            state.dragged = false;
+            const track  = document.getElementById('track-' + id);
+            const startX = e.clientX;
+            const startTX = new DOMMatrix(getComputedStyle(track).transform).m41;
+            const onMove = ev => {
+                const dx = ev.clientX - startX;
+                if (Math.abs(dx) > 5) state.dragged = true;
+                track.style.transition = 'none';
+                track.style.transform  = `translateX(${startTX + dx}px)`;
+            };
+            const onUp = ev => {
+                track.style.transition = '';
+                const dx = ev.clientX - startX;
+                if (Math.abs(dx) > 40) cStep(id, dx < 0 ? 1 : -1);
+                else cCenter(id, state.active);
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+            };
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        }
+
+        function cTouchStart(e, id) {
+            const state  = cState[id];
+            state.dragged = false;
+            const track  = document.getElementById('track-' + id);
+            const startX = e.touches[0].clientX;
+            const startTX = new DOMMatrix(getComputedStyle(track).transform).m41;
+            const onMove = ev => {
+                const dx = ev.touches[0].clientX - startX;
+                if (Math.abs(dx) > 5) state.dragged = true;
+                track.style.transition = 'none';
+                track.style.transform  = `translateX(${startTX + dx}px)`;
+            };
+            const onEnd = ev => {
+                track.style.transition = '';
+                const dx = ev.changedTouches[0].clientX - startX;
+                if (Math.abs(dx) > 40) cStep(id, dx < 0 ? 1 : -1);
+                else cCenter(id, state.active);
+                document.removeEventListener('touchmove', onMove);
+                document.removeEventListener('touchend', onEnd);
+            };
+            document.addEventListener('touchmove', onMove, { passive: true });
+            document.addEventListener('touchend', onEnd);
+        }
+
+        // ── LIGHTBOX ──
+        let lightboxPlayer = null;
+
+        function openLightbox(videoId) {
+            const lb   = document.getElementById('video-lightbox');
+            const wrap = document.getElementById('lightbox-player-wrap');
+            wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
+            lb.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                lightboxPlayer = new Plyr('#lb-plyr', {
+                    controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
+                    youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
+                    autoplay: true
+                });
+            }, 50);
+        }
+
+        function closeLightbox() {
+            if (lightboxPlayer) {
+                try { lightboxPlayer.pause(); lightboxPlayer.destroy(); } catch(e) {}
+                lightboxPlayer = null;
+            }
+            document.getElementById('lightbox-player-wrap').innerHTML = '';
+            document.getElementById('video-lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('video-lightbox').addEventListener('click', function(e) {
+            if (e.target === this) closeLightbox();
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+        // ── SUBCATEGORIAS ──
         function toggleSubCategory(id, element) {
             const container = document.getElementById(id);
             const indicator = element.querySelector('.indicator');
-            
             if (container.classList.contains('hidden')) {
                 container.classList.remove('hidden');
                 container.classList.add('flex');
                 indicator.innerText = 'FECHAR';
+                // inicializa carrossel quando subcategoria abre
+                setTimeout(() => {
+                    const track = container.querySelector('.carousel-track');
+                    if (track) {
+                        const cid = track.id.replace('track-', '');
+                        if (!cState[cid]) cInit(cid);
+                    }
+                }, 50);
             } else {
                 container.classList.add('hidden');
                 container.classList.remove('flex');
@@ -594,11 +832,11 @@
             }
         }
 
+        // ── ABRIR CATEGORIA ──
         function openCategory(name) {
             triggerTransition(() => {
                 titleElement.innerText = name;
-                descElement.innerText = descricoesPortfolio[name] || ''; 
-                
+                descElement.innerText  = descricoesPortfolio[name] || '';
                 mainScroll.style.overflowY = 'hidden';
 
                 if (name === 'Vídeos Diários') {
@@ -614,15 +852,7 @@
                                         <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="csh7Z3dcb0g"></div>
                                     </div>
                                     <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                        <p class="comentario-trabalho">Triagem e edição de 5 horas de material bruto não catalogado em uma janela de 7 horas para entrega. O processo envolveu a catalogação e a montagem em fluxo contínuo, garantindo a agilidade e a coesão do conteúdo.</p>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col md:flex-row gap-6 w-full items-start">
-                                    <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
-                                        <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="wELUjsyy5-8"></div>
-                                    </div>
-                                    <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                        <p class="comentario-trabalho">Escreva aqui a descrição e o desafio da edição deste vídeo.</p>
+                                        <p class="comentario-trabalho">Triagem e edição de mais de 5 horas de material bruto não catalogado com janela de entrega de 7 horas. O processo exigiu catalogação, seleção e montagem em sequência contínua para garantir a publicação imediata do conteúdo.</p>
                                     </div>
                                 </div>
                                 <div class="flex flex-col md:flex-row gap-6 w-full items-start">
@@ -630,12 +860,13 @@
                                         <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="82Ah3XW5Jg4"></div>
                                     </div>
                                     <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                        <p class="comentario-trabalho">Curadoria de mais de 70 horas de material bruto para seleção de b-roll e estruturação da análise. O processo exigiu uma triagem técnica para sustentar a narrativa, garantindo a precisão e a coesão do conteúdo.</p>
+                                        <p class="comentario-trabalho">Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll na análise. O volume do material exigiu um processo criterioso de triagem, garantindo que cada fragmento escolhido servisse com precisão à construção do vídeo.</p>
                                     </div>
                                 </div>
+                                ${buildCarousel('analises-vol')}
                             </div>
                         </div>
-                        
+
                         <div class="flex flex-col w-full border-b border-white/5 pb-4 mt-8">
                             <div class="cursor-pointer group flex items-center justify-between border-l border-white/20 pl-3 hover:border-white transition py-2" onclick="toggleSubCategory('cat-comentados', this)">
                                 <h4 class="font-['Oswald'] tracking-[3px] text-white/50 text-xs uppercase group-hover:text-white transition">Comentados</h4>
@@ -646,18 +877,15 @@
                                     <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                                         <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="ll3UYdXXhlE"></div>
                                     </div>
-                                    <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                        <p class="comentario-trabalho"></p>
-                                    </div>
+                                    <div class="w-full md:w-1/3"></div>
                                 </div>
                                 <div class="flex flex-col md:flex-row gap-6 w-full items-start">
                                     <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                                         <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="Oacodzw29CE"></div>
                                     </div>
-                                    <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                        <p class="comentario-trabalho"></p>
-                                    </div>
+                                    <div class="w-full md:w-1/3"></div>
                                 </div>
+                                ${buildCarousel('comentados-vol')}
                             </div>
                         </div>
 
@@ -671,21 +899,19 @@
                                     <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                                         <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="d0d43qkOE7A"></div>
                                     </div>
-                                    <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                        <p class="comentario-trabalho"></p>
-                                    </div>
+                                    <div class="w-full md:w-1/3"></div>
                                 </div>
                                 <div class="flex flex-col md:flex-row gap-6 w-full items-start">
                                     <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                                         <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="AkrpKrpF3dc"></div>
                                     </div>
-                                    <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                        <p class="comentario-trabalho"></p>
-                                    </div>
+                                    <div class="w-full md:w-1/3"></div>
                                 </div>
+                                ${buildCarousel('noticias-vol')}
                             </div>
                         </div>
                     `;
+
                 } else if (name === 'Highlights') {
                     contentArea.innerHTML = `
                         <div class="flex flex-col gap-12 w-full">
@@ -702,11 +928,13 @@
                                     <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="f-2xznYjToI"></div>
                                 </div>
                                 <div class="w-full md:w-1/3 flex flex-col gap-3">
-                                    <p class="comentario-trabalho">Curadoria de 16 horas de material bruto focada na seleção de momentos-chave e no equilíbrio do volume de conteúdo. Montagem e edição articuladas para priorizar o ritmo e a dinâmica narrativa, garantindo a fluidez e a consistência do vídeo do início ao fim.</p>
+                                    <p class="comentario-trabalho">Curadoria de 16 horas de material bruto distribuídas em 3 transmissões. A montagem priorizou a seleção criteriosa de momentos e a construção de ritmo, evitando a saturação sem perder os eventos relevantes.</p>
                                 </div>
                             </div>
+                            ${buildCarousel('highlights-vol')}
                         </div>
                     `;
+
                 } else if (name === 'Mini Documentários') {
                     contentArea.innerHTML = `
                         <div class="flex flex-col gap-12 w-full">
@@ -718,7 +946,6 @@
                                     <p class="comentario-trabalho">Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa. Edição construída para conduzir esse discurso do início ao fim, garantindo a unidade e a fluidez.</p>
                                 </div>
                             </div>
-                              <div class="flex flex-col gap-12 w-full">
                             <div class="flex flex-col md:flex-row gap-6 w-full items-start">
                                 <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                                     <div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="qgXUQirQ7Bk"></div>
@@ -726,8 +953,10 @@
                                 <div class="w-full md:w-1/3 flex flex-col gap-3">
                                     <p class="comentario-trabalho"></p>
                                 </div>
+                            </div>
                         </div>
                     `;
+
                 } else if (name === 'Aberturas') {
                     contentArea.innerHTML = `
                         <div class="flex flex-col gap-12 w-full">
@@ -739,8 +968,10 @@
                                     <p class="comentario-trabalho">Desenvolvi cenas inéditas utilizando IA e o treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. O projeto somou aproximadamente 300 horas entre geração e pós-produção, garantindo a fidelidade estética e a originalidade do conteúdo.</p>
                                 </div>
                             </div>
+                            ${buildCarousel('aberturas-vol')}
                         </div>
                     `;
+
                 } else if (name === 'Institucionais') {
                     contentArea.innerHTML = `
                         <div class="flex flex-col gap-12 w-full">
@@ -768,90 +999,78 @@
                 view.classList.add('active');
 
                 setTimeout(() => {
-                    // LIMPA OS PLAYERS ANTIGOS (CASO EXISTAM)
-                    currentPlayers.forEach(p => p.destroy());
-
-                    // REGISTRA OS NOVOS PLAYERS NA VARIÁVEL GLOBAL
+                    currentPlayers.forEach(p => { try { p.destroy(); } catch(e) {} });
                     currentPlayers = Array.from(document.querySelectorAll('.js-player')).map(p => new Plyr(p, {
-                        controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+                        controls: ['play-large','play','progress','current-time','mute','volume','fullscreen'],
                         youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 }
                     }));
+                    // inicializa carrosseis imediatamente visíveis (Highlights, Aberturas)
+                    ['highlights-vol','aberturas-vol'].forEach(id => {
+                        if (document.getElementById('track-' + id)) cInit(id);
+                    });
                 }, 50);
             });
         }
 
+        // ── FECHAR CATEGORIA ──
         function closeCategory() {
-            // EFEITO FADE OUT NO ÁUDIO (1 SEGUNDO) ANTES DE PAUSAR
             currentPlayers.forEach(player => {
                 if (player.playing) {
-                    let currentVol = player.volume;
-                    const fadeSteps = 20;
-                    const stepTime = 1000 / fadeSteps; // 50ms por passo = 1s total
-                    const volumeStep = currentVol / fadeSteps;
-
-                    const fadeInterval = setInterval(() => {
-                        currentVol -= volumeStep;
-                        if (currentVol <= 0) {
-                            clearInterval(fadeInterval);
+                    let vol = player.volume;
+                    const step = vol / 20;
+                    const iv = setInterval(() => {
+                        vol -= step;
+                        if (vol <= 0) {
+                            clearInterval(iv);
                             player.pause();
-                            player.volume = 1; // Reseta o volume para a próxima vez
+                            try { player.volume = 1; } catch(e) {}
                         } else {
-                            try { player.volume = currentVol; } catch(e) {}
+                            try { player.volume = vol; } catch(e) {}
                         }
-                    }, stepTime);
+                    }, 50);
                 }
             });
-
             triggerTransition(() => {
                 view.classList.remove('active');
                 mainScroll.style.overflowY = 'auto';
             });
         }
-        const capaImg = document.querySelector('.capa-img-full');
-        capaImg.addEventListener('load', () => {
-            capaImg.style.opacity = '1';
-        });
-        if (capaImg.complete) {
-            capaImg.style.opacity = '1';
-        }
-        const contactForm = document.getElementById('contact-form');
-        const formStatus = document.getElementById('form-status');
 
-        if(contactForm) {
+        // ── CAPA ──
+        const capaImg = document.querySelector('.capa-img-full');
+        capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; });
+        if (capaImg.complete) capaImg.style.opacity = '1';
+
+        // ── FORMULÁRIO ──
+        const contactForm = document.getElementById('contact-form');
+        const formStatus  = document.getElementById('form-status');
+
+        if (contactForm) {
             contactForm.addEventListener('submit', async function(e) {
-                e.preventDefault(); 
-                
-                const btn = contactForm.querySelector('button[type="submit"]');
-                const originalBtnText = btn.innerText;
-                btn.innerText = 'ENVIANDO...'; 
-                
-                const data = new FormData(contactForm);
-                
+                e.preventDefault();
+                const btn  = contactForm.querySelector('button[type="submit"]');
+                const orig = btn.innerText;
+                btn.innerText = 'ENVIANDO...';
                 try {
                     const response = await fetch(contactForm.action, {
                         method: contactForm.method,
-                        body: data,
-                        headers: {
-                            'Accept': 'application/json'
-                        }
+                        body: new FormData(contactForm),
+                        headers: { 'Accept': 'application/json' }
                     });
-                    
                     if (response.ok) {
                         formStatus.innerText = "Obrigado pela mensagem! Entrarei em contato em breve para falarmos sobre o seu projeto.";
-                        formStatus.classList.remove('hidden');
-                        formStatus.style.color = '#4ade80'; 
-                        contactForm.reset(); 
+                        formStatus.style.color = '#4ade80';
+                        contactForm.reset();
                     } else {
                         formStatus.innerText = "Oops! Ocorreu um erro ao enviar sua mensagem.";
-                        formStatus.classList.remove('hidden');
-                        formStatus.style.color = '#f87171'; 
+                        formStatus.style.color = '#f87171';
                     }
-                } catch (error) {
+                } catch (err) {
                     formStatus.innerText = "Oops! Ocorreu um erro ao enviar sua mensagem.";
-                    formStatus.classList.remove('hidden');
                     formStatus.style.color = '#f87171';
                 } finally {
-                    btn.innerText = originalBtnText; 
+                    formStatus.classList.remove('hidden');
+                    btn.innerText = orig;
                 }
             });
         }
