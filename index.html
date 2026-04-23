@@ -814,8 +814,7 @@
                             </div>
                             <!-- ALTERADO: cor do hover branca (#f3f3f3), mensagem do wa.me atualizada, id adicionado para touch mobile -->
                             <a href="https://wa.me/5564992112376?text=Vim%20pelo%20seu%20site%20e%20tenho%20interesse%20no%20seu%20trabalho."
-                                target="_blank" rel="noopener noreferrer"
-                                id="wa-link"
+                                target="_blank" rel="noopener noreferrer" id="wa-link"
                                 class="flex items-center gap-4 text-[#d9d9d9] font-thin text-sm hover:text-white transition-all group w-max cursor-pointer">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="1" class="group-hover:stroke-[#f3f3f3] transition-colors">
@@ -1272,9 +1271,24 @@
             });
         });
 
+        let fadeDelay = 0;
+        let fadeTimeout;
         const fadeObs = new IntersectionObserver((entries, obs) => {
-            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); } });
-        }, { rootMargin: '0px 0px -5% 0px', threshold: 0 });
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    if (e.target.classList.contains('list-item')) {
+                        e.target.style.transitionDelay = `${fadeDelay}s`;
+                        fadeDelay += 0.25;
+                        clearTimeout(fadeTimeout);
+                        fadeTimeout = setTimeout(() => fadeDelay = 0, 500);
+                        setTimeout(() => e.target.classList.add('is-visible'), 20);
+                    } else {
+                        e.target.classList.add('is-visible');
+                    }
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
         document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
 
         function triggerTransition(cb) {
@@ -1508,17 +1522,17 @@
             function applyWaTouch() {
                 var wa = document.getElementById('wa-link');
                 if (!wa) return;
-                var svg    = wa.querySelector('svg');
-                var numEl  = wa.querySelector('span:first-of-type');
-                var badge  = wa.querySelector('span:last-of-type');
+                var svg = wa.querySelector('svg');
+                var numEl = wa.querySelector('span:first-of-type');
+                var badge = wa.querySelector('span:last-of-type');
 
                 wa.addEventListener('touchstart', function () {
                     wa.style.color = '#f3f3f3';
-                    if (svg)   svg.style.stroke = '#f3f3f3';
+                    if (svg) svg.style.stroke = '#f3f3f3';
                     if (numEl) numEl.style.transform = 'translateX(4px)';
                     if (badge) {
-                        badge.style.opacity   = '1';
-                        badge.style.color     = '#f3f3f3';
+                        badge.style.opacity = '1';
+                        badge.style.color = '#f3f3f3';
                         badge.style.transform = 'translateX(0)';
                     }
                 }, { passive: true });
@@ -1526,11 +1540,11 @@
                 wa.addEventListener('touchend', function () {
                     setTimeout(function () {
                         wa.style.color = '';
-                        if (svg)   svg.style.stroke = '';
+                        if (svg) svg.style.stroke = '';
                         if (numEl) numEl.style.transform = '';
                         if (badge) {
-                            badge.style.opacity   = '';
-                            badge.style.color     = '';
+                            badge.style.opacity = '';
+                            badge.style.color = '';
                             badge.style.transform = '';
                         }
                     }, 400);
