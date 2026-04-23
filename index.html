@@ -372,6 +372,18 @@
             transform: translateY(0);
         }
 
+        .spotlight-item {
+            opacity: 0.4;
+            transform: scale(0.98);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+        }
+
+        .spotlight-item.in-spotlight {
+            opacity: 1;
+            transform: scale(1);
+        }
+
         .vitrine-section {
             margin-top: 56px;
             width: 100%;
@@ -1455,6 +1467,16 @@
             </div>`;
         }
 
+        const spotlightObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('in-spotlight');
+                } else {
+                    e.target.classList.remove('in-spotlight');
+                }
+            });
+        }, { rootMargin: '-20% 0px -20% 0px', threshold: 0 });
+
         function openCategory(name) {
             if (!view.classList.contains('active')) lastScrollPosition = window.scrollY;
             currentPlayers.forEach(p => { try { p.pause(); } catch (e) { } });
@@ -1499,7 +1521,13 @@
                 }
 
                 view.scrollTop = 0; view.classList.add('active');
-                setTimeout(initCarousels, 50);
+                setTimeout(() => {
+                    initCarousels();
+                    document.querySelectorAll('.inline-video-wrapper').forEach(el => {
+                        el.classList.add('spotlight-item');
+                        spotlightObs.observe(el);
+                    });
+                }, 50);
             });
         }
 
