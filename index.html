@@ -1053,7 +1053,7 @@
             return `
 <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}">
     <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
-        <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" onclick="handleInlineClick('${id}',this)">
+        <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" onclick="handleInlineClick('${id}',event.currentTarget)">
             ${coverMediaHTML}
             <div class="w-16 h-16 flex items-center justify-center rounded-full bg-black/40 border border-white/20 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
                 <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
