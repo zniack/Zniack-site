@@ -373,15 +373,17 @@
         }
 
         .spotlight-item {
-            opacity: 0.4;
-            transform: scale(0.98);
+            opacity: 0.15;
+            transform: scale(0.95);
             transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
             will-change: opacity, transform;
+            pointer-events: none;
         }
 
         .spotlight-item.in-spotlight {
             opacity: 1;
             transform: scale(1);
+            pointer-events: auto;
         }
 
         .vitrine-section {
@@ -1041,7 +1043,7 @@
             }
 
             return `
-            <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper" data-desc="${safeDesc}">
+            <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}">
                 <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                     <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" onclick="handleInlineClick('${id}',this)">
                         ${coverMediaHTML}
@@ -1475,7 +1477,7 @@
                     e.target.classList.remove('in-spotlight');
                 }
             });
-        }, { rootMargin: '-20% 0px -20% 0px', threshold: 0 });
+        }, { root: document.getElementById('portfolio-view'), rootMargin: '-30% 0px -30% 0px', threshold: 0 });
 
         function openCategory(name) {
             if (!view.classList.contains('active')) lastScrollPosition = window.scrollY;
