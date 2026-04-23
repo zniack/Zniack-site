@@ -1278,9 +1278,9 @@
                 if (e.isIntersecting) {
                     if (e.target.classList.contains('list-item')) {
                         e.target.style.transitionDelay = `${fadeDelay}s`;
-                        fadeDelay += 0.25;
+                        fadeDelay += 0.5;
                         clearTimeout(fadeTimeout);
-                        fadeTimeout = setTimeout(() => fadeDelay = 0, 500);
+                        fadeTimeout = setTimeout(() => fadeDelay = 0, 1000);
                         setTimeout(() => e.target.classList.add('is-visible'), 20);
                     } else {
                         e.target.classList.add('is-visible');
