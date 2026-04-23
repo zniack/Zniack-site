@@ -360,6 +360,18 @@
             transform: translateY(0);
         }
 
+        .heavy-fade {
+            opacity: 0;
+            transform: translateY(90px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .heavy-fade.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .vitrine-section {
             margin-top: 56px;
             width: 100%;
@@ -722,25 +734,35 @@
         </section>
 
         <section id="trabalho">
-            <div class="w-full fade-up">
-                <h2 class="titulo-secao" style="margin-bottom: 25px;">Como trabalho</h2>
-                <p class="comentario-trabalho mb-16">Após o briefing e alinhamento, assumo a gestão da pós-produção.</p>
+            <div class="w-full">
+                <div class="fade-up">
+                    <h2 class="titulo-secao" style="margin-bottom: 25px;">Como trabalho</h2>
+                    <p class="comentario-trabalho mb-16">Após o briefing e alinhamento, assumo a gestão da pós-produção.
+                    </p>
+                </div>
                 <div class="list-container flex flex-col gap-2 max-w-[600px]">
-                    <div class="list-item"><b>Organização</b>Download e estruturação dos arquivos brutos e assets.</div>
-                    <div class="list-item"><b>Decupagem</b>Limpeza do material, removendo erros, pausas desnecessárias e
+                    <div class="list-item heavy-fade"><b>Organização</b>Download e estruturação dos arquivos brutos e
+                        assets.</div>
+                    <div class="list-item heavy-fade"><b>Decupagem</b>Limpeza do material, removendo erros, pausas
+                        desnecessárias e
                         vícios de linguagem.</div>
-                    <div class="list-item"><b>Curadoria de Mídia</b>Busca e seleção de b-rolls, inserts e mídias de
+                    <div class="list-item heavy-fade"><b>Curadoria de Mídia</b>Busca e seleção de b-rolls, inserts e
+                        mídias de
                         apoio.</div>
-                    <div class="list-item"><b>Edição</b>Construção da narrativa, ritmo e pacing.</div>
-                    <div class="list-item"><b>Lettering</b>Aplicação de textos e elementos alinhados à identidade
+                    <div class="list-item heavy-fade"><b>Edição</b>Construção da narrativa, ritmo e pacing.</div>
+                    <div class="list-item heavy-fade"><b>Lettering</b>Aplicação de textos e elementos alinhados à
+                        identidade
                         visual.</div>
-                    <div class="list-item"><b>Sonorização</b>Tratamento de áudio, inserção e mixagem de SFX e trilha
+                    <div class="list-item heavy-fade"><b>Sonorização</b>Tratamento de áudio, inserção e mixagem de SFX e
+                        trilha
                         sonora.</div>
-                    <div class="list-item"><b>Finalização</b>Aplicação de VFX e color grading.</div>
-                    <div class="list-item"><b>Entrega</b>Renderização, conferência técnica final, aprovação e entrega.
+                    <div class="list-item heavy-fade"><b>Finalização</b>Aplicação de VFX e color grading.</div>
+                    <div class="list-item heavy-fade"><b>Entrega</b>Renderização, conferência técnica final, aprovação e
+                        entrega.
                     </div>
                 </div>
-                <p class="comentario-trabalho mt-16">Entendo que cada tipo de projeto exige uma abordagem específica. Em
+                <p class="comentario-trabalho mt-16 heavy-fade">Entendo que cada tipo de projeto exige uma abordagem
+                    específica. Em
                     trailers, por exemplo, a trilha frequentemente orienta a construção do ritmo e da narrativa desde as
                     etapas iniciais.</p>
             </div>
@@ -791,7 +813,7 @@
                             class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
                         <input type="email" name="email" required placeholder="EMAIL"
                             class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <textarea name="message" required placeholder="FALE UM POUCO DO SEU PROJETO"
+                        <textarea name="message" required placeholder="FALE SOBRE SEU PROJETO"
                             class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
                         <button type="submit"
                             class="font-['Oswald'] text-[12px] tracking-[4px] border border-white/30 text-white/60 p-4 hover:border-white hover:text-white transition uppercase w-max mt-4">Enviar</button>
@@ -992,16 +1014,25 @@
             };
         }
 
+        const localThumbs = ['4minjPUiGdI', 'O03qeBRocIs', 'G4qpobpXdKo'];
+
         function buildInlineVideo(id, description = '') {
             const descHTML = description
                 ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>`
                 : '<div class="w-full md:w-1/3"></div>';
             const safeDesc = description.replace(/'/g, "\\'");
+
+            let coverMediaHTML = `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">`;
+
+            if (localThumbs.includes(id)) {
+                coverMediaHTML = `<video src="thumbs/${id}.mp4" autoplay loop muted playsinline class="w-full h-full object-cover absolute inset-0 pointer-events-none"></video>`;
+            }
+
             return `
             <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper" data-desc="${safeDesc}">
                 <div class="w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
                     <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" onclick="handleInlineClick('${id}',this)">
-                        <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
+                        ${coverMediaHTML}
                         <div class="w-16 h-16 flex items-center justify-center rounded-full bg-black/40 border border-white/20 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
                             <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         </div>
@@ -1274,12 +1305,23 @@
         const fadeObs = new IntersectionObserver((entries, obs) => {
             entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); } });
         }, { rootMargin: '0px 0px -5% 0px', threshold: 0 });
-        document.querySelectorAll('.fade-up:not(.list-item)').forEach(el => fadeObs.observe(el));
+        document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
 
+        let heavyDelay = 0;
+        let heavyTimeout;
         const listObs = new IntersectionObserver((entries, obs) => {
-            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); } });
-        }, { rootMargin: '0px 0px -40% 0px', threshold: 0 });
-        document.querySelectorAll('.list-item.fade-up').forEach(el => listObs.observe(el));
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.style.transitionDelay = `${heavyDelay}s`;
+                    heavyDelay += 0.6;
+                    clearTimeout(heavyTimeout);
+                    heavyTimeout = setTimeout(() => heavyDelay = 0, 300);
+                    setTimeout(() => e.target.classList.add('is-visible'), 20);
+                    obs.unobserve(e.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -25% 0px', threshold: 0.2 });
+        document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
 
         function triggerTransition(cb) {
             const ov = document.getElementById('transition-overlay');
