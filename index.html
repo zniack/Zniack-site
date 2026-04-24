@@ -814,33 +814,33 @@
             <div class="w-full relative fade-up">
                 <h2 class="titulo-secao portfolio-title">Portfolio</h2>
                 <div id="portfolio-grid" class="flex flex-col gap-6 w-full max-w-[400px]">
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer"
+                    <button type="button" class="portfolio-box group w-full h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer text-left"
                         onclick="openCategory('Vídeos Diários')">
                         <span
                             class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">VÍDEOS
                             DIÁRIOS</span>
-                    </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer"
+                    </button>
+                    <button type="button" class="portfolio-box group w-full h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer text-left"
                         onclick="openCategory('Highlights')">
                         <span
                             class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">HIGHLIGHTS</span>
-                    </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer"
+                    </button>
+                    <button type="button" class="portfolio-box group w-full h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer text-left"
                         onclick="openCategory('Produções Documentais')">
                         <span
                             class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">PRODUÇÕES
                             DOCUMENTAIS</span>
-                    </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer"
+                    </button>
+                    <button type="button" class="portfolio-box group w-full h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer text-left"
                         onclick="openCategory('Aberturas')">
                         <span
                             class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">ABERTURAS</span>
-                    </div>
-                    <div class="portfolio-box group h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer"
+                    </button>
+                    <button type="button" class="portfolio-box group w-full h-20 bg-[#1a1a1a] flex items-center justify-start px-8 cursor-pointer text-left"
                         onclick="openCategory('Institucionais')">
                         <span
                             class="font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition">INSTITUCIONAIS</span>
-                    </div>
+                    </button>
                 </div>
             </div>
         </section>
@@ -851,13 +851,13 @@
                 <div class="flex flex-col gap-16 w-full max-w-[600px]">
                     <form id="contact-form" action="https://formspree.io/f/mzdyewrp" method="POST"
                         class="flex flex-col gap-8 w-full">
-                        <input type="text" name="name" required placeholder="NOME"
+                        <input type="text" name="name" required placeholder="NOME" aria-label="Nome"
                             class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <input type="email" name="email" required placeholder="EMAIL"
+                        <input type="email" name="email" required placeholder="EMAIL" aria-label="Email"
                             class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] focus:outline-none focus:border-white transition">
-                        <textarea name="message" required placeholder="FALE SOBRE SEU PROJETO"
+                        <textarea name="message" required placeholder="FALE SOBRE SEU PROJETO" aria-label="Mensagem"
                             class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
-                        <button type="submit"
+                        <button type="submit" aria-label="Enviar formulário"
                             class="font-['Oswald'] text-[12px] tracking-[4px] border border-white/30 text-white/60 p-4 hover:border-white hover:text-white transition uppercase w-max mt-4">Enviar</button>
                         <p id="form-status" class="hidden font-['Oswald'] tracking-[2px] text-sm mt-2 text-[#d9d9d9]">
                         </p>
@@ -1042,6 +1042,13 @@
             'aberturas-vol': ['7f7FDHkQjuQ']
         };
 
+        const videoStartTimes = {
+            '82Ah3XW5Jg4': 4,
+            'll3UYdXXhlE': 4,
+            'd0d43qkOE7A': 60,
+            'ewiL53kmyPI': 52
+        };
+
         const descricoesPortfolio = {
             'Vídeos Diários': 'Vídeos recebidos, editados e entregues em menos de 24 horas.',
             'Highlights': 'Vídeos dinâmicos de melhores momentos.',
@@ -1098,6 +1105,7 @@
                 ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>`
                 : '<div class="w-full md:w-1/3"></div>';
             const safeDesc = description.replace(/'/g, "\\'");
+            const startTime = videoStartTimes[id] || 0;
 
             let coverMediaHTML = `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">`;
 
@@ -1106,7 +1114,7 @@
             }
 
             return `
-<div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}">
+<div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}" data-start="${startTime}">
     <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
    <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="${id}">            ${coverMediaHTML}
             <div class="w-16 h-16 flex items-center justify-center rounded-full bg-black/40 border border-white/20 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
@@ -1120,41 +1128,49 @@
         }
 
         function handleInlineClick(id, coverEl) {
-            const wrapper = coverEl.closest('.inline-video-wrapper');
-            const desc = wrapper.getAttribute('data-desc');
-            if (window.innerWidth <= 768) { openLightbox(id, desc); return; }
+    const wrapper = coverEl.closest('.inline-video-wrapper');
+    const desc = wrapper.getAttribute('data-desc');
+    const startTime = parseInt(wrapper.getAttribute('data-start') || '0', 10);
+    if (window.innerWidth <= 768) { openLightbox(id, desc, startTime); return; }
 
-            if (wrapper.plyrInstance) {
-                const player = wrapper.plyrInstance;
-                player.play();
-                const onPlaying = () => {
-                    player.off('playing', onPlaying);
-                    coverEl.style.opacity = '0';
-                    setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
-                };
-                player.on('playing', onPlaying);
-                return;
-            }
+    if (wrapper.plyrInstance) {
+        const player = wrapper.plyrInstance;
+        player.play();
+        const onPlaying = () => {
+            player.off('playing', onPlaying);
+            coverEl.style.opacity = '0';
+            setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
+        };
+        player.on('playing', onPlaying);
+        return;
+    }
 
-            const mount = wrapper.querySelector('.player-mount');
-            mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
-            const player = new Plyr(mount.querySelector('.js-player'), {
-                controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-                settings: ['quality', 'speed'],
-                youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
-                autoplay: true
-            });
-            player.on('ready', () => { player.volume = 0.75; forceYouTubeHD(mount); });
-            const onPlaying = () => {
-                player.off('playing', onPlaying);
-                coverEl.style.opacity = '0';
-                setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
-            };
-            player.on('playing', onPlaying);
-            wrapper.plyrInstance = player;
-            wrapper.baseVolume = 0.75;
-            currentPlayers.push(player);
-        }
+    const mount = wrapper.querySelector('.player-mount');
+    mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
+
+    const ytConfig = { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 };
+    if (startTime > 0) ytConfig.start = startTime;
+
+    const player = new Plyr(mount.querySelector('.js-player'), {
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+        settings: ['quality', 'speed'],
+        youtube: ytConfig,
+        autoplay: true
+    });
+    player.on('ready', () => {
+        player.volume = 0.75;
+        forceYouTubeHD(mount);
+    });
+    const onPlaying = () => {
+        player.off('playing', onPlaying);
+        coverEl.style.opacity = '0';
+        setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
+    };
+    player.on('playing', onPlaying);
+    wrapper.plyrInstance = player;
+    wrapper.baseVolume = 0.75;
+    currentPlayers.push(player);
+}
 
         function buildCarousel(carouselId) {
             const ids = carouselData[carouselId];
@@ -1350,7 +1366,10 @@
             const origEl = items[realIdx];
             const cloneEl = isLoop ? items[realIdx + s.itemsCount] : null;
 
-            if (s.targetEl === origEl || s.targetEl === cloneEl) { openLightbox(el.dataset.vid); return; }
+            const videoId = el.dataset.vid;
+            const startTime = videoStartTimes[videoId] || 0;
+
+            if (s.targetEl === origEl || s.targetEl === cloneEl) { openLightbox(videoId, '', startTime); return; }
 
             s.isPaused = true; s.isSlidingToItem = true; s.isClosing = false;
             const metrics = getCarouselMetrics();
@@ -1467,34 +1486,56 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         });
 
         let lightboxPlayer = null;
-        function openLightbox(videoId, description = '') {
-            const lb = document.getElementById('video-lightbox');
-            const wrap = document.getElementById('lightbox-player-wrap');
-            const descEl = document.getElementById('lightbox-desc');
-            wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
+        function openLightbox(videoId, description = '', startTime = 0) {
+    const lb = document.getElementById('video-lightbox');
+    if (lb.classList.contains('active')) return;
 
-            if (description) {
-                descEl.innerHTML = description;
-                descEl.classList.remove('hidden', 'fade-in-slow');
-                void descEl.offsetWidth;
-                descEl.classList.add('fade-in-slow');
-            } else {
-                descEl.innerHTML = '';
-                descEl.classList.add('hidden');
-                descEl.classList.remove('fade-in-slow');
+    currentPlayers.forEach(p => {
+        try {
+            p.pause();
+            const playerWrapper = p.elements.container.closest('.inline-video-wrapper');
+            if (playerWrapper) {
+                const otherCover = playerWrapper.querySelector('.inline-cover');
+                if (otherCover) { otherCover.style.display = 'flex'; otherCover.style.opacity = '1'; }
             }
+        } catch(e) {}
+    });
+    currentPlayers = [];
 
-            lb.classList.add('active'); document.body.style.overflow = 'hidden';
-            setTimeout(() => {
-                lightboxPlayer = new Plyr('#lb-plyr', {
-                    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-                    settings: ['quality', 'speed'],
-                    youtube: { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 },
-                    autoplay: true
-                });
-                lightboxPlayer.on('ready', () => { lightboxPlayer.volume = 0.75; forceYouTubeHD(wrap); });
-            }, 50);
-        }
+    const wrap = document.getElementById('lightbox-player-wrap');
+    const descEl = document.getElementById('lightbox-desc');
+    wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
+
+    if (description) {
+        descEl.innerHTML = description;
+        descEl.classList.remove('hidden', 'fade-in-slow');
+        void descEl.offsetWidth;
+        descEl.classList.add('fade-in-slow');
+    } else {
+        descEl.innerHTML = '';
+        descEl.classList.add('hidden');
+        descEl.classList.remove('fade-in-slow');
+    }
+
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+        const ytConfig = { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 };
+        if (startTime > 0) ytConfig.start = startTime;
+
+        lightboxPlayer = new Plyr('#lb-plyr', {
+            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['quality', 'speed'],
+            youtube: ytConfig,
+            autoplay: true
+        });
+        lightboxPlayer.on('ready', () => {
+            lightboxPlayer.volume = 0.75;
+            forceYouTubeHD(wrap);
+        });
+    }, 50);
+}
 
         function closeLightbox() {
             document.getElementById('video-lightbox').classList.remove('active');
