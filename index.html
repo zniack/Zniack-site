@@ -905,14 +905,6 @@
     <script>
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-        // ATUALIZADO: Limpa a URL na hora de dar F5 (Load da página)
-        window.addEventListener('load', () => {
-    window.scrollTo(0, 0);
-    history.replaceState(null, null, window.location.pathname);
-    updateHeaderBlur();                                          // ← adiciona isso
-    document.getElementById('sticky-header').style.opacity = '1'; // ← e isso
-});
-
         const stickyHeader = document.getElementById('sticky-header');
         const capa = document.getElementById('capa');
         const view = document.getElementById('portfolio-view');
@@ -976,6 +968,40 @@
         window.addEventListener('scroll', updateHeaderBlur, { passive: true });
         window.addEventListener('resize', updateHeaderBlur, { passive: true });
         updateHeaderBlur();
+
+        view.addEventListener('scroll', () => {
+            const viewH = window.innerHeight;
+            
+            document.querySelectorAll('.inline-video-wrapper').forEach(wrapper => {
+                const player = wrapper.plyrInstance;
+                if (!player) return;
+                
+                const rect = wrapper.getBoundingClientRect();
+                
+                const vidCenter = rect.top + rect.height / 2;
+                const viewCenter = viewH / 2;
+                const distFromCenter = Math.abs(vidCenter - viewCenter);
+                
+                const fadeStart = viewH * 0.25;
+                const fadeEnd = viewH * 0.6;
+                
+                if (distFromCenter > fadeStart) {
+                    let ratio = 1 - ((distFromCenter - fadeStart) / (fadeEnd - fadeStart));
+                    ratio = Math.max(0, Math.min(1, ratio));
+                    wrapper.isFading = true;
+                    
+                    const targetVol = (wrapper.baseVolume || 0.75) * ratio;
+                    if (Math.abs(player.volume - targetVol) > 0.02) {
+                        player.volume = targetVol;
+                    }
+                } else {
+                    if (wrapper.isFading) {
+                        player.volume = wrapper.baseVolume || 0.75;
+                        wrapper.isFading = false;
+                    }
+                }
+            });
+        }, { passive: true });
 
         const carouselData = {
             'analises-vol': ['wELUjsyy5-8', 'lKtjZ5iy3WM', 'QrmMlRYB4Lo', '7ZmEmWEqsyk', '3AUUWBWmXpE', 'mg33hNaoqO4', 'nmSxCNGAmV8', 'UYXG_CWDNro', 'nUKCw5Ejyao', '0FwPnvvsKkE'],
@@ -1045,13 +1071,13 @@
             let coverMediaHTML = `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">`;
 
             if (localThumbs.includes(id)) {
-                coverMediaHTML = `<video src="thumbs/${id}.mp4" autoplay loop muted playsinline class="w-full h-full object-cover absolute inset-0 pointer-events-none"></video>`;
+                coverMediaHTML = `<video data-src="thumbs/${id}.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none"></video>`;
             }
 
             return `
 <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}">
     <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
-   <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover" data-vid="${id}">            ${coverMediaHTML}
+   <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="${id}">            ${coverMediaHTML}
             <div class="w-16 h-16 flex items-center justify-center rounded-full bg-black/40 border border-white/20 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
                 <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
@@ -1066,7 +1092,19 @@
             const wrapper = coverEl.closest('.inline-video-wrapper');
             const desc = wrapper.getAttribute('data-desc');
             if (window.innerWidth <= 768) { openLightbox(id, desc); return; }
-            coverEl.style.display = 'none';
+
+            if (wrapper.plyrInstance) {
+                const player = wrapper.plyrInstance;
+                player.play();
+                const onPlaying = () => {
+                    player.off('playing', onPlaying);
+                    coverEl.style.opacity = '0';
+                    setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
+                };
+                player.on('playing', onPlaying);
+                return;
+            }
+
             const mount = wrapper.querySelector('.player-mount');
             mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
             const player = new Plyr(mount.querySelector('.js-player'), {
@@ -1076,6 +1114,14 @@
                 autoplay: true
             });
             player.on('ready', () => { player.volume = 0.75; forceYouTubeHD(mount); });
+            const onPlaying = () => {
+                player.off('playing', onPlaying);
+                coverEl.style.opacity = '0';
+                setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
+            };
+            player.on('playing', onPlaying);
+            wrapper.plyrInstance = player;
+            wrapper.baseVolume = 0.75;
             currentPlayers.push(player);
         }
 
@@ -1377,7 +1423,9 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
                 const target = document.querySelector(href);
                 const wasOpen = view.classList.contains('active');
 
-                history.pushState(null, null, href);
+                const url = new URL(window.location.href);
+                url.searchParams.delete('cat');
+                history.pushState(null, null, url.pathname + href);
 
                 triggerTransition(() => {
                     if (wasOpen) { view.classList.remove('active'); document.body.style.overflow = ''; currentPlayers.forEach(p => { try { p.pause(); } catch (x) { } }); }
@@ -1507,6 +1555,20 @@ function tickSpotlight() {
         el.style.opacity = state.opacity;
        const scaleEl = el.querySelector('.spotlight-scale-target');
 if (scaleEl) scaleEl.style.transform = `scale(${state.scale})`;
+
+        // Pausa automaticamente se não estiver em foco e já estiver praticamente escurecido (<= 16% de opacidade)
+        if (!state.inSpotlight && state.opacity < 0.16) {
+            const player = el.plyrInstance;
+            if (player && player.playing) {
+                player.pause();
+                const coverEl = el.querySelector('.inline-cover');
+                if (coverEl) {
+                    coverEl.style.display = 'flex';
+                    void coverEl.offsetWidth; // Força reflow para a transição
+                    coverEl.style.opacity = '1';
+                }
+            }
+        }
     });
     spotlightRaf = requestAnimationFrame(tickSpotlight);
 }
@@ -1518,13 +1580,33 @@ const spotlightObs = new IntersectionObserver((entries) => {
     });
 }, { root: document.getElementById('portfolio-view'), rootMargin: '-30% 0px -30% 0px', threshold: 0 });
 
-        function openCategory(name) {
-            if (!view.classList.contains('active')) lastScrollPosition = window.scrollY;
+const lazyVidObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        const vid = e.target;
+        if (e.isIntersecting) {
+            if (!vid.src && vid.dataset.src) {
+                vid.src = vid.dataset.src;
+                vid.load();
+            }
+            vid.play().catch(()=>{});
+        } else {
+            if (!vid.paused) vid.pause();
+        }
+    });
+}, { root: document.getElementById('portfolio-view'), rootMargin: '100px', threshold: 0.05 });
+
+        function openCategory(name, isLoad = false) {
+            if (!view.classList.contains('active') && !isLoad) lastScrollPosition = window.scrollY;
+            if (!isLoad) {
+                const url = new URL(window.location);
+                url.searchParams.set('cat', name);
+                history.pushState({ cat: name }, '', url);
+            }
             currentPlayers.forEach(p => { try { p.pause(); } catch (e) { } });
             currentPlayers = [];
             Object.keys(carouselState).forEach(id => { if (carouselState[id] && carouselState[id].rafId) cancelAnimationFrame(carouselState[id].rafId); });
 
-            triggerTransition(() => {
+            const setupCategory = () => {
                 descElement.innerText = descricoesPortfolio[name] || '';
                 updateCategoryNav(name);
                 document.body.style.overflow = 'hidden';
@@ -1563,17 +1645,24 @@ const spotlightObs = new IntersectionObserver((entries) => {
 
                 view.scrollTop = 0; view.classList.add('active');
                 setTimeout(() => {
-    initCarousels();
-    if (spotlightRaf) cancelAnimationFrame(spotlightRaf);
-    spotlightItems.clear();
-    document.querySelectorAll('.inline-video-wrapper').forEach(el => {
-        el.classList.add('spotlight-item');
-        spotlightItems.set(el, { opacity: 0.15, scale: 0.95, inSpotlight: false });
-        spotlightObs.observe(el);
-    });
-    tickSpotlight();
-}, 50);
-            });
+                    initCarousels();
+                    if (spotlightRaf) cancelAnimationFrame(spotlightRaf);
+                    spotlightItems.clear();
+                    document.querySelectorAll('.inline-video-wrapper').forEach(el => {
+                        el.classList.add('spotlight-item');
+                        spotlightItems.set(el, { opacity: 0.15, scale: 0.95, inSpotlight: false });
+                        spotlightObs.observe(el);
+                    });
+                    document.querySelectorAll('.lazy-video').forEach(vid => lazyVidObs.observe(vid));
+                    tickSpotlight();
+                }, 50);
+            };
+
+            if (isLoad) {
+                setupCategory();
+            } else {
+                triggerTransition(setupCategory);
+            }
         }
 
         const capaImg = document.querySelector('.capa-img-full');
@@ -1662,6 +1751,18 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
                 applyWaTouch();
             }
         })();
+
+        // ATUALIZADO: Restaura a categoria via URL ou limpa a URL e vai pro topo
+        const urlParams = new URLSearchParams(window.location.search);
+        const catParam = urlParams.get('cat');
+        if (catParam) {
+            openCategory(catParam, true);
+        } else {
+            window.scrollTo(0, 0);
+            history.replaceState(null, null, window.location.pathname);
+            updateHeaderBlur();
+            document.getElementById('sticky-header').style.opacity = '1';
+        }
     </script>
 </body>
 
