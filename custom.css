@@ -347,6 +347,14 @@
     transform-origin: center center;
     will-change: transform, opacity;
     transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    outline: 1px solid transparent;
+}
+.inline-cover img, .inline-cover video {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: scale(1.02);
 }
 
         .vitrine-section {
