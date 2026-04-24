@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://www.youtube.com">
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;400&family=Roboto:wght@100;300;400;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;400&family=Roboto:wght@100;300;400;900&display=block"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
@@ -653,6 +653,8 @@
                 position: absolute;
                 top: 80vh;
                 transform: translateY(-100%);
+                opacity: 0;
+                 transition: opacity 0.6s ease-in-out;
             }
 
             .header-sticky.mobile-fixed {
@@ -905,9 +907,11 @@
 
         // ATUALIZADO: Limpa a URL na hora de dar F5 (Load da página)
         window.addEventListener('load', () => {
-            window.scrollTo(0, 0);
-            history.replaceState(null, null, window.location.pathname);
-        });
+    window.scrollTo(0, 0);
+    history.replaceState(null, null, window.location.pathname);
+    updateHeaderBlur();                                          // ← adiciona isso
+    document.getElementById('sticky-header').style.opacity = '1'; // ← e isso
+});
 
         const stickyHeader = document.getElementById('sticky-header');
         const capa = document.getElementById('capa');
@@ -1573,8 +1577,8 @@ const spotlightObs = new IntersectionObserver((entries) => {
         }
 
         const capaImg = document.querySelector('.capa-img-full');
-        capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; });
-        if (capaImg.complete) capaImg.style.opacity = '1';
+        capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; updateHeaderBlur(); });
+if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
         const perfilImg = document.getElementById('perfil-img');
         if (perfilImg) {
             perfilImg.addEventListener('load', () => { perfilImg.classList.remove('opacity-0'); });
