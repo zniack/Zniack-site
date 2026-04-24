@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
     <script src="https://cdn.tailwindcss.com" defer></script>
+    <link rel="stylesheet" href="tailwind-build.css">
     <style>
         @font-face {
             font-family: 'Skyer';
@@ -378,7 +379,8 @@
 }
 .spotlight-item .spotlight-scale-target {
     transform-origin: center center;
-    will-change: transform;
+    will-change: transform, opacity;
+    transform: translateZ(0);
 }
 
         .vitrine-section {
@@ -1022,7 +1024,7 @@
                     wrapper.isFading = true;
                     
                     const targetVol = (wrapper.baseVolume || 0.75) * ratio;
-                    if (Math.abs(player.volume - targetVol) > 0.02) {
+                    if (player.playing && Math.abs(player.volume - targetVol) > 0.02) {
                         player.volume = targetVol;
                     }
                 } else {
@@ -1115,7 +1117,7 @@
 
             return `
 <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}" data-start="${startTime}">
-    <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] border border-white/10 relative overflow-hidden shrink-0">
+    <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
    <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="${id}">            ${coverMediaHTML}
             <div class="w-16 h-16 flex items-center justify-center rounded-full bg-black/40 border border-white/20 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
                 <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -1597,6 +1599,7 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
             const body = document.getElementById('body-' + id);
             if (!body) return;
             const isOpen = body.classList.contains('open');
+        const indicator = headerEl.querySelector('.subcat-indicator');
             if (isOpen) {
                 const metrics = getCarouselMetrics();
                 Object.keys(carouselState).forEach(cId => {
@@ -1613,8 +1616,14 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
                         });
                     }
                 });
-                body.classList.remove('open'); headerEl.classList.remove('open');
-            } else { body.classList.add('open'); headerEl.classList.add('open'); }
+            body.classList.remove('open'); 
+            headerEl.classList.remove('open');
+            if (indicator) indicator.textContent = 'ABRIR';
+        } else { 
+            body.classList.add('open'); 
+            headerEl.classList.add('open'); 
+            if (indicator) indicator.textContent = 'FECHAR';
+        }
         }
 
         function buildSubCategory(id, label, videosHTML) {
@@ -1647,16 +1656,26 @@ function tickSpotlight() {
        const scaleEl = el.querySelector('.spotlight-scale-target');
 if (scaleEl) scaleEl.style.transform = `scale(${state.scale})`;
 
-        // Pausa automaticamente se não estiver em foco e já estiver praticamente escurecido (<= 16% de opacidade)
-        if (!state.inSpotlight && state.opacity < 0.16) {
-            const player = el.plyrInstance;
-            if (player && player.playing) {
-                player.pause();
-                const coverEl = el.querySelector('.inline-cover');
-                if (coverEl) {
+        const player = el.plyrInstance;
+        const coverEl = el.querySelector('.inline-cover');
+
+        if (!state.inSpotlight) {
+            // Cenário A: O vídeo já está pausado. Retorna a capa instantaneamente.
+            if (player && !player.playing) {
+                if (coverEl && coverEl.style.opacity !== '1') {
                     coverEl.style.display = 'flex';
-                    void coverEl.offsetWidth; // Força reflow para a transição
                     coverEl.style.opacity = '1';
+                }
+            } 
+            // Cenário B: O vídeo está rodando. Deixa encolher tocando e pausa só no final.
+            else if (state.opacity < 0.16) {
+                if (player && player.playing) {
+                    player.pause();
+                    if (coverEl) {
+                        coverEl.style.display = 'flex';
+                        void coverEl.offsetWidth; // Força reflow para a transição
+                        coverEl.style.opacity = '1';
+                    }
                 }
             }
         }
