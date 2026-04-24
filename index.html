@@ -451,12 +451,10 @@
         .carousel-play {
             position: absolute;
             inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             opacity: 0;
             transition: opacity 0.5s ease;
             background: rgba(0, 0, 0, 0.4);
+            will-change: opacity;
         }
 
         .carousel-item:hover .carousel-play {
@@ -464,10 +462,17 @@
         }
 
         .carousel-play svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
             width: 32px;
             height: 32px;
+            margin-top: -16px;
+            margin-left: -16px;
             fill: rgba(255, 255, 255, 1);
             filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         .carousel-nav-btn {
@@ -504,10 +509,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            opacity: 0;
             visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
         }
 
         #video-lightbox.active {
+            opacity: 1;
             visibility: visible;
         }
 
@@ -661,6 +669,7 @@
                 position: fixed !important;
                 top: 0 !important;
                 transform: none !important;
+                opacity: 1 !important;
             }
 
             .nav-link {
@@ -702,6 +711,28 @@
                 font-size: 8px;
                 padding: 6px 10px;
             }
+        }
+
+        /* Novas Implementações */
+        .carousel-wrapper {
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        }
+
+        .reveal-wrap { overflow: hidden; display: inline-block; vertical-align: top; }
+        .reveal-text {
+            display: inline-block;
+            transform: translateY(110%);
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+        .fade-up.is-visible .reveal-text {
+            transform: translateY(0);
+        }
+
+        .magnetic-btn { 
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.2s ease, border-color 0.2s ease; 
+            will-change: transform; 
         }
     </style>
 </head>
@@ -1466,16 +1497,35 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         }
 
         function closeLightbox() {
-            if (lightboxPlayer) { try { lightboxPlayer.pause(); lightboxPlayer.destroy(); } catch (e) { } lightboxPlayer = null; }
-            document.getElementById('lightbox-player-wrap').innerHTML = '';
+            document.getElementById('video-lightbox').classList.remove('active');
+            document.body.style.overflow = view.classList.contains('active') ? 'hidden' : '';
+
+            if (lightboxPlayer) {
+                const fadeDuration = 600;
+                const steps = 20;
+                const stepTime = fadeDuration / steps;
+                const volStep = lightboxPlayer.volume / steps;
+                let currentVol = lightboxPlayer.volume;
+                
+                const fadeInterval = setInterval(() => {
+                    if (currentVol > volStep) {
+                        currentVol -= volStep;
+                        try { lightboxPlayer.volume = currentVol; } catch(e) {}
+                    } else {
+                        clearInterval(fadeInterval);
+                        try { lightboxPlayer.pause(); lightboxPlayer.destroy(); } catch (e) { } 
+                        lightboxPlayer = null;
+                        document.getElementById('lightbox-player-wrap').innerHTML = '';
+                    }
+                }, stepTime);
+            } else {
+                document.getElementById('lightbox-player-wrap').innerHTML = '';
+            }
 
             const descEl = document.getElementById('lightbox-desc');
             descEl.innerHTML = '';
             descEl.classList.add('hidden');
             descEl.classList.remove('fade-in-slow');
-
-            document.getElementById('video-lightbox').classList.remove('active');
-            document.body.style.overflow = view.classList.contains('active') ? 'hidden' : '';
 
             const metrics = getCarouselMetrics();
             Object.keys(carouselState).forEach(id => {
@@ -1763,6 +1813,29 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
             updateHeaderBlur();
             document.getElementById('sticky-header').style.opacity = '1';
         }
+
+        // --- NOVAS IMPLEMENTAÇÕES (DESIGN & UX) ---
+
+        // 1. Text Reveal Wrap
+        document.querySelectorAll('.titulo-secao').forEach(el => {
+            const text = el.innerHTML;
+            el.innerHTML = `<span class="reveal-wrap"><span class="reveal-text">${text}</span></span>`;
+        });
+
+        // 2. Magnetic Buttons (Intensidade reduzida)
+        document.querySelectorAll('.category-nav-btn, button[type="submit"]').forEach(btn => {
+            btn.classList.add('magnetic-btn');
+            btn.addEventListener('mousemove', e => {
+                if (window.innerWidth <= 768) return;
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.05}px, ${y * 0.05}px)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = `translate(0px, 0px)`;
+            });
+        });
     </script>
 </body>
 
