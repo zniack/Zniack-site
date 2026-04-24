@@ -174,7 +174,10 @@
             let coverMediaHTML = `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">`;
 
             if (localThumbs.includes(id)) {
-                coverMediaHTML = `<video data-src="thumbs/${id}.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none"></video>`;
+                coverMediaHTML = `
+                    <img src="thumbs/${id}.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
+                    <video data-src="thumbs/${id}.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                `;
             }
 
             return `
@@ -825,7 +828,12 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                         spotlightItems.set(el, { opacity: 0.15, scale: 0.95, inSpotlight: false });
                         spotlightObs.observe(el);
                     });
-                    document.querySelectorAll('.lazy-video').forEach(vid => lazyVidObs.observe(vid));
+                    document.querySelectorAll('.lazy-video').forEach(vid => {
+                        vid.addEventListener('loadeddata', () => {
+                            vid.classList.remove('opacity-0');
+                        }, { once: true });
+                        lazyVidObs.observe(vid);
+                    });
                     tickSpotlight();
                 }, 50);
             };
