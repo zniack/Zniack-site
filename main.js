@@ -812,7 +812,7 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                 } else if (name === 'Produções Documentais') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
                         ${buildInlineVideo('yiK_Z7XGyBA', 'Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa.')}
-                        ${buildInlineVideo('qgXUQirQ7Bk', 'Montagem documental estruturada a partir de 1h30 de material bruto e extensa busca por mídias externas. Integração de referências visuais para conduzir a narrativa.')}</div>`;
+                        ${buildInlineVideo('qgXUQirQ7Bk', 'Montagem documental estruturada a partir de 1h30 de gravação bruta e extensa busca por mídias externas. Integração de referências visuais para conduzir a narrativa.')}</div>`;
 
                 } else if (name === 'Aberturas') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
