@@ -173,19 +173,22 @@
 
             let coverMediaHTML = `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">`;
 
+            let playBtnOpacity = 'opacity-0 group-hover:opacity-50';
+
             if (localThumbs.includes(id)) {
                 coverMediaHTML = `
                     <img src="thumbs/${id}.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
                     <video data-src="thumbs/${id}.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
                 `;
+                playBtnOpacity = 'play-btn-animated-cover';
             }
 
             return `
 <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}" data-start="${startTime}">
     <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
    <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="${id}">            ${coverMediaHTML}
-            <div class="w-16 h-16 flex items-center justify-center rounded-full bg-black/40 border border-white/20 opacity-0 group-hover:opacity-50 transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
-                <svg class="w-6 h-6 fill-white translate-x-[2px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <div class="play-btn-circle flex items-center justify-center rounded-full ${playBtnOpacity} transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
         </div>
         <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
@@ -200,11 +203,14 @@
     const startTime = parseInt(wrapper.getAttribute('data-start') || '0', 10);
     if (window.innerWidth <= 768) { openLightbox(id, desc, startTime); return; }
 
+    coverEl.classList.add('is-loading');
+
     if (wrapper.plyrInstance) {
         const player = wrapper.plyrInstance;
         player.play();
         const onPlaying = () => {
             player.off('playing', onPlaying);
+            coverEl.classList.remove('is-loading');
             coverEl.style.opacity = '0';
             setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
         };
@@ -230,6 +236,7 @@
     });
     const onPlaying = () => {
         player.off('playing', onPlaying);
+        coverEl.classList.remove('is-loading');
         coverEl.style.opacity = '0';
         setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
     };
