@@ -117,7 +117,7 @@
             'Vídeos Diários': 'Vídeos recebidos, editados e entregues em menos de 24 horas.',
             'Highlights': 'Vídeos dinâmicos de melhores momentos.',
             'Produções Documentais': 'Vídeos com foco em narrativa.',
-            'Aberturas': 'Aberturas para campeonatos e eventos.',
+            'Aberturas e Trailers': 'Aberturas e trailers para campeonatos e eventos.',
             'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
 
@@ -161,7 +161,7 @@
     'll3UYdXXhlE',
     'd0d43qkOE7A',
     'ewiL53kmyPI', 'f-2xznYjToI',
-    'yiK_Z7XGyBA', 'qgXUQirQ7Bk'
+    'yiK_Z7XGyBA', 'qgXUQirQ7Bk', 'zmJqj7dM6Fw'
 ];
 
         function buildInlineVideo(id, description = '') {
@@ -814,9 +814,10 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                         ${buildInlineVideo('yiK_Z7XGyBA', 'Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa.')}
                         ${buildInlineVideo('qgXUQirQ7Bk', 'Montagem documental estruturada a partir de 1h30 de gravação bruta e extensa busca por mídias externas. Integração de referências visuais para conduzir a narrativa.')}</div>`;
 
-                } else if (name === 'Aberturas') {
+                } else if (name === 'Aberturas e Trailers') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
                         ${buildInlineVideo('G4qpobpXdKo', 'Cenas inéditas desenvolvidas com IA e treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. Aproximadamente 300 horas entre geração e pós-produção.')}
+                        ${buildInlineVideo('zmJqj7dM6Fw', 'Curadoria de mais de 50 horas de material bruto extraído de transmissões ao vivo para estruturação do trailer. Direcionamento de foco na edição para mitigar a poluição visual da tela, somado a técnicas de upscale para viabilizar o uso do material.')}
                         ${buildCarousel('aberturas-vol')}</div>`;
 
                 } else if (name === 'Institucionais') {
