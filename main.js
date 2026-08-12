@@ -226,7 +226,7 @@
     if (startTime > 0) ytConfig.start = startTime;
 
     const player = new Plyr(mount.querySelector('.js-player'), {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'fullscreen'],
         settings: ['quality', 'speed'],
         youtube: ytConfig,
         autoplay: true,
@@ -241,8 +241,6 @@
         coverEl.classList.remove('is-loading');
         coverEl.style.opacity = '0';
         setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
-        try { player.toggleCaptions(false); } catch(e) {}
-        setTimeout(() => { try { player.toggleCaptions(false); } catch(e) {} }, 500);
     };
     player.on('playing', onPlaying);
     wrapper.plyrInstance = player;
@@ -603,7 +601,7 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         if (startTime > 0) ytConfig.start = startTime;
 
         lightboxPlayer = new Plyr('#lb-plyr', {
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'fullscreen'],
             settings: ['quality', 'speed'],
             youtube: ytConfig,
             autoplay: true,
@@ -612,12 +610,6 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         lightboxPlayer.on('ready', () => {
             lightboxPlayer.volume = 0.75;
             forceYouTubeHD(wrap);
-        });
-        lightboxPlayer.on('playing', () => {
-            try { if (lightboxPlayer) lightboxPlayer.toggleCaptions(false); } catch(e) {}
-            setTimeout(() => {
-                try { if (lightboxPlayer) lightboxPlayer.toggleCaptions(false); } catch(e) {}
-            }, 500);
         });
     }, 50);
 }
