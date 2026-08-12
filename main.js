@@ -235,16 +235,14 @@
     player.on('ready', () => {
         player.volume = 0.75;
         forceYouTubeHD(mount);
-        player.toggleCaptions(false);
-        setTimeout(() => {
-            try { player.toggleCaptions(false); } catch(e) {}
-        }, 300);
     });
     const onPlaying = () => {
         player.off('playing', onPlaying);
         coverEl.classList.remove('is-loading');
         coverEl.style.opacity = '0';
         setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
+        try { player.toggleCaptions(false); } catch(e) {}
+        setTimeout(() => { try { player.toggleCaptions(false); } catch(e) {} }, 500);
     };
     player.on('playing', onPlaying);
     wrapper.plyrInstance = player;
@@ -614,10 +612,12 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         lightboxPlayer.on('ready', () => {
             lightboxPlayer.volume = 0.75;
             forceYouTubeHD(wrap);
-            lightboxPlayer.toggleCaptions(false);
+        });
+        lightboxPlayer.on('playing', () => {
+            try { if (lightboxPlayer) lightboxPlayer.toggleCaptions(false); } catch(e) {}
             setTimeout(() => {
                 try { if (lightboxPlayer) lightboxPlayer.toggleCaptions(false); } catch(e) {}
-            }, 300);
+            }, 500);
         });
     }, 50);
 }
