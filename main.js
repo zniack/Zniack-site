@@ -235,6 +235,18 @@
     player.on('ready', () => {
         player.volume = 0.75;
         forceYouTubeHD(mount);
+        
+        if (player.embed && player.embed.addEventListener) {
+            try {
+                if (player.embed.unloadModule) {
+                    player.embed.unloadModule('captions');
+                    player.embed.unloadModule('cc');
+                }
+                player.embed.addEventListener('onApiChange', () => {
+                    try { player.embed.setOption('captions', 'track', {}); } catch(err) {}
+                });
+            } catch (err) {}
+        }
     });
     const onPlaying = () => {
         player.off('playing', onPlaying);
@@ -243,14 +255,6 @@
         setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
     };
     player.on('playing', onPlaying);
-    
-    let captionGuard = false;
-    player.on('timeupdate', () => {
-        if (!captionGuard && player.currentTime > 0.5) {
-            try { player.toggleCaptions(false); } catch(e) {}
-            captionGuard = true;
-        }
-    });
     wrapper.plyrInstance = player;
     wrapper.baseVolume = 0.75;
     currentPlayers.push(player);
@@ -618,13 +622,17 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         lightboxPlayer.on('ready', () => {
             lightboxPlayer.volume = 0.75;
             forceYouTubeHD(wrap);
-        });
 
-        let lbCaptionGuard = false;
-        lightboxPlayer.on('timeupdate', () => {
-            if (!lbCaptionGuard && lightboxPlayer && lightboxPlayer.currentTime > 0.5) {
-                try { lightboxPlayer.toggleCaptions(false); } catch(e) {}
-                lbCaptionGuard = true;
+            if (lightboxPlayer.embed && lightboxPlayer.embed.addEventListener) {
+                try {
+                    if (lightboxPlayer.embed.unloadModule) {
+                        lightboxPlayer.embed.unloadModule('captions');
+                        lightboxPlayer.embed.unloadModule('cc');
+                    }
+                    lightboxPlayer.embed.addEventListener('onApiChange', () => {
+                        try { lightboxPlayer.embed.setOption('captions', 'track', {}); } catch(err) {}
+                    });
+                } catch (err) {}
             }
         });
     }, 50);
