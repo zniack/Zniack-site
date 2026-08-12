@@ -156,6 +156,7 @@
         }
 
         const localThumbs = [
+    'Tin_ogQGE-U',
     '4minjPUiGdI', 'O03qeBRocIs', 'G4qpobpXdKo',
     'csh7Z3dcb0g', '82Ah3XW5Jg4',
     'll3UYdXXhlE',
@@ -221,18 +222,23 @@
     const mount = wrapper.querySelector('.player-mount');
     mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
 
-    const ytConfig = { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 };
+    const ytConfig = { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1, cc_load_policy: 0 };
     if (startTime > 0) ytConfig.start = startTime;
 
     const player = new Plyr(mount.querySelector('.js-player'), {
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
         settings: ['quality', 'speed'],
         youtube: ytConfig,
-        autoplay: true
+        autoplay: true,
+        captions: { active: false }
     });
     player.on('ready', () => {
         player.volume = 0.75;
         forceYouTubeHD(mount);
+        player.toggleCaptions(false);
+        setTimeout(() => {
+            try { player.toggleCaptions(false); } catch(e) {}
+        }, 300);
     });
     const onPlaying = () => {
         player.off('playing', onPlaying);
@@ -595,18 +601,23 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
     document.body.style.overflow = 'hidden';
 
     setTimeout(() => {
-        const ytConfig = { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1 };
+        const ytConfig = { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1, cc_load_policy: 0 };
         if (startTime > 0) ytConfig.start = startTime;
 
         lightboxPlayer = new Plyr('#lb-plyr', {
             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
             settings: ['quality', 'speed'],
             youtube: ytConfig,
-            autoplay: true
+            autoplay: true,
+            captions: { active: false }
         });
         lightboxPlayer.on('ready', () => {
             lightboxPlayer.volume = 0.75;
             forceYouTubeHD(wrap);
+            lightboxPlayer.toggleCaptions(false);
+            setTimeout(() => {
+                try { if (lightboxPlayer) lightboxPlayer.toggleCaptions(false); } catch(e) {}
+            }, 300);
         });
     }, 50);
 }
@@ -811,6 +822,7 @@ const lazyVidObs = new IntersectionObserver((entries) => {
 
                 } else if (name === 'Produções Documentais') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
+                        ${buildInlineVideo('Tin_ogQGE-U', 'Estruturação narrativa voltada à construção e manutenção da atmosfera. Escolha de ritmo e sonorização alinhadas para conduzir o tom.')}
                         ${buildInlineVideo('yiK_Z7XGyBA', 'Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa.')}
                         ${buildInlineVideo('qgXUQirQ7Bk', 'Montagem documental estruturada a partir de 1h30 de gravação bruta e extensa busca por mídias externas. Integração de referências visuais para conduzir a narrativa.')}</div>`;
 
