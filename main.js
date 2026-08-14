@@ -139,6 +139,10 @@
         }
 
         function updateCategoryNav(name) {
+            const catNavEl = document.getElementById('category-nav');
+            if (catNavEl) {
+                catNavEl.style.display = name === 'GhostzMMOs' ? 'none' : 'flex';
+            }
             document.querySelectorAll('.category-nav-btn').forEach(btn =>
                 btn.classList.toggle('active-cat', btn.textContent.trim() === name)
             );
@@ -691,6 +695,12 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
     const id = cover.getAttribute('data-vid');
     if (id) handleInlineClick(id, cover);
 });
+        document.getElementById('case-ghostz')?.addEventListener('click', function(e) {
+            const cover = e.target.closest('.inline-cover');
+            if (!cover) return;
+            const id = cover.getAttribute('data-vid');
+            if (id) handleInlineClick(id, cover);
+        });
         document.getElementById('video-lightbox').addEventListener('click', function (e) { if (e.target === this || e.target.classList.contains('lightbox-inner')) closeLightbox(); });
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
@@ -844,7 +854,7 @@ const lazyVidObs = new IntersectionObserver((entries) => {
 
                 } else if (name === 'Aberturas e Trailers') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('G4qpobpXdKo', 'Cenas inéditas desenvolvidas com IA e treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. Aproximadamente 300 horas entre geração e pós-produção.')}
+                        ${buildInlineVideo('G4qpobpXdKo', 'Cenas inéditas desenvolvidas com IA e treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. Com mais de 200 horas entre geração e pós-produção.')}
                         ${buildInlineVideo('zmJqj7dM6Fw', 'Curadoria de mais de 50 horas de material bruto extraído de transmissões ao vivo para estruturação do trailer. Direcionamento de foco na edição para mitigar a poluição visual da tela, somado a técnicas de upscale para viabilizar o uso do material.')}
                         ${buildCarousel('aberturas-vol')}</div>`;
 
@@ -852,6 +862,9 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
                         ${buildInlineVideo('4minjPUiGdI', 'Execução integral do projeto — da idealização ao roteiro, suprindo a ausência de direcionamento criativo. Curadoria de imagens e locução conduzidas internamente.')}
                         ${buildInlineVideo('O03qeBRocIs', 'Animação e dinâmica de elementos gráficos para uma identidade institucional fictícia via motion design. Fluidez de movimentos e precisão técnica como prioridade.')}</div>`;
+                } else if (name === 'GhostzMMOs') {
+                    const template = document.getElementById('ghostz-content-template');
+                    contentArea.innerHTML = template ? template.innerHTML : '';
                 }
 
                 view.scrollTop = 0; view.classList.add('active');
@@ -870,6 +883,8 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                         }, { once: true });
                         lazyVidObs.observe(vid);
                     });
+                    initRevealText(contentArea);
+                    contentArea.querySelectorAll('.fade-up, .heavy-fade').forEach(el => fadeObs.observe(el));
                     tickSpotlight();
                 }, 50);
             };
@@ -983,10 +998,14 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
         // --- NOVAS IMPLEMENTAÇÕES (DESIGN & UX) ---
 
         // 1. Text Reveal Wrap
-        document.querySelectorAll('.titulo-secao').forEach(el => {
-            const text = el.innerHTML;
-            el.innerHTML = `<span class="reveal-wrap"><span class="reveal-text">${text}</span></span>`;
-        });
+        function initRevealText(container) {
+            container.querySelectorAll('.titulo-secao:not(.reveal-processed)').forEach(el => {
+                el.classList.add('reveal-processed');
+                const text = el.innerHTML;
+                el.innerHTML = `<span class="reveal-wrap"><span class="reveal-text">${text}</span></span>`;
+            });
+        }
+        initRevealText(document);
 
         // 2. Magnetic Buttons (Intensidade reduzida)
         document.querySelectorAll('.category-nav-btn, button[type="submit"]').forEach(btn => {
@@ -1002,3 +1021,9 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
                 btn.style.transform = `translate(0px, 0px)`;
             });
         });
+
+        if (typeof spotlightRaf !== 'undefined' && !spotlightRaf) {
+            spotlightRaf = requestAnimationFrame(tickSpotlight);
+        } else if (typeof spotlightRaf === 'undefined') {
+            requestAnimationFrame(tickSpotlight);
+        }

@@ -170,7 +170,7 @@
 
         .titulo-secao {
             font-family: 'Oswald', sans-serif;
-            letter-spacing: 7px;
+            letter-spacing: 0.39em;
             color: white;
             font-size: 18px;
             text-transform: uppercase;
@@ -748,3 +748,21 @@
     to { transform: rotate(360deg); }
 }
 
+.cinematic-card {
+    height: 400px;
+}
+@media (min-width: 768px) {
+    .cinematic-card {
+        height: 500px;
+    }
+}
+
+.ghostz-banner {
+    filter: saturate(0.2) brightness(0.5);
+    opacity: 0.7;
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.group:hover .ghostz-banner {
+    filter: saturate(0.4) brightness(0.5);
+    opacity: 1;
+}

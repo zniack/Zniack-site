@@ -40,6 +40,7 @@
     <header id="sticky-header" class="header-sticky">
         <a href="#sobre" class="nav-link">Quem sou eu</a>
         <a href="#trabalho" class="nav-link">Como trabalho</a>
+        <a href="#case-ghostz" class="nav-link">Projeto em destaque</a>
         <a href="#portfolio" class="nav-link">Portfolio</a>
         <a href="#contato" class="nav-link">Contato</a>
     </header>
@@ -103,6 +104,19 @@
                     específica. Em
                     trailers, por exemplo, a trilha frequentemente orienta a construção do ritmo e da narrativa desde as
                     etapas iniciais.</p>
+            </div>
+        </section>
+
+        <section id="case-ghostz">
+            <div class="w-full relative fade-up">
+                <h2 class="titulo-secao" style="margin-bottom: 25px;">Projeto em destaque</h2>
+                <div class="w-full max-w-[400px]">
+                    <button type="button" class="portfolio-box group relative w-full h-20 rounded overflow-hidden flex items-center justify-start px-8 cursor-pointer text-left" onclick="openCategory('GhostzMMOs')">
+                        <div class="absolute inset-0 bg-cover bg-center transform scale-100 group-hover:scale-105 ghostz-banner" style="background-image: url('thumbs/banner.jpg');"></div>
+                        <div class="absolute inset-0 bg-black transition-opacity duration-700 ease-in-out opacity-60 group-hover:opacity-40"></div>
+                        <span class="relative z-10 font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition uppercase">GHOSTZMMOS</span>
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -230,6 +244,168 @@
 
     <script src="https://cdn.plyr.io/3.7.8/plyr.js" defer></script>
     <script src="main.js" defer></script>
+
+    <template id="ghostz-content-template">
+        <div class="w-full mb-24">
+            <h2 class="titulo-secao reveal-processed" style="font-size: 36px;">GhostzMMOs</h2>
+            <p class="font-['Roboto'] font-thin text-[15px] text-[#e3e3e3] w-full max-w-[600px] text-left">Pós-produção para canal diário focado no ecossistema de MMORPGs (notícias, análises, gameplay, pautas de mercado e eventos.)</p>
+        </div>
+        <div class="mb-24 w-full max-w-[800px]">
+                    <h3 class="titulo-secao reveal-processed">DESAFIO DO PROJETO</h3>
+                    <div class="list-item !mb-10"><b>Alto volume e prazo curto</b>Manter a consistência entregando mais de <span class="text-white">5 vídeos semanais</span>, operando em um prazo curto de <span class="text-white">4 horas</span> (do recebimento do material bruto até a publicação) e mantendo o padrão do canal.<br>Em períodos de expansão, a entrega chegou a <span class="text-white">10 vídeos por semana</span>, divididos entre o canal principal e os secundários.</div>
+                </div>
+
+                <div class="w-full max-w-[1050px] mb-8">
+                    <h3 class="titulo-secao reveal-processed">ENTREGAS E PROJETOS ESPECIAIS</h3>
+                    <div class="list-item !mb-10"><b>Conteúdo Diário</b>Edição contínua da grade de vídeos long-form (5+ vídeos/semana).</div>
+                    
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-16" data-start="4">
+                        <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+                            <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="mg33hNaoqO4">
+                                <img src="thumbs/mg33hNaoqO40.jpg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
+                                <video data-src="thumbs/mg33hNaoqO4.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                                <div class="play-btn-circle flex items-center justify-center rounded-full play-btn-animated-cover transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                                    <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-16">
+                        <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+                            <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="JUSq0MlkTJI">
+                                <img src="thumbs/JUSq0MlkTJI.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none" onerror="this.src='https://img.youtube.com/vi/JUSq0MlkTJI/mqdefault.jpg'">
+                                <video data-src="thumbs/JUSq0MlkTJI.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                                <div class="play-btn-circle flex items-center justify-center rounded-full play-btn-animated-cover transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                                    <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-16">
+                        <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+                            <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="d0d43qkOE7A">
+                                <img src="thumbs/d0d43qkOE7A.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
+                                <video data-src="thumbs/d0d43qkOE7A.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                                <div class="play-btn-circle flex items-center justify-center rounded-full play-btn-animated-cover transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                                    <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-[1050px] mb-8 heavy-fade">
+                    <div class="list-item !mb-10"><b>Conteúdos Complementares</b>Peças promocionais, highlights e projetos especiais que complementam a produção recorrente.</div>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-16">
+                        <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+                            <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="ewiL53kmyPI">
+                                <img src="thumbs/ewiL53kmyPI.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
+                                <video data-src="thumbs/ewiL53kmyPI.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                                <div class="play-btn-circle flex items-center justify-center rounded-full play-btn-animated-cover transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                                    <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-16">
+                        <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+                            <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="X5nEwTBOJQE">
+                                <img src="thumbs/X5nEwTBOJQE.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none" onerror="this.src='https://img.youtube.com/vi/X5nEwTBOJQE/mqdefault.jpg'">
+                                <video data-src="thumbs/X5nEwTBOJQE.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                                <div class="play-btn-circle flex items-center justify-center rounded-full play-btn-animated-cover transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                                    <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-16">
+                        <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+                            <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="n_i1Eukzlu0">
+                                <img src="thumbs/n_i1Eukzlu0.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none" onerror="this.src='https://img.youtube.com/vi/n_i1Eukzlu0/maxresdefault.jpg'">
+                                <video data-src="thumbs/n_i1Eukzlu0.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                                <div class="play-btn-circle flex items-center justify-center rounded-full play-btn-animated-cover transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                                    <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-16">
+                        <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+                            <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="yiK_Z7XGyBA">
+                                <img src="thumbs/yiK_Z7XGyBA.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none" onerror="this.src='https://img.youtube.com/vi/yiK_Z7XGyBA/maxresdefault.jpg'">
+                                <video data-src="thumbs/yiK_Z7XGyBA.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                                <div class="play-btn-circle flex items-center justify-center rounded-full play-btn-animated-cover transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                                    <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-[1050px] mb-24">
+                    <div class="list-item !mb-10"><b>Abertura — Clube da Luta</b>Produção e pós-produção, do zero, da abertura do Clube da Luta, campeonato oficial da marca Ghostz — com <span class="text-white font-bold">mais de 200 horas</span> dedicadas à geração e pós-produção.</div>
+                    
+                    <div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-16">
+                        <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+                            <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="G4qpobpXdKo">
+                                <img src="thumbs/G4qpobpXdKo.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
+                                <video data-src="thumbs/G4qpobpXdKo.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
+                                <div class="play-btn-circle flex items-center justify-center rounded-full play-btn-animated-cover transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
+                                    <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                            </div>
+                            <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full max-w-[1050px]">
+                    <div>
+                        <h3 class="titulo-secao reveal-processed">PERFORMANCE</h3>
+                        <p class="texto-corpo mb-10">Comparativo entre os 12 meses anteriores ao início da parceria e os últimos 12 meses, com média de 5 vídeos semanais mantida em ambos os períodos.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full mb-6">
+                        <div class="bg-[#1a1a1a] border border-white/10 p-6 flex flex-col justify-center">
+                            <span class="font-['Oswald'] text-white/50 text-xs tracking-[2px] mb-2 uppercase">Duração média</span>
+                            <span class="font-['Roboto'] font-bold text-white text-xl md:text-2xl mb-1">4:08 &rarr; 5:43</span>
+                            <span class="font-['Roboto'] text-[#4ade80] text-lg">+38,3%</span>
+                        </div>
+                        <div class="bg-[#1a1a1a] border border-white/10 p-6 flex flex-col justify-center" style="transition-delay: 100ms;">
+                            <span class="font-['Oswald'] text-white/50 text-xs tracking-[2px] mb-2 uppercase">Visualizações</span>
+                            <span class="font-['Roboto'] font-bold text-white text-xl md:text-2xl mb-1">2,5M &rarr; 3,8M</span>
+                            <span class="font-['Roboto'] text-[#4ade80] text-lg">+51,7%</span>
+                        </div>
+                        <div class="bg-[#1a1a1a] border border-white/10 p-6 flex flex-col justify-center" style="transition-delay: 200ms;">
+                            <span class="font-['Oswald'] text-white/50 text-xs tracking-[2px] mb-2 uppercase">Horas de exibição</span>
+                            <span class="font-['Roboto'] font-bold text-white text-xl md:text-2xl mb-1">173k &rarr; 362k</span>
+                            <span class="font-['Roboto'] text-[#4ade80] text-lg">+109,2%</span>
+                        </div>
+                        <div class="flex flex-col h-full" style="transition-delay: 300ms;">
+                            <span class="texto-corpo text-[11px] text-white/60 leading-tight mb-2">Ao longo de 3 anos de parceria, o canal alcançou a marca de 100 mil inscritos.</span>
+                            <div class="bg-[#1a1a1a] border border-white/10 p-6 flex flex-col justify-center flex-grow">
+                                <span class="font-['Oswald'] text-white/50 text-xs tracking-[2px] mb-2 uppercase">Inscritos</span>
+                                <span class="font-['Roboto'] font-bold text-white text-xl md:text-2xl mb-1">61.5k &rarr; 100k</span>
+                                <span class="font-['Roboto'] text-[#4ade80] text-lg">+62,7%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="texto-corpo mt-6">Consolidando sua posição como um dos maiores canais e uma autoridade do nicho no Brasil.</p>
+                </div>
+    </template>
 </body>
 
 </html>
