@@ -240,6 +240,7 @@
     const player = new Plyr(mount.querySelector('.js-player'), {
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
         settings: ['quality', 'speed'],
+        ratio: isVertical ? '9:16' : '16:9',
         youtube: ytConfig,
         autoplay: true,
         captions: { active: false }
@@ -634,6 +635,7 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         lightboxPlayer = new Plyr('#lb-plyr', {
             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
             settings: ['quality', 'speed'],
+            ratio: isVertical ? '9:16' : '16:9',
             youtube: ytConfig,
             autoplay: true,
             captions: { active: false }
