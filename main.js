@@ -881,7 +881,7 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                         ${buildInlineVideo('O03qeBRocIs', 'Animação e dinâmica de elementos gráficos para uma identidade institucional fictícia via motion design. Fluidez de movimentos e precisão técnica como prioridade.')}</div>`;
                 } else if (name === 'Vídeos Publicitários') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um mock de anúncio fictício (SilencePro), formato padrão de criativos para tráfego pago. Testes A/B de voz e prompts de vídeo (Veo 3.1 e Seedance 2.5) conduzidos até alinhar gancho, ritmo e fidelidade de personagem.', true)}</div>`;
+                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um mock de anúncio fictício (SilencePro), formato padrão de criativos para tráfego pago. Testes A/B de voz e prompts de vídeo em múltiplas ferramentas de geração, conduzidos até alinhar gancho, ritmo e fidelidade de personagem.', true)}</div>`;
                 } else if (name === 'GhostzMMOs') {
                     const template = document.getElementById('ghostz-content-template');
                     contentArea.innerHTML = template ? template.innerHTML : '';
