@@ -118,7 +118,8 @@
             'Highlights': 'Vídeos dinâmicos de melhores momentos.',
             'Produções Documentais': 'Vídeos com foco em narrativa.',
             'Aberturas e Trailers': 'Aberturas e trailers para campeonatos e eventos.',
-            'Institucionais': 'Vídeos corporativos e comunicação de marca.'
+            'Institucionais': 'Vídeos corporativos e comunicação de marca.',
+            'Vídeos Publicitários': 'Produções voltadas para campanhas, anúncios e promoção de marcas.'
         };
 
         const carouselState = {};
@@ -166,13 +167,14 @@
     'll3UYdXXhlE',
     'd0d43qkOE7A',
     'ewiL53kmyPI', 'f-2xznYjToI',
-    'yiK_Z7XGyBA', 'qgXUQirQ7Bk', 'zmJqj7dM6Fw'
+    'yiK_Z7XGyBA', 'qgXUQirQ7Bk', 'zmJqj7dM6Fw', '-w9xbrW4A4o'
 ];
 
-        function buildInlineVideo(id, description = '') {
+        function buildInlineVideo(id, description = '', isVertical = false) {
+            const textStyle = isVertical ? 'style="flex: 1; min-width: 250px;"' : '';
             const descHTML = description
-                ? `<div class="w-full md:w-1/3 flex flex-col gap-3"><p class="comentario-trabalho">${description}</p></div>`
-                : '<div class="w-full md:w-1/3"></div>';
+                ? `<div class="w-full ${isVertical ? '' : 'md:w-1/3'} flex flex-col gap-3" ${textStyle}><p class="comentario-trabalho">${description}</p></div>`
+                : `<div class="w-full ${isVertical ? '' : 'md:w-1/3'}" ${textStyle}></div>`;
             const safeDesc = description.replace(/'/g, "\\'");
             const startTime = videoStartTimes[id] || 0;
 
@@ -188,9 +190,14 @@
                 playBtnOpacity = 'play-btn-animated-cover';
             }
 
+            const videoStyle = isVertical ? 'style="aspect-ratio: 9/16; max-width: 320px;"' : '';
+            const videoContainerClasses = isVertical
+                ? 'w-full mx-auto md:mx-0'
+                : 'w-full md:w-2/3 aspect-video';
+
             return `
-<div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}" data-start="${startTime}">
-    <div class="spotlight-scale-target w-full md:w-2/3 aspect-video bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0">
+<div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}" data-start="${startTime}" data-vertical="${isVertical}">
+    <div class="spotlight-scale-target ${videoContainerClasses} bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0" ${videoStyle}>
    <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="${id}">            ${coverMediaHTML}
             <div class="play-btn-circle flex items-center justify-center rounded-full ${playBtnOpacity} transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
                 <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -206,7 +213,8 @@
     const wrapper = coverEl.closest('.inline-video-wrapper');
     const desc = wrapper.getAttribute('data-desc');
     const startTime = parseInt(wrapper.getAttribute('data-start') || '0', 10);
-    if (window.innerWidth <= 768) { openLightbox(id, desc, startTime); return; }
+    const isVertical = wrapper.getAttribute('data-vertical') === 'true';
+    if (window.innerWidth <= 768) { openLightbox(id, desc, startTime, isVertical); return; }
 
     coverEl.classList.add('is-loading');
 
@@ -578,7 +586,7 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         });
 
         let lightboxPlayer = null;
-        function openLightbox(videoId, description = '', startTime = 0) {
+        function openLightbox(videoId, description = '', startTime = 0, isVertical = false) {
     const lb = document.getElementById('video-lightbox');
     if (lb.classList.contains('active')) return;
 
@@ -595,6 +603,13 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
     currentPlayers = [];
 
     const wrap = document.getElementById('lightbox-player-wrap');
+    if (isVertical) {
+        wrap.style.aspectRatio = '9/16';
+        wrap.style.maxWidth = '380px';
+    } else {
+        wrap.style.aspectRatio = '16/9';
+        wrap.style.maxWidth = '100%';
+    }
     const descEl = document.getElementById('lightbox-desc');
     wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
 
@@ -862,6 +877,9 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
                         ${buildInlineVideo('4minjPUiGdI', 'Execução integral do projeto — da idealização ao roteiro, suprindo a ausência de direcionamento criativo. Curadoria de imagens e locução conduzidas internamente.')}
                         ${buildInlineVideo('O03qeBRocIs', 'Animação e dinâmica de elementos gráficos para uma identidade institucional fictícia via motion design. Fluidez de movimentos e precisão técnica como prioridade.')}</div>`;
+                } else if (name === 'Vídeos Publicitários') {
+                    contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
+                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um mock de anúncio fictício (SilencePro), formato padrão de criativos para tráfego pago. Testes A/B de voz e prompts de vídeo (Veo 3.1 e Seedance 2.5) conduzidos até alinhar gancho, ritmo e fidelidade de personagem.', true)}</div>`;
                 } else if (name === 'GhostzMMOs') {
                     const template = document.getElementById('ghostz-content-template');
                     contentArea.innerHTML = template ? template.innerHTML : '';
