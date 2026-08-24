@@ -103,7 +103,8 @@
             'comentados-vol': ['Oacodzw29CE', '9EGPFtDVG3s', 'qxumGqBVclY', 'Hps6cf-9Ld4', '7wYKFmQ7TMc', 'OhN7CmFrkrM', 'OIMWARx6nZA', 'K-HN5rFeDv8', 'ZZAvKcMFano', 'wfrHj0L9ccc', 'E60hFmhy4hk'],
             'noticias-vol': ['AkrpKrpF3dc', 'VNNOvzWHpw8', 'kMDkKOBXsxg', 'xfEOq0u8d8k', '4XrtZ5SD-jI', 'mxD0WFRvt7k', 'KErRxCP2fP0', 'zPP-6cOafdQ', '_z1GkNuudqU', 'QOziuqM_FQA', 'xYxGu5smFOg'],
             'highlights-vol': ['KAKM9mEqtoc', 'w2WLKVPCNxY', 'kT3T1T7pbXU', 'GICsA2s6cDc', 'Rc3IYyWu2wE', 'v_ELfeP2WxY', '6NpgsBK8JPI', 'ILaJ6TaO1X0', '2E97i-ChJVI', 'BsCDkg0lMek'],
-            'aberturas-vol': ['7f7FDHkQjuQ']
+            'aberturas-vol': ['7f7FDHkQjuQ'],
+            'publicitarios-vol': ['ELA-ucM3NMQ']
         };
 
         const videoStartTimes = {
@@ -149,8 +150,17 @@
             );
         }
 
-        function getCarouselMetrics() {
+        function getCarouselMetrics(isVertical = false) {
             const m = window.innerWidth <= 768;
+            if (isVertical) {
+                return {
+                    isMobile: m,
+                    baseW: m ? 62 : 79, baseH: m ? 110 : 140,
+                    activeW: m ? 76 : 101, activeH: m ? 135 : 180,
+                    step: (m ? 62 : 79) + 15,
+                    diff: (m ? 76 : 101) - (m ? 62 : 79)
+                };
+            }
             return {
                 isMobile: m,
                 baseW: m ? 110 : 140, baseH: m ? 62 : 79,
@@ -273,11 +283,11 @@
     currentPlayers.push(player);
 }
 
-        function buildCarousel(carouselId) {
+        function buildCarousel(carouselId, isVertical = false) {
             const ids = carouselData[carouselId];
             if (!ids || ids.length === 0) return '';
             const itemsHTML = ids.map(id => `
-                <div class="carousel-item" data-vid="${id}" onclick="handleCarouselClick(this,'${carouselId}')">
+                <div class="carousel-item ${isVertical ? 'is-vertical' : ''}" data-vid="${id}" onclick="handleCarouselClick(this,'${carouselId}')">
                     <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
                     <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
                 </div>`).join('');
@@ -292,7 +302,7 @@
                     <div class="carousel-wrapper flex-1 overflow-hidden" id="wrap-${carouselId}"
                          onmouseenter="handleHoverIn('${carouselId}')"
                          onmouseleave="handleHoverOut('${carouselId}')">
-                        <div class="carousel-track" id="track-${carouselId}">${loopHTML}</div>
+                        <div class="carousel-track" id="track-${carouselId}" ${isVertical ? 'data-vertical="true"' : ''}>${loopHTML}</div>
                     </div>
                 </div>
             </div>`;
@@ -368,7 +378,8 @@
                     currentSpeed: n >= 6 ? 0.7 : 0,
                     isPaused: false, isHovered: false, itemsCount: n,
                     isSlidingToItem: false, isClosing: false,
-                    targetEl: null, syncTargetEl: null, targetX: 0, rafId: null
+                    targetEl: null, syncTargetEl: null, targetX: 0, rafId: null,
+                    isVertical: track.hasAttribute('data-vertical')
                 };
                 startTicker(id);
             });
@@ -380,7 +391,7 @@
             function tick() {
                 const isLoop = s.itemsCount >= 6;
                 const items = s.items;
-                const metrics = getCarouselMetrics();
+                const metrics = getCarouselMetrics(s.isVertical);
                 let halfW = 0;
                 if (isLoop && items[s.itemsCount]) halfW = items[s.itemsCount].offsetLeft;
 
@@ -470,10 +481,10 @@
             const videoId = el.dataset.vid;
             const startTime = videoStartTimes[videoId] || 0;
 
-            if (s.targetEl === origEl || s.targetEl === cloneEl) { openLightbox(videoId, '', startTime); return; }
+            if (s.targetEl === origEl || s.targetEl === cloneEl) { openLightbox(videoId, '', startTime, s.isVertical); return; }
 
             s.isPaused = true; s.isSlidingToItem = true; s.isClosing = false;
-            const metrics = getCarouselMetrics();
+            const metrics = getCarouselMetrics(s.isVertical);
 
             items.forEach(item => {
                 if (item.classList.contains('active') && item !== origEl && item !== cloneEl) {
@@ -500,11 +511,11 @@
         document.addEventListener('click', e => {
     if (!view.classList.contains('active')) return;
     if (e.target.closest('.carousel-item') || e.target.closest('.carousel-nav-btn') || e.target.closest('.inline-cover')) return;
-            const metrics = getCarouselMetrics();
 
             Object.keys(carouselState).forEach(id => {
                 const s = carouselState[id];
                 if (s && s.targetEl && !s.isClosing) {
+                    const metrics = getCarouselMetrics(s.isVertical);
                     s.isClosing = true; s.currentSpeed = 0;
                     s.items.forEach(item => {
                         item.style.transition = 'none';
@@ -727,10 +738,10 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
             const isOpen = body.classList.contains('open');
         const indicator = headerEl.querySelector('.subcat-indicator');
             if (isOpen) {
-                const metrics = getCarouselMetrics();
                 Object.keys(carouselState).forEach(cId => {
                     const s = carouselState[cId];
                     if (s && s.targetEl && !s.isClosing) {
+                        const metrics = getCarouselMetrics(s.isVertical);
                         s.isClosing = true; s.currentSpeed = 0;
                         s.items.forEach(item => {
                             item.style.transition = 'none';
@@ -881,7 +892,8 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                         ${buildInlineVideo('O03qeBRocIs', 'Animação e dinâmica de elementos gráficos para uma identidade institucional fictícia via motion design. Fluidez de movimentos e precisão técnica como prioridade.')}</div>`;
                 } else if (name === 'Vídeos Publicitários') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um mock de anúncio fictício (SilencePro), formato padrão de criativos para tráfego pago. Testes A/B de voz e prompts de vídeo em múltiplas ferramentas de geração, conduzidos até alinhar gancho, ritmo e fidelidade de personagem.', true)}</div>`;
+                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um mock de anúncio fictício (SilencePro), formato padrão de criativos para tráfego pago. Testes A/B de voz e prompts de vídeo em múltiplas ferramentas de geração, conduzidos até alinhar gancho, ritmo e fidelidade de personagem.', true)}
+                        ${buildCarousel('publicitarios-vol', true)}</div>`;
                 } else if (name === 'GhostzMMOs') {
                     const template = document.getElementById('ghostz-content-template');
                     contentArea.innerHTML = template ? template.innerHTML : '';

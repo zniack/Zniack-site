@@ -766,3 +766,11 @@
     filter: saturate(0.4) brightness(0.5);
     opacity: 1;
 }
+
+/* Carousel Vertical Styles */
+.carousel-item.is-vertical { width: 79px; height: 140px; }
+.carousel-item.is-vertical.active { width: 101px; height: 180px; }
+@media (max-width: 768px) {
+    .carousel-item.is-vertical { width: 62px; height: 110px; }
+    .carousel-item.is-vertical.active { width: 76px; height: 135px; }
+}
