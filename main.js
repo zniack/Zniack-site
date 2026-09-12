@@ -575,27 +575,51 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
             });
         }
 
+        let navigationRevision = 0;
+        function restoreRouteFromUrl() {
+            const revision = ++navigationRevision;
+            const url = new URL(window.location.href);
+            const category = url.searchParams.get('cat');
+            const validCategory = category === 'GhostzMMOs' || Object.prototype.hasOwnProperty.call(descricoesPortfolio, category);
+            closeLightbox();
+            if (validCategory) {
+                openCategory(category, true);
+                updateHeaderBlur();
+                return;
+            }
+            view.classList.remove('active');
+            document.body.style.overflow = '';
+            currentPlayers.forEach(player => { try { player.pause(); } catch (_) {} });
+            let sectionId = '';
+            try { sectionId = decodeURIComponent(url.hash.slice(1)); } catch (_) {}
+            const candidate = document.getElementById(sectionId);
+            const target = candidate && candidate.tagName === 'SECTION' ? candidate : capa;
+            window.scrollTo({ top: target.offsetTop, behavior: 'instant' });
+            updateHeaderBlur();
+            stickyHeader.style.opacity = '1';
+            // Recheck after layout without overriding subsequent navigation.
+            requestAnimationFrame(() => {
+                if (revision !== navigationRevision) return;
+                window.scrollTo({ top: target.offsetTop, behavior: 'instant' });
+                updateHeaderBlur();
+            });
+        }
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
-
                 hasClickedMenu = true;
-
-                const href = this.getAttribute('href');
-                const target = document.querySelector(href);
-                const wasOpen = view.classList.contains('active');
-
                 const url = new URL(window.location.href);
                 url.searchParams.delete('cat');
-                history.pushState(null, null, url.pathname + href);
-
+                url.hash = this.getAttribute('href');
+                if (url.href !== window.location.href) history.pushState(null, '', url);
+                const revision = ++navigationRevision;
                 triggerTransition(() => {
-                    if (wasOpen) { view.classList.remove('active'); document.body.style.overflow = ''; currentPlayers.forEach(p => { try { p.pause(); } catch (x) { } }); }
-                    window.scrollTo({ top: target.offsetTop, behavior: 'auto' });
-                    updateHeaderBlur();
+                    if (revision === navigationRevision) restoreRouteFromUrl();
                 });
             });
         });
+        window.addEventListener('popstate', restoreRouteFromUrl);
+        window.addEventListener('hashchange', restoreRouteFromUrl);
 
         let lightboxPlayer = null;
         function openLightbox(videoId, description = '', startTime = 0, isVertical = false) {
@@ -843,6 +867,7 @@ const lazyVidObs = new IntersectionObserver((entries) => {
 }, { root: document.getElementById('portfolio-view'), rootMargin: '100px', threshold: 0.05 });
 
         function openCategory(name, isLoad = false) {
+            const revision = ++navigationRevision;
             if (!view.classList.contains('active') && !isLoad) lastScrollPosition = window.scrollY;
             if (!isLoad) {
                 const url = new URL(window.location);
@@ -854,6 +879,7 @@ const lazyVidObs = new IntersectionObserver((entries) => {
             Object.keys(carouselState).forEach(id => { if (carouselState[id] && carouselState[id].rafId) cancelAnimationFrame(carouselState[id].rafId); });
 
             const setupCategory = () => {
+                if (revision !== navigationRevision) return;
                 descElement.innerText = descricoesPortfolio[name] || '';
                 updateCategoryNav(name);
                 document.body.style.overflow = 'hidden';
@@ -863,36 +889,36 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                     contentArea.innerHTML =
                         buildSubCategory('analises', 'Análises',
                             buildInlineVideo('csh7Z3dcb0g', 'Triagem e edição de 5 horas de material bruto não catalogado em uma janela de 7 horas para entrega. Catalogação e montagem em fluxo contínuo.') +
-                            buildInlineVideo('82Ah3XW5Jg4', 'Curadoria de mais de 70 horas de material bruto para seleção dos takes utilizados como b-roll. Volume exigiu triagem criteriosa — cada fragmento escolhido serve à construção do vídeo com precisão.') +
+                            buildInlineVideo('82Ah3XW5Jg4', 'Triagem de mais de 70 horas de material bruto para seleção dos trechos utilizados como b-roll.') +
                             buildCarousel('analises-vol')) +
-                        '<div style="margin-top:6px">' + buildSubCategory('comentados', 'Comentados', buildInlineVideo('ll3UYdXXhlE', 'Estruturação narrativa pautada na alternância entre relatos e acontecimentos. Equilíbrio entre discurso e ação do início ao fim.') + buildCarousel('comentados-vol')) + '</div>' +
-                        '<div style="margin-top:6px">' + buildSubCategory('noticias', 'Notícias', buildInlineVideo('d0d43qkOE7A', 'Produção ágil focada na pesquisa de fontes e curadoria de mídias para suporte à narrativa visual. Clareza informativa em janelas de tempo reduzidas.') + buildCarousel('noticias-vol')) + '</div>';
+                        '<div style="margin-top:6px">' + buildSubCategory('comentados', 'Comentados', buildInlineVideo('ll3UYdXXhlE', 'Montagem com alternância entre relatos e acontecimentos.') + buildCarousel('comentados-vol')) + '</div>' +
+                        '<div style="margin-top:6px">' + buildSubCategory('noticias', 'Notícias', buildInlineVideo('d0d43qkOE7A', 'Pesquisa de fontes e curadoria de mídias de apoio à narrativa visual, com prazo curto de produção.') + buildCarousel('noticias-vol')) + '</div>';
 
                 } else if (name === 'Highlights') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
                         ${buildInlineVideo('ewiL53kmyPI', 'Edição de materiais brutos de transmissões ao vivo com foco na construção de ritmo e tom.')}
-                        ${buildInlineVideo('f-2xznYjToI', 'Processamento de 16 horas de material bruto com alta densidade informativa. Encadeamento de múltiplos eventos para romper a linearidade.')}
+                        ${buildInlineVideo('f-2xznYjToI', 'Edição de 16 horas de material bruto com múltiplos eventos, organizados em uma montagem não linear.')}
                         ${buildCarousel('highlights-vol')}</div>`;
 
                 } else if (name === 'Produções Documentais') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('Tin_ogQGE-U', 'Estruturação narrativa voltada à construção e manutenção da atmosfera. Escolha de ritmo e sonorização alinhadas para conduzir o tom.')}
-                        ${buildInlineVideo('yiK_Z7XGyBA', 'Curadoria visual focada em fragmentos de outras obras que não apenas ilustrassem, mas amplificassem emocionalmente cada trecho da narrativa.')}
-                        ${buildInlineVideo('qgXUQirQ7Bk', 'Montagem documental estruturada a partir de 1h30 de gravação bruta e extensa busca por mídias externas. Integração de referências visuais para conduzir a narrativa.')}</div>`;
+                        ${buildInlineVideo('Tin_ogQGE-U', 'Definição de ritmo e sonorização para construir a atmosfera da narrativa.')}
+                        ${buildInlineVideo('yiK_Z7XGyBA', 'Seleção de trechos de outras obras como apoio visual, considerando o tom emocional de cada trecho da narrativa.')}
+                        ${buildInlineVideo('qgXUQirQ7Bk', 'Montagem documental a partir de 1h30 de gravação bruta, com pesquisa e seleção de mídias externas para compor a narrativa visual.')}</div>`;
 
                 } else if (name === 'Aberturas e Trailers') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('G4qpobpXdKo', 'Cenas inéditas desenvolvidas com IA e treinamento de LoRAs para 14 personagens, superando a escassez de materiais oficiais. Com mais de 200 horas entre geração e pós-produção.')}
-                        ${buildInlineVideo('zmJqj7dM6Fw', 'Curadoria de mais de 50 horas de material bruto extraído de transmissões ao vivo para estruturação do trailer. Direcionamento de foco na edição para mitigar a poluição visual da tela, somado a técnicas de upscale para viabilizar o uso do material.')}
+                        ${buildInlineVideo('G4qpobpXdKo', 'Criação de cenas com IA e treinamento de LoRAs para 14 personagens, diante da escassez de materiais oficiais. Mais de 200 horas entre geração e pós-produção.')}
+                        ${buildInlineVideo('zmJqj7dM6Fw', 'Seleção de trechos em mais de 50 horas de transmissões ao vivo para montagem do trailer. Edição para direcionar a atenção em cenas com muitos elementos na tela e aplicação de upscale ao material.')}
                         ${buildCarousel('aberturas-vol')}</div>`;
 
                 } else if (name === 'Institucionais') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('4minjPUiGdI', 'Execução integral do projeto — da idealização ao roteiro, suprindo a ausência de direcionamento criativo. Curadoria de imagens e locução conduzidas internamente.')}
-                        ${buildInlineVideo('O03qeBRocIs', 'Animação e dinâmica de elementos gráficos para uma identidade institucional fictícia via motion design. Fluidez de movimentos e precisão técnica como prioridade.')}</div>`;
+                        ${buildInlineVideo('4minjPUiGdI', 'Execução integral do projeto, incluindo idealização, roteiro, curadoria de imagens e locução.')}
+                        ${buildInlineVideo('O03qeBRocIs', 'Animação de elementos gráficos para uma identidade institucional fictícia, com uso de motion design.')}</div>`;
                 } else if (name === 'Vídeos Publicitários') {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um mock de anúncio fictício (SilencePro), formato padrão de criativos para tráfego pago. Testes A/B de voz e prompts de vídeo em múltiplas ferramentas de geração, conduzidos até alinhar gancho, ritmo e fidelidade de personagem.', true)}
+                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um anúncio fictício para a marca SilencePro, em formato de criativo para tráfego pago. Testes de variações de voz e prompts de vídeo em diferentes ferramentas de geração, com ajustes de gancho, ritmo e consistência do personagem.', true)}
                         ${buildCarousel('publicitarios-vol', true)}</div>`;
                 } else if (name === 'GhostzMMOs') {
                     const template = document.getElementById('ghostz-content-template');
@@ -943,35 +969,23 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
             contactForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const btn = contactForm.querySelector('button[type="submit"]');
-                const orig = btn.innerText; btn.innerText = 'ENVIANDO...';
+                if (btn.disabled) return;
+                const orig = btn.innerText;
+                btn.disabled = true;
+                contactForm.setAttribute('aria-busy', 'true');
+                formStatus.classList.remove('hidden');
+                formStatus.textContent = '';
+                btn.innerText = 'ENVIANDO...';
                 try {
                     const res = await fetch(contactForm.action, { method: contactForm.method, body: new FormData(contactForm), headers: { 'Accept': 'application/json' } });
                     if (res.ok) { formStatus.innerText = 'Obrigado pela mensagem! Entrarei em contato em breve para falarmos sobre o seu projeto.'; formStatus.style.color = '#f3f3f3'; contactForm.reset(); }
                     else { formStatus.innerText = 'Oops! Ocorreu um erro ao enviar sua mensagem.'; formStatus.style.color = '#f87171'; }
                 } catch (err) { formStatus.innerText = 'Oops! Ocorreu um erro ao enviar sua mensagem.'; formStatus.style.color = '#f87171'; }
-                finally { formStatus.classList.remove('hidden'); btn.innerText = orig; }
+                finally { btn.disabled = false; contactForm.removeAttribute('aria-busy'); btn.innerText = orig; }
             });
         }
 
-        const scrollObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && hasClickedMenu) {
-                    const id = entry.target.getAttribute('id');
-
-                    if (id === 'capa') {
-                        history.replaceState(null, null, window.location.pathname);
-                    } else if (id) {
-                        history.replaceState(null, null, `#${id}`);
-                    }
-                }
-            });
-        }, {
-            threshold: 0.5
-        });
-
-        document.querySelectorAll('section[id]').forEach(section => {
-            scrollObserver.observe(section);
-        });
+        // History entries describe explicit navigation; scrolling does not rewrite them.
 
         // WhatsApp: feedback visual em dispositivos touch (mobile)
         // Em touch, o :hover do CSS não dispara — este script simula o mesmo efeito
@@ -1015,17 +1029,11 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
             }
         })();
 
-        // ATUALIZADO: Restaura a categoria via URL ou limpa a URL e vai pro topo
-        const urlParams = new URLSearchParams(window.location.search);
-        const catParam = urlParams.get('cat');
-        if (catParam) {
-            openCategory(catParam, true);
-        } else {
-            window.scrollTo(0, 0);
-            history.replaceState(null, null, window.location.pathname);
-            updateHeaderBlur();
-            document.getElementById('sticky-header').style.opacity = '1';
-        }
+        restoreRouteFromUrl();
+        window.addEventListener('load', () => {
+            // Image/font loading can affect section offsets on direct links.
+            if (!new URL(window.location.href).searchParams.has('cat')) restoreRouteFromUrl();
+        }, { once: true });
 
         // --- NOVAS IMPLEMENTAÇÕES (DESIGN & UX) ---
 

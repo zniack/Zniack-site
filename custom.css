@@ -774,3 +774,125 @@
     .carousel-item.is-vertical { width: 62px; height: 110px; }
     .carousel-item.is-vertical.active { width: 76px; height: 135px; }
 }
+
+
+/* Refinamentos aprovados de apresentação e tipografia. */
+.texto-corpo, .list-item, .comentario-trabalho {
+    font-size: 16px;
+    line-height: 1.8;
+    font-weight: 400;
+}
+#portfolio-view .font-thin {
+    font-weight: 300;
+}
+#portfolio-view p { line-height: 1.8; }
+/* Hierarquia: Oswald nos títulos e controles; Roboto na leitura. */
+.titulo-secao { line-height: 1.5; }
+.list-item b { font-size: 14px; letter-spacing: 2.5px; line-height: 1.6; color: #dedede; margin-bottom: 10px; }
+#trabalho .list-container { gap: 32px; }
+#trabalho .list-item { margin-bottom: 0; }
+#trabalho .comentario-trabalho { max-width: 600px; }
+#trabalho .list-container + .comentario-trabalho { color: #bdbdbd; font-size: 15px; }
+.nav-link { letter-spacing: 4px; color: rgba(255,255,255,.8); }
+#portfolio-grid .portfolio-box > span { letter-spacing: 2.5px; font-size: 14px; line-height: 1.5; }
+#category-desc, #portfolio-content-area .inline-video-wrapper p { font-size: 16px; font-weight: 400; color: #d9d9d9; }
+.subcat-title { font-size: 14px; letter-spacing: 2px; color: #c9c9c9; }
+.subcat-indicator { font-size: 11px; letter-spacing: 1.5px; color: #bdbdbd; }
+#contact-form input, #contact-form textarea { font-family: 'Roboto', sans-serif; font-size: 16px; font-weight: 400; line-height: 1.6; letter-spacing: 0; }
+#contact-form input::placeholder, #contact-form textarea::placeholder { font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 2px; color: #bdbdbd; }
+#contato .font-thin { font-size: 15px; font-weight: 400; line-height: 1.6; }
+.case-performance-grid > div > span:first-child,
+.case-milestone-card > span:first-child { font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1.5px; line-height: 1.5; color: #bdbdbd; margin-bottom: 12px; }
+.case-performance-grid > div > span:nth-child(2),
+.case-milestone-card > span:nth-child(2) { font-size: 23px; font-weight: 400; line-height: 1.4; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+.case-performance-grid > div > span:nth-child(3),
+.case-milestone-card > span:nth-child(3) { font-size: 17px; font-weight: 400; line-height: 1.5; }
+.category-nav-btn {
+    font-size: 11px;
+    letter-spacing: 1.7px;
+    min-height: 40px;
+    padding: 9px 14px;
+    color: rgba(255,255,255,.72);
+    border-color: rgba(255,255,255,.16);
+}
+.category-nav-btn.active-cat {
+    background: rgba(255,255,255,.05);
+}
+#case-ghostz {
+    min-height: 82vh;
+    padding-top: 14vh;
+    padding-bottom: 14vh;
+}
+.featured-project { width: 100%; max-width: 560px; }
+.featured-project .titulo-secao { margin-bottom: 36px; }
+.featured-project-link {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,.12);
+    background: #202020;
+    transition: border-color .3s ease;
+}
+.featured-project-link:hover,
+.featured-project-link:focus-visible { border-color: rgba(255,255,255,.4); }
+.featured-project-image {
+    display: block;
+    width: 100%; height: auto;
+    object-fit: contain;
+    filter: saturate(.2) brightness(.76);
+    transition: filter .5s ease;
+}
+.featured-project-link:hover .featured-project-image { filter: saturate(.4) brightness(.9); }
+.featured-project-copy { display: flex; flex-direction: column; padding: 24px 28px; }
+.featured-project-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px; font-weight: 200; letter-spacing: 4px;
+    color: #f3f3f3;
+}
+.featured-project-description { font-size: 15px; line-height: 1.8; font-weight: 300; color: #d9d9d9; margin-top: 12px; }
+.featured-project-meta { font-size: 13px; color: #bdbdbd; margin-top: 14px; }
+.featured-project-action {
+    display: flex; justify-content: space-between; gap: 16px;
+    margin-top: 20px; padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,.12);
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+}
+.case-intro { max-width: 850px; margin-bottom: 0; }
+.case-intro .titulo-secao { font-size: clamp(28px, 4vw, 40px); letter-spacing: .22em; margin-bottom: 24px; }
+.case-intro p { max-width: 650px; font-size: 16px; font-weight: 300; color: #d9d9d9; }
+.case-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 36px; padding: 28px 0; border-top: 1px solid #444; border-bottom: 1px solid #444; }
+.case-facts div { display: flex; flex-direction: column; gap: 9px; }
+.case-facts dt { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 200; }
+.case-facts dd { font-size: 13px; line-height: 1.6; font-weight: 300; color: #c9c9c9; }
+.case-challenge { max-width: 760px; margin-bottom: 0; }
+.case-challenge .titulo-secao { margin-bottom: 24px; }
+.case-challenge .list-item { margin-bottom: 0 !important; }
+.case-performance-grid { grid-template-columns: repeat(3, minmax(0,1fr)); margin-top: 28px; }
+.case-reference { margin: 0 0 18px; font-size: 13px; font-weight: 300; color: #bdbdbd; }
+.case-periods { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px; margin-top: 24px; }
+.case-periods dt { font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: #bdbdbd; margin-bottom: 8px; }
+.case-periods dd { font-size: 15px; line-height: 1.7; color: #e3e3e3; }
+.case-performance-grid > div { padding: 22px 18px; }
+.case-performance-note { margin: 0; font-size: 16px; font-weight: 300; line-height: 1.8; color: #d9d9d9; max-width: 450px; }
+.case-milestone { display: grid; grid-template-columns: 2fr 1fr; gap: 28px; align-items: center; margin: 36px 0 28px; padding-top: 28px; border-top: 1px solid #444; }
+.case-milestone-card { padding: 22px 18px; }
+@media (max-width: 768px) {
+    .nav-link { font-size: 12px !important; letter-spacing: 1.8px !important; }
+    .header-sticky { gap: 12px 16px; }
+    .category-nav { gap: 8px; }
+    .category-nav-btn { font-size: 11px; letter-spacing: 1.1px; padding: 10px 12px; min-height: 44px; }
+    #case-ghostz { min-height: auto; padding-top: 100px; padding-bottom: 100px; }
+    .featured-project-link { grid-template-columns: 1fr; }
+    .featured-project-copy { padding: 22px; }
+    .case-facts { gap: 14px; }
+    .case-facts dt { font-size: 24px; }
+    .case-facts dd { font-size: 12px; }
+    .case-performance-grid { grid-template-columns: 1fr; gap: 12px; }
+    .case-periods { grid-template-columns: 1fr; gap: 18px; }
+    .case-performance-grid > div { padding: 20px 14px; }
+    .case-milestone { grid-template-columns: 1fr; gap: 20px; }
+    .case-milestone-card { padding: 20px 14px; }
+}

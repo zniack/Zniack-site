@@ -80,40 +80,31 @@
                     </p>
                 </div>
                 <div class="list-container flex flex-col gap-2 max-w-[600px]">
-                    <div class="list-item heavy-fade"><b>Organização</b>Download e estruturação dos arquivos brutos e
-                        assets.</div>
-                    <div class="list-item heavy-fade"><b>Decupagem</b>Limpeza do material, removendo erros, pausas
-                        desnecessárias e
-                        vícios de linguagem.</div>
-                    <div class="list-item heavy-fade"><b>Curadoria de Mídia</b>Busca e seleção de b-rolls, inserts e
-                        mídias de
-                        apoio.</div>
-                    <div class="list-item heavy-fade"><b>Edição</b>Construção da narrativa, ritmo e pacing.</div>
-                    <div class="list-item heavy-fade"><b>Lettering</b>Aplicação de textos e elementos alinhados à
-                        identidade
-                        visual.</div>
-                    <div class="list-item heavy-fade"><b>Sonorização</b>Tratamento de áudio, inserção e mixagem de SFX e
-                        trilha
-                        sonora.</div>
-                    <div class="list-item heavy-fade"><b>Finalização</b>Aplicação de VFX e color grading.</div>
-                    <div class="list-item heavy-fade"><b>Entrega</b>Renderização, conferência técnica final, aprovação e
-                        entrega.
-                    </div>
+                    <div class="list-item heavy-fade"><b>Organização</b>Download e estruturação dos arquivos brutos e mídias de apoio para o fluxo de edição.</div>
+                    <div class="list-item heavy-fade"><b>Decupagem</b>Seleção e limpeza do material, removendo erros, pausas desnecessárias e vícios de linguagem para dar clareza à fala.</div>
+                    <div class="list-item heavy-fade"><b>Curadoria de mídia</b>Busca e seleção de imagens de apoio, b-rolls e inserts que contextualizam e complementam a narrativa.</div>
+                    <div class="list-item heavy-fade"><b>Edição</b>Construção da narrativa, com ritmo e cortes alinhados ao objetivo do vídeo.</div>
+                    <div class="list-item heavy-fade"><b>Lettering</b>Aplicação de textos e elementos gráficos para destacar informações, respeitando a identidade visual do projeto.</div>
+                    <div class="list-item heavy-fade"><b>Sonorização</b>Tratamento de áudio e mixagem de voz, efeitos sonoros e trilha para equilibrar clareza e atmosfera.</div>
+                    <div class="list-item heavy-fade"><b>Finalização</b>Aplicação de efeitos visuais e tratamento de cor conforme a proposta do vídeo.</div>
+                    <div class="list-item heavy-fade"><b>Entrega</b>Renderização e conferência técnica do vídeo para aprovação e entrega final.</div>
                 </div>
-                <p class="comentario-trabalho mt-16 heavy-fade">O processo é adaptado a cada material, alinhando ritmo, sonorização e cortes à necessidade do projeto.</p>
+                <p class="comentario-trabalho mt-16 heavy-fade">Cada etapa é ajustada à complexidade do material e às necessidades do projeto.</p>
             </div>
         </section>
 
         <section id="case-ghostz">
-            <div class="w-full relative fade-up">
-                <h2 class="titulo-secao" style="margin-bottom: 25px;">Projeto em destaque</h2>
-                <div class="w-full max-w-[400px]">
-                    <button type="button" class="portfolio-box group relative w-full h-20 rounded overflow-hidden flex items-center justify-start px-8 cursor-pointer text-left" onclick="openCategory('GhostzMMOs')">
-                        <div class="absolute inset-0 bg-cover bg-center transform scale-100 group-hover:scale-105 ghostz-banner" style="background-image: url('thumbs/banner.jpg');"></div>
-                        <div class="absolute inset-0 bg-black transition-opacity duration-700 ease-in-out opacity-60 group-hover:opacity-40"></div>
-                        <span class="relative z-10 font-['Oswald'] tracking-[4px] text-sm text-white/70 group-hover:text-white transition uppercase">GHOSTZMMOS</span>
-                    </button>
-                </div>
+            <div class="featured-project fade-up">
+                <h2 class="titulo-secao">Projeto em destaque</h2>
+                <button type="button" class="featured-project-link" onclick="openCategory('GhostzMMOs')">
+                    <img class="featured-project-image" src="thumbs/banner.jpg" loading="lazy" alt="">
+                    <span class="featured-project-copy">
+                        <span class="featured-project-name">GHOSTZMMOS</span>
+                        <span class="featured-project-description">Pós-produção contínua e projetos especiais para um canal de MMORPGs.</span>
+                        <span class="featured-project-meta">3+ anos de parceria</span>
+                        <span class="featured-project-action">Conhecer o projeto <span aria-hidden="true">↗</span></span>
+                    </span>
+                </button>
             </div>
         </section>
 
@@ -171,7 +162,7 @@
                             class="bg-transparent border-b border-white/10 p-2 text-xs font-['Oswald'] tracking-[2px] h-24 focus:outline-none focus:border-white transition resize-none"></textarea>
                         <button type="submit" aria-label="Enviar formulário"
                             class="font-['Oswald'] text-[12px] tracking-[4px] border border-white/30 text-white/60 p-4 hover:border-white hover:text-white transition uppercase w-max mt-4">Enviar</button>
-                        <p id="form-status" class="hidden font-['Oswald'] tracking-[2px] text-sm mt-2 text-[#d9d9d9]">
+                        <p id="form-status" role="status" aria-live="polite" aria-atomic="true" class="hidden font-['Oswald'] tracking-[2px] text-sm mt-2 text-[#d9d9d9]">
                         </p>
                     </form>
                     <div class="flex flex-col gap-6 w-full">
@@ -186,7 +177,7 @@
                                     </path>
                                     <polyline points="22,6 12,13 2,6"></polyline>
                                 </svg>
-                                contato@zniack.com
+                                <a href="mailto:contato@zniack.com" class="hover:text-white transition">contato@zniack.com</a>
                             </div>
                             <!-- ALTERADO: cor do hover branca (#f3f3f3), mensagem do wa.me atualizada, id adicionado para touch mobile -->
                             <a href="https://api.whatsapp.com/send/?phone=5564992112376&text=Vim+pelo+seu+site+e+tenho+interesse+no+seu+trabalho.&type=phone_number&app_absent=0"
@@ -249,14 +240,19 @@
     <script src="main.js" defer></script>
 
     <template id="ghostz-content-template">
-        <div class="w-full mb-24">
-            <h2 class="titulo-secao reveal-processed" style="font-size: 36px;">GhostzMMOs</h2>
-            <p class="font-['Roboto'] font-thin text-[15px] text-[#e3e3e3] w-full max-w-[600px] text-left">Pós-produção para canal diário focado no ecossistema de MMORPGs (notícias, análises, gameplay, pautas de mercado e eventos.)</p>
+        <div class="case-intro">
+            <h2 class="titulo-secao reveal-processed">GhostzMMOs</h2>
+            <p>Pós-produção para um canal diário sobre MMORPGs, com notícias, análises, gameplay e cobertura de eventos.</p>
+            <dl class="case-facts">
+                <div><dt>3+ anos</dt><dd>de parceria</dd></div>
+                <div><dt>5+ vídeos</dt><dd>entregues por semana</dd></div>
+                <div><dt>4 horas</dt><dd>em média, do material bruto à publicação</dd></div>
+            </dl>
         </div>
-        <div class="mb-24 w-full max-w-[800px]">
-                    <h3 class="titulo-secao reveal-processed">DESAFIO DO PROJETO</h3>
-                    <div class="list-item !mb-10"><b>Alto volume e prazo curto</b>Manter a consistência entregando mais de <span class="text-white">5 vídeos semanais</span>, operando em um prazo curto de <span class="text-white">4 horas</span> (do recebimento do material bruto até a publicação) e mantendo o padrão do canal.<br>Em períodos de expansão, a entrega chegou a <span class="text-white">10 vídeos por semana</span>, divididos entre o canal principal e os secundários.</div>
-                </div>
+        <div class="case-challenge">
+            <h3 class="titulo-secao reveal-processed">Desafio do projeto</h3>
+            <div class="list-item"><b>Alto volume e prazo curto</b>Manter o padrão do canal em uma rotina de publicação diária, com uma janela curta entre o recebimento do material e a publicação. Em períodos de expansão, a operação chegou a <span class="text-white">10 vídeos por semana</span>, entre o canal principal e os secundários.</div>
+        </div>
 
                 <div class="w-full max-w-[1050px] mb-8">
                     <h3 class="titulo-secao reveal-processed">ENTREGAS E PROJETOS ESPECIAIS</h3>
@@ -378,10 +374,15 @@
                 <div class="w-full max-w-[1050px]">
                     <div>
                         <h3 class="titulo-secao reveal-processed">PERFORMANCE</h3>
-                        <p class="texto-corpo mb-10">Comparativo entre os 12 meses anteriores ao início da parceria e os últimos 12 meses, com média de 5 vídeos semanais mantida em ambos os períodos.</p>
+                        <p class="case-reference">Data de referência do case: <time datetime="2026-08-15">15/08/2026</time></p>
+                        <p class="texto-corpo">Comparativo entre o ano anterior ao início da parceria e o último ano completo da parceria, com média de 5 vídeos semanais mantida em ambos os períodos.</p>
+                        <dl class="case-periods">
+                            <div><dt>Antes da parceria</dt><dd><time datetime="2022-08-15">15/08/2022</time> a <time datetime="2023-08-15">15/08/2023</time></dd></div>
+                            <div><dt>Último ano completo da parceria</dt><dd><time datetime="2025-08-15">15/08/2025</time> a <time datetime="2026-08-15">15/08/2026</time></dd></div>
+                        </dl>
                     </div>
                     
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full mb-6">
+                    <div class="case-performance-grid grid gap-4 w-full mb-6">
                         <div class="bg-[#1a1a1a] border border-white/10 p-6 flex flex-col justify-center">
                             <span class="font-['Oswald'] text-white/50 text-xs tracking-[2px] mb-2 uppercase">Duração média</span>
                             <span class="font-['Roboto'] font-bold text-white text-xl md:text-2xl mb-1">4:08 &rarr; 5:43</span>
@@ -397,13 +398,13 @@
                             <span class="font-['Roboto'] font-bold text-white text-xl md:text-2xl mb-1">173k &rarr; 362k</span>
                             <span class="font-['Roboto'] text-[#4ade80] text-lg">+109,2%</span>
                         </div>
-                        <div class="flex flex-col h-full" style="transition-delay: 300ms;">
-                            <span class="texto-corpo text-[11px] text-white/60 leading-tight mb-2">Ao longo de 3 anos de parceria, o canal alcançou a marca de 100 mil inscritos.</span>
-                            <div class="bg-[#1a1a1a] border border-white/10 p-6 flex flex-col justify-center flex-grow">
-                                <span class="font-['Oswald'] text-white/50 text-xs tracking-[2px] mb-2 uppercase">Inscritos</span>
-                                <span class="font-['Roboto'] font-bold text-white text-xl md:text-2xl mb-1">61.5k &rarr; 100k</span>
-                                <span class="font-['Roboto'] text-[#4ade80] text-lg">+62,7%</span>
-                            </div>
+                    </div>
+                    <div class="case-milestone">
+                        <p class="case-performance-note">Ao longo de 3 anos de parceria, o canal alcançou a marca de 100 mil inscritos.</p>
+                        <div class="case-milestone-card bg-[#1a1a1a] border border-white/10 flex flex-col justify-center">
+                            <span class="font-['Oswald'] text-white/50 text-xs tracking-[2px] mb-2 uppercase">Inscritos</span>
+                            <span class="font-['Roboto'] font-bold text-white text-xl md:text-2xl mb-1">61,5k &rarr; 100k</span>
+                            <span class="font-['Roboto'] text-[#4ade80] text-lg">+62,7%</span>
                         </div>
                     </div>
                     <p class="texto-corpo mt-6">Consolidando sua posição como um dos maiores canais e uma autoridade do nicho no Brasil.</p>
