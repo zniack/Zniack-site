@@ -963,6 +963,23 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
             if (perfilImg.complete) perfilImg.classList.remove('opacity-0');
         }
 
+        const copyEmailButton = document.getElementById('copy-email');
+        const copyEmailStatus = document.getElementById('copy-email-status');
+        let copyEmailTimer;
+        if (copyEmailButton) {
+            copyEmailButton.addEventListener('click', async () => {
+                clearTimeout(copyEmailTimer);
+                copyEmailStatus.textContent = '';
+                try {
+                    await navigator.clipboard.writeText('contato@zniack.com');
+                    copyEmailStatus.textContent = 'Copiado';
+                    copyEmailTimer = setTimeout(() => { copyEmailStatus.textContent = ''; }, 2500);
+                } catch (_) {
+                    copyEmailStatus.textContent = 'Não foi possível copiar. Selecione o endereço para copiar manualmente.';
+                }
+            });
+        }
+
         const contactForm = document.getElementById('contact-form');
         const formStatus = document.getElementById('form-status');
         if (contactForm) {
