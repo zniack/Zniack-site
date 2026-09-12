@@ -871,7 +871,7 @@
 .case-challenge .titulo-secao { margin-bottom: 24px; }
 .case-challenge .list-item { margin-bottom: 0 !important; }
 .case-performance-grid { grid-template-columns: repeat(3, minmax(0,1fr)); margin-top: 28px; }
-.case-reference { margin: 0 0 18px; font-size: 13px; font-weight: 300; color: #bdbdbd; }
+.case-reference, .case-intro .case-reference { margin: 0 0 18px; font-size: 13px; font-weight: 300; color: #bdbdbd; }
 .case-periods { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 24px; margin-top: 24px; }
 .case-periods dt { font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: #bdbdbd; margin-bottom: 8px; }
 .case-periods dd { font-size: 15px; line-height: 1.7; color: #e3e3e3; }
