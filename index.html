@@ -23,6 +23,18 @@
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="assets/favicon-32.png" sizes="32x32">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+  <script id="reload-top">
+    (function () {
+      var navigation = performance.getEntriesByType('navigation')[0];
+      if (!navigation || navigation.type !== 'reload') return;
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+      window.addEventListener('pageshow', function () {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
+      }, { once: true });
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
