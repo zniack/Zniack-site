@@ -1,11 +1,10 @@
 // Rastreamento para anúncios no Meta.
 // 1) Origem na conversa: se o link do anúncio tiver ?ref=... ou utm_content=..., o código
 //    é acrescentado ao fim da mensagem do WhatsApp, por exemplo "[ref: gancho-a]".
-// 2) Pixel do Meta: fica desligado até META_PIXEL_ID ser preenchido. Com o ID, registra
-//    PageView ao abrir a página e o evento padrão Contact em cada clique para o WhatsApp.
-//    Antes de ligar, publique o aviso de privacidade da página.
+// 2) Pixel da Meta: registra PageView ao abrir a página e o evento padrão Contact
+//    em cada clique para o WhatsApp.
 (function () {
-  var META_PIXEL_ID = ''; // ex.: '123456789012345'
+  var META_PIXEL_ID = '2618110078639649';
 
   var links = Array.prototype.slice.call(document.querySelectorAll('a[data-whatsapp]'));
   var params = new URLSearchParams(window.location.search);
