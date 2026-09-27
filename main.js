@@ -30,6 +30,22 @@ const variantButtons = document.querySelectorAll('[data-variant]');
 const video = document.getElementById('creative-video');
 const playButton = document.getElementById('video-play');
 const videoStatus = document.getElementById('video-status');
+let videoVisible = true;
+
+// Pausa ao sair completamente da tela, preservando o ponto de reprodução.
+// Voltar à seção não inicia o vídeo sem uma nova ação do visitante.
+if (typeof IntersectionObserver !== 'undefined') {
+  const visibilityObserver = new IntersectionObserver(entries => {
+    const entry = entries.find(item => item.target === video);
+    if (!entry) return;
+    videoVisible = entry.isIntersecting && entry.intersectionRatio > 0;
+    if (!videoVisible) {
+      video.pause();
+      videoStatus.hidden = true;
+    }
+  }, { threshold: 0 });
+  visibilityObserver.observe(video);
+}
 
 function prepareSelectedVideo() {
   if (video.dataset.hook === selectedHook) return;
@@ -72,13 +88,20 @@ playButton.addEventListener('click', () => {
   videoStatus.hidden = false;
   const requestedHook = selectedHook;
   const playRequest = video.play();
-  if (playRequest) playRequest.catch(() => {
+  if (playRequest) playRequest.catch(error => {
     if (selectedHook !== requestedHook) return;
+    if (error.name === 'AbortError') {
+      videoStatus.hidden = true;
+      return;
+    }
     playButton.hidden = false;
     videoStatus.textContent = 'Não foi possível iniciar. Toque para tentar novamente.';
   });
 });
-video.addEventListener('playing', () => { videoStatus.hidden = true; });
+video.addEventListener('playing', () => {
+  videoStatus.hidden = true;
+  if (!videoVisible) video.pause();
+});
 video.addEventListener('error', () => {
   playButton.hidden = false;
   videoStatus.textContent = 'Não foi possível carregar este vídeo.';

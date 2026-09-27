@@ -29,6 +29,10 @@
 .package.featured>.button{margin-top:auto}
 /* Forma de pagamento logo abaixo do preço. */
 .price small{display:block;margin-top:8px;font-family:Roboto,Arial,sans-serif;font-size:13px;font-weight:400;letter-spacing:0;color:var(--muted)}
+/* Prévia de refinamento: preços mais legíveis e uma moldura a menos na demonstração. */
+.price{font-weight:400}
+.price span{font-weight:400}
+.featured-demo .demo-panel{border:0;background:transparent;padding:0}
 /* Textos pequenos com leitura mais confortável. */
 .eyebrow{font-size:12px}.package-top .eyebrow{font-size:11px}.tiny{font-size:12px}.tag{font-size:11px}.timeline span{font-size:11px}
 .price span{font-size:13px}.package-detail{font-size:14px}.deadline{font-size:13px}.deadline strong{font-size:14px}.format-note{font-size:13px}
