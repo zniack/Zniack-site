@@ -26,14 +26,13 @@
   <script id="reload-top">
     (function () {
       var navigation = performance.getEntriesByType('navigation')[0];
-      document.documentElement.dataset.navigationType = navigation ? navigation.type : 'missing';
       if (!navigation || navigation.type !== 'reload') return;
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
       if (location.hash) history.replaceState(null, '', location.pathname + location.search);
       window.addEventListener('pageshow', function () {
-        document.documentElement.dataset.reloadPageshow = 'yes';
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        document.documentElement.dataset.reloadScrollY = String(window.scrollY);
+      }, { once: true });
+      window.addEventListener('pagehide', function () {
         if ('scrollRestoration' in history) history.scrollRestoration = 'auto';
       }, { once: true });
     })();
