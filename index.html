@@ -38,8 +38,10 @@
     })();
   </script>
   <script id="motion-preview">
-    if ((location.hostname === '127.0.0.1' || location.hostname === 'criativos.zniack.com') && new URLSearchParams(location.search).get('motion') === 'on') {
-      document.documentElement.classList.add('motion-preview');
+    if (location.hostname === '127.0.0.1' || location.hostname === 'criativos.zniack.com') {
+      var motionMode = new URLSearchParams(location.search).get('motion');
+      if (motionMode === 'on') document.documentElement.classList.add('motion-preview');
+      if (motionMode === 'off') document.documentElement.classList.add('motion-off');
     }
   </script>
   <style id="first-paint">
@@ -51,7 +53,7 @@
     (function () {
       var root = document.documentElement;
       root.classList.add('fonts-pending');
-      if (root.classList.contains('motion-preview') || !window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('js-motion');
+      if (!root.classList.contains('motion-off')) root.classList.add('js-motion');
       var shown = false;
       var fallback = window.setTimeout(show, 1800);
       function show() {
@@ -87,7 +89,7 @@
       })(window, document, 'clarity', 'script', 'ypithfjqi0');
     }
   </script>
-  <link rel="stylesheet" href="style.css?v=20260928-font-motion-1">
+  <link rel="stylesheet" href="style.css?v=20260928-motion-default-1">
   <script src="main.js?v=20260928-font-motion-1" defer></script>
   <script src="sticky-cta.js?v=20260927a" defer></script>
   <script src="tracking.js?v=20260927-pixel" defer></script>
