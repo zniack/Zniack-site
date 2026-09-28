@@ -42,8 +42,41 @@
       document.documentElement.classList.add('motion-preview');
     }
   </script>
+  <style id="first-paint">
+    html{background:#202020}
+    html.fonts-pending .header,html.fonts-pending .hero,html.fonts-pending .principles{opacity:0}
+    .header,.hero,.principles{transition:opacity .6s ease}
+  </style>
+  <script id="font-reveal">
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('fonts-pending');
+      if (root.classList.contains('motion-preview') || !window.matchMedia || !window.matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('js-motion');
+      var shown = false;
+      var fallback = window.setTimeout(show, 1800);
+      function show() {
+        if (shown) return;
+        shown = true;
+        window.clearTimeout(fallback);
+        root.classList.add('fonts-ready');
+        root.classList.remove('fonts-pending');
+        window.dispatchEvent(new Event('landing:fonts-ready'));
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        if (!document.fonts || !document.fonts.load) return show();
+        Promise.all([
+          document.fonts.load('300 70px Oswald', 'Criativos prontos para anunciar'),
+          document.fonts.load('300 18px Roboto', 'Seu produto é o ponto de partida'),
+          document.fonts.load('32px Skyer', 'zniack')
+        ]).then(show, show);
+      }, { once: true });
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/oswald/v57/TK3iWkUHHAIjg752GT8G.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/roboto/v51/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/skyer.otf" as="font" type="font/otf" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <script id="clarity-tracking">
     if (location.hostname === 'criativos.zniack.com') {
@@ -54,8 +87,8 @@
       })(window, document, 'clarity', 'script', 'ypithfjqi0');
     }
   </script>
-  <link rel="stylesheet" href="style.css?v=20260928-motion-soft-3">
-  <script src="main.js?v=20260928-motion-preview" defer></script>
+  <link rel="stylesheet" href="style.css?v=20260928-font-motion-1">
+  <script src="main.js?v=20260928-font-motion-1" defer></script>
   <script src="sticky-cta.js?v=20260927a" defer></script>
   <script src="tracking.js?v=20260927-pixel" defer></script>
 </head>

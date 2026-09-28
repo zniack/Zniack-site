@@ -115,8 +115,13 @@ video.addEventListener('error', () => {
   videoStatus.hidden = false;
 });
 
-// Só as linhas decorativas entram em movimento; conteúdo e botões já aparecem na tela.
-if (typeof IntersectionObserver !== 'undefined') {
+// A entrada começa depois das fontes: assim a tipografia não troca durante a animação.
+function startSectionMotion() {
+  const targets = document.querySelectorAll('.principles, .section-head, .method-grid, .featured-offer-grid, .package-grid');
+  if (typeof IntersectionObserver === 'undefined') {
+    targets.forEach(element => element.classList.add('is-inview'));
+    return;
+  }
   const motionObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
@@ -124,7 +129,9 @@ if (typeof IntersectionObserver !== 'undefined') {
       motionObserver.unobserve(entry.target);
     });
   }, { threshold: 0.12 });
-  document.querySelectorAll('.principles, .section-head, .method-grid').forEach(element => motionObserver.observe(element));
+  targets.forEach(element => motionObserver.observe(element));
 }
+if (document.documentElement.classList.contains('fonts-ready')) startSectionMotion();
+else window.addEventListener('landing:fonts-ready', startSectionMotion, { once: true });
 
 // Links de WhatsApp funcionam sem JavaScript. Nenhuma tag de rastreamento está ativa nesta prévia.
