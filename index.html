@@ -38,7 +38,7 @@
     })();
   </script>
   <script id="motion-preview">
-    if (location.hostname === '127.0.0.1' && new URLSearchParams(location.search).get('motion') === 'on') {
+    if ((location.hostname === '127.0.0.1' || location.hostname === 'criativos.zniack.com') && new URLSearchParams(location.search).get('motion') === 'on') {
       document.documentElement.classList.add('motion-preview');
     }
   </script>
