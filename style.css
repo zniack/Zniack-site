@@ -14,6 +14,20 @@
 .video-play-icon{display:grid;place-items:center;width:64px;height:64px;padding-left:4px;border:1px solid rgba(255,255,255,.8);border-radius:50%;background:rgba(24,24,24,.7);font-size:22px;box-shadow:0 6px 24px rgba(0,0,0,.32);transition:transform .18s,background .18s}
 .video-play:hover .video-play-icon{transform:scale(1.08);background:rgba(24,24,24,.86)}
 .video-status{position:absolute;z-index:3;left:12px;right:12px;bottom:48px;margin:0;padding:8px 10px;background:rgba(20,20,20,.82);color:#fff;font-size:12px;line-height:1.4;pointer-events:none}
+
+.retainer{margin-top:48px;padding:30px 32px;border:1px solid #55544e;background:#292927}
+.retainer-head{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:end}
+.retainer-head .eyebrow{margin-bottom:12px}
+.retainer h3{font-size:34px;line-height:1.2;margin:0}
+.retainer-head>p{max-width:380px;margin:0;color:var(--muted);font-size:14px}
+.retainer-options{margin:26px 0 24px;border-top:1px solid var(--line)}
+.retainer-option{display:grid;grid-template-columns:minmax(0,1.65fr) repeat(3,minmax(0,1fr));gap:16px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line)}
+.retainer-option h4{font-size:21px;font-weight:400;margin:0}
+.retainer-option span{color:var(--muted);font-size:13px}
+.retainer-option strong{font-family:Oswald,Arial,sans-serif;font-size:25px;font-weight:400;white-space:nowrap}
+.retainer-option small{color:var(--muted);font-family:Roboto,Arial,sans-serif;font-size:11px;font-weight:400}
+.retainer>.button{width:max-content}
+@media(max-width:720px){.retainer{margin-top:36px;padding:24px}.retainer-head{display:block}.retainer-head>p{margin-top:14px}.retainer-option{grid-template-columns:1fr 1fr;gap:6px 12px}.retainer-option h4{grid-column:1/-1}.retainer-option strong{grid-column:1/-1;margin-top:4px}.retainer>.button{width:100%;font-size:13px}}
 .video-play[hidden],.video-status[hidden]{display:none}
 .featured-demo .demo-panel{grid-template-columns:minmax(0,1fr);justify-items:center;align-content:start;align-self:stretch;width:100%;gap:18px}
 .featured-demo .variant-picker{grid-column:1;width:100%;justify-content:center}
