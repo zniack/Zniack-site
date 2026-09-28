@@ -28,6 +28,7 @@ const variants = {
 let selectedHook = 'a';
 const variantButtons = document.querySelectorAll('[data-variant]');
 const video = document.getElementById('creative-video');
+const videoStage = document.getElementById('video-stage');
 const playButton = document.getElementById('video-play');
 const videoStatus = document.getElementById('video-status');
 let videoVisible = true;
@@ -71,6 +72,12 @@ function renderVariant() {
   playButton.setAttribute('aria-label', `Reproduzir ${selected.slot}`);
   playButton.hidden = false;
   videoStatus.hidden = true;
+  // A troca tem uma pequena resposta visual, sem atrasar a imagem nem carregar o MP4.
+  if (videoStage) {
+    videoStage.classList.remove('is-switching');
+    void videoStage.offsetWidth;
+    videoStage.classList.add('is-switching');
+  }
 }
 variantButtons.forEach(button => button.addEventListener('click', () => {
   if (!variants[button.dataset.variant] || button.dataset.variant === selectedHook) return;
@@ -107,5 +114,17 @@ video.addEventListener('error', () => {
   videoStatus.textContent = 'Não foi possível carregar este vídeo.';
   videoStatus.hidden = false;
 });
+
+// Só as linhas decorativas entram em movimento; conteúdo e botões já aparecem na tela.
+if (typeof IntersectionObserver !== 'undefined') {
+  const motionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-inview');
+      motionObserver.unobserve(entry.target);
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.principles, .section-head, .method-grid').forEach(element => motionObserver.observe(element));
+}
 
 // Links de WhatsApp funcionam sem JavaScript. Nenhuma tag de rastreamento está ativa nesta prévia.

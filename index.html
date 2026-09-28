@@ -37,6 +37,11 @@
       }, { once: true });
     })();
   </script>
+  <script id="motion-preview">
+    if (location.hostname === '127.0.0.1' && new URLSearchParams(location.search).get('motion') === 'on') {
+      document.documentElement.classList.add('motion-preview');
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -49,8 +54,8 @@
       })(window, document, 'clarity', 'script', 'ypithfjqi0');
     }
   </script>
-  <link rel="stylesheet" href="style.css?v=20260928-design-faq">
-  <script src="main.js?v=20260927-pause" defer></script>
+  <link rel="stylesheet" href="style.css?v=20260928-motion-preview-4">
+  <script src="main.js?v=20260928-motion-preview" defer></script>
   <script src="sticky-cta.js?v=20260927a" defer></script>
   <script src="tracking.js?v=20260927-pixel" defer></script>
 </head>
@@ -63,7 +68,6 @@
   <main id="conteudo">
     <section id="inicio" class="hero wrap">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="dot"></span> CREATIVE PERFORMANCE · MÍDIA PAGA</p>
         <h1>Criativos prontos<br>para anunciar.<br><span>Do conceito à entrega.</span></h1>
         <p class="lead">Seu produto é o ponto de partida. Eu assumo a direção criativa e a produção dos anúncios — do conceito e do roteiro à entrega final — criando variações para renovar campanhas e desenvolver novas abordagens.</p>
         <p class="hero-input-note">Você envia os materiais que tiver — ou a produção parte do zero.</p>
