@@ -103,8 +103,7 @@
             'comentados-vol': ['Oacodzw29CE', '9EGPFtDVG3s', 'qxumGqBVclY', 'Hps6cf-9Ld4', '7wYKFmQ7TMc', 'OhN7CmFrkrM', 'OIMWARx6nZA', 'K-HN5rFeDv8', 'ZZAvKcMFano', 'wfrHj0L9ccc', 'E60hFmhy4hk'],
             'noticias-vol': ['AkrpKrpF3dc', 'VNNOvzWHpw8', 'kMDkKOBXsxg', 'xfEOq0u8d8k', '4XrtZ5SD-jI', 'mxD0WFRvt7k', 'KErRxCP2fP0', 'zPP-6cOafdQ', '_z1GkNuudqU', 'QOziuqM_FQA', 'xYxGu5smFOg'],
             'highlights-vol': ['KAKM9mEqtoc', 'w2WLKVPCNxY', 'kT3T1T7pbXU', 'GICsA2s6cDc', 'Rc3IYyWu2wE', 'v_ELfeP2WxY', '6NpgsBK8JPI', 'ILaJ6TaO1X0', '2E97i-ChJVI', 'BsCDkg0lMek'],
-            'aberturas-vol': ['7f7FDHkQjuQ'],
-            'publicitarios-vol': ['ELA-ucM3NMQ']
+            'aberturas-vol': ['7f7FDHkQjuQ']
         };
 
         const videoStartTimes = {
@@ -119,8 +118,7 @@
             'Highlights': 'Vídeos dinâmicos de melhores momentos.',
             'Produções Documentais': 'Vídeos com foco em narrativa.',
             'Aberturas e Trailers': 'Aberturas e trailers para campeonatos e eventos.',
-            'Institucionais': 'Vídeos corporativos e comunicação de marca.',
-            'Vídeos Publicitários': 'Produções voltadas para campanhas, anúncios e promoção de marcas.'
+            'Institucionais': 'Vídeos corporativos e comunicação de marca.'
         };
 
         const carouselState = {};
@@ -580,6 +578,11 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
             const revision = ++navigationRevision;
             const url = new URL(window.location.href);
             const category = url.searchParams.get('cat');
+            // Endereços antigos dessa categoria voltam à seção indicada.
+            if (category === 'Vídeos Publicitários') {
+                url.searchParams.delete('cat');
+                history.replaceState(null, '', url);
+            }
             const validCategory = category === 'GhostzMMOs' || Object.prototype.hasOwnProperty.call(descricoesPortfolio, category);
             closeLightbox();
             if (validCategory) {
@@ -916,10 +919,6 @@ const lazyVidObs = new IntersectionObserver((entries) => {
                     contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
                         ${buildInlineVideo('4minjPUiGdI', 'Execução integral do projeto, incluindo idealização, roteiro, curadoria de imagens e locução.')}
                         ${buildInlineVideo('O03qeBRocIs', 'Animação de elementos gráficos para uma identidade institucional fictícia, com uso de motion design.')}</div>`;
-                } else if (name === 'Vídeos Publicitários') {
-                    contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um anúncio fictício para a marca SilencePro, em formato de criativo para tráfego pago. Testes de variações de voz e prompts de vídeo em diferentes ferramentas de geração, com ajustes de gancho, ritmo e consistência do personagem.', true)}
-                        ${buildCarousel('publicitarios-vol', true)}</div>`;
                 } else if (name === 'GhostzMMOs') {
                     const template = document.getElementById('ghostz-content-template');
                     contentArea.innerHTML = template ? template.innerHTML : '';
