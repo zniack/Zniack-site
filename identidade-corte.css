@@ -1,0 +1,100 @@
+/* Corte aplicada ao site existente. A estrutura e os scripts originais permanecem. */
+@font-face {
+  font-family: Manrope;
+  src: url('assets/manrope-latin.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  --bg-color: #16181b;
+  --text-main: #dee1e5;
+  --text-light: #f3f4f5;
+  --text-sub: #b8bdc4;
+  --corte-panel: #22262b;
+  --corte-line: #454a52;
+  --corte-type: Manrope, Arial, sans-serif;
+}
+html, body, button, input, textarea, select,
+[class*="font-"], .nav-link, .titulo-secao, .texto-corpo,
+.comentario-trabalho, .nome-foto, .signature, .list-item,
+.list-item b, .category-nav-btn, .subcat-title, .subcat-indicator,
+.featured-project-name, .featured-project-action,
+.case-facts dt, .case-periods dt, .lightbox-close,
+.case-performance-grid > div > span:first-child,
+.case-milestone-card > span:first-child {
+  font-family: var(--corte-type);
+}
+body { color: var(--text-light); font-weight: 400; }
+::selection { background: var(--text-light); color: var(--bg-color); }
+.texto-corpo, .comentario-trabalho, .list-item { font-weight: 400; }
+.texto-corpo { font-size: 15px; }
+.comentario-trabalho { color: var(--text-sub); }
+.nav-link { font-size: 13px; font-weight: 500; letter-spacing: .07em; color: var(--text-main); }
+.nav-link:hover { color: var(--text-light); }
+.titulo-secao { font-size: 26px; font-weight: 600; letter-spacing: -.025em; line-height: 1.3; text-transform: none; color: var(--text-light); }
+.list-item b { font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text-light); }
+.nome-foto { font-size: 15px; font-weight: 500; letter-spacing: 0; }
+.signature { display: block; opacity: 1; margin-top: 15px; }
+.signature-d1 { display: block; width: 128px; aspect-ratio: 1753.66 / 361.15; }
+.signature-d1 img { display: block; width: 100%; max-width: 100%; height: auto; }
+.cover-brand { position: absolute; left: 10%; bottom: 10vh; z-index: 1; }
+.cover-brand .signature-d1, .cover-signature .signature-d1 { width: clamp(180px, 19vw, 250px); }
+.cover-signature { margin-bottom: 28px; }
+.creative-cover-copy { background: linear-gradient(transparent, rgba(22,24,27,.90)); }
+.creative-cover-copy .titulo-secao { font-size: clamp(25px, 2.8vw, 40px); line-height: 1.2; letter-spacing: -.025em; }
+.creative-cover-copy .cover-kicker { font-family: var(--corte-type); font-weight: 500; font-size: 11px; letter-spacing: .09em; color: var(--text-main); }
+.creative-cover-copy .cover-subtitle { color: var(--text-main); font-weight: 400; }
+#portfolio-grid .portfolio-box { border-color: var(--corte-line); }
+#portfolio-grid .portfolio-box > span { font-family: var(--corte-type); font-size: 14px; font-weight: 500; letter-spacing: .04em; }
+.category-nav-btn { font-size: 12px; font-weight: 500; letter-spacing: .035em; color: var(--text-sub); border-color: var(--corte-line); }
+.category-nav-btn.active-cat { background: var(--corte-panel); color: var(--text-light); border-color: var(--text-sub); }
+.category-nav-btn:hover { color: var(--text-light); }
+#category-desc, #portfolio-content-area .inline-video-wrapper p { color: var(--text-main); font-weight: 400; }
+#portfolio-content-area .titulo-secao { letter-spacing: -.025em; }
+.subcat-title { font-weight: 500; letter-spacing: .035em; color: var(--text-main); }
+.subcat-indicator { font-weight: 500; letter-spacing: .035em; color: var(--text-sub); }
+.featured-project-link { background: var(--corte-panel); border-color: var(--corte-line); }
+.featured-project-name { font-size: 24px; font-weight: 600; letter-spacing: -.02em; }
+.featured-project-description { color: var(--text-main); font-weight: 400; }
+.featured-project-meta { color: var(--text-sub); }
+.featured-project-action { font-weight: 500; letter-spacing: .04em; border-color: var(--corte-line); }
+.case-intro .titulo-secao { font-weight: 600; letter-spacing: -.025em; }
+.case-intro p, .case-periods dd, .case-performance-note { color: var(--text-main); font-weight: 400; }
+.case-facts, .case-milestone { border-color: var(--corte-line); }
+.case-facts dt { font-weight: 500; letter-spacing: -.02em; }
+.case-facts dd { color: var(--text-sub); font-weight: 400; }
+.case-periods dt { letter-spacing: .05em; }
+.case-performance-grid > div > span:first-child,
+.case-milestone-card > span:first-child { letter-spacing: .04em; font-weight: 500; color: var(--text-sub); }
+#contact-form input, #contact-form textarea { font-family: var(--corte-type); border-color: var(--corte-line); color: var(--text-light); }
+#contact-form input::placeholder, #contact-form textarea::placeholder { font-family: var(--corte-type); font-size: 12px; letter-spacing: .06em; color: var(--text-sub); }
+#contact-form button[type="submit"] { font-weight: 500; letter-spacing: .05em; border-color: var(--corte-line); color: var(--text-light); }
+#contact-form button[type="submit"]:hover { border-color: var(--text-light); }
+#contato h4 { font-weight: 500; letter-spacing: .07em; color: var(--text-sub); }
+#copy-email, #wa-link { color: var(--text-main); }
+#wa-link span { font-family: var(--corte-type); }
+.lightbox-close { font-weight: 500; letter-spacing: .04em; }
+@media (max-width: 768px) {
+  .nav-link { font-size: 11px !important; letter-spacing: .04em !important; }
+  .header-sticky { gap: 12px 16px; }
+  .cover-brand { left: 5%; bottom: 105px; }
+  .cover-brand .signature-d1, .cover-signature .signature-d1 { width: 180px; }
+  .cover-signature { margin-bottom: 24px; }
+  .creative-cover-copy .titulo-secao { font-size: clamp(23px, 5.2vw, 32px); letter-spacing: -.025em; }
+  .creative-cover-copy .cover-kicker { font-size: 10px; letter-spacing: .06em; }
+  .creative-cover-copy .cover-subtitle { font-size: 14px; }
+  .category-nav-btn { font-size: 11px; letter-spacing: .02em; }
+  .titulo-secao { font-size: 24px; }
+  .case-intro .titulo-secao { font-size: 30px; }
+}
+/* Capa preservada por escolha de Felipe; D1 no canto acima da fotografia. */
+.cover-brand { left: auto; right: 10%; top: 110px; bottom: auto; }
+.cover-brand .signature-d1 { width: 180px; }
+@media (max-width: 768px) {
+  .cover-brand { right: 5%; top: 30px; bottom: auto; }
+  .cover-brand .signature-d1 { width: 150px; }
+}
+/* Tipografia também nas etiquetas das playlists; menu legível sobre a foto. */
+.vitrine-label { font-family: var(--corte-type); font-weight: 500; letter-spacing: .05em; color: var(--text-sub); }
+.nav-link { text-shadow: 0 1px 5px rgba(0,0,0,.85); }
