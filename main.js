@@ -28,10 +28,27 @@ const variants = {
 let selectedHook = 'a';
 const variantButtons = document.querySelectorAll('[data-variant]');
 const video = document.getElementById('creative-video');
-const videoStage = document.getElementById('video-stage');
 const playButton = document.getElementById('video-play');
 const videoStatus = document.getElementById('video-status');
 let videoVisible = true;
+let variantFade = null;
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function cancelVariantFade() {
+  if (variantFade) variantFade.cancel();
+  variantFade = null;
+}
+
+reducedMotion.addEventListener('change', () => {
+  if (reducedMotion.matches) cancelVariantFade();
+});
+
+function fadeSelectedPoster() {
+  cancelVariantFade();
+  if (reducedMotion.matches || document.documentElement.classList.contains('motion-off') || typeof video.animate !== 'function') return;
+  // O estado muda imediatamente; a animação nunca bloqueia uma nova escolha ou o play.
+  variantFade = video.animate([{ opacity: .72 }, { opacity: 1 }], { duration: 180, easing: 'ease-out' });
+}
 
 // Pausa ao sair completamente da tela, preservando o ponto de reprodução.
 // Voltar à seção não inicia o vídeo sem uma nova ação do visitante.
@@ -72,12 +89,7 @@ function renderVariant() {
   playButton.setAttribute('aria-label', `Reproduzir ${selected.slot}`);
   playButton.hidden = false;
   videoStatus.hidden = true;
-  // A troca tem uma pequena resposta visual, sem atrasar a imagem nem carregar o MP4.
-  if (videoStage) {
-    videoStage.classList.remove('is-switching');
-    void videoStage.offsetWidth;
-    videoStage.classList.add('is-switching');
-  }
+  fadeSelectedPoster();
 }
 variantButtons.forEach(button => button.addEventListener('click', () => {
   if (!variants[button.dataset.variant] || button.dataset.variant === selectedHook) return;
@@ -86,6 +98,7 @@ variantButtons.forEach(button => button.addEventListener('click', () => {
 }));
 
 playButton.addEventListener('click', () => {
+  cancelVariantFade();
   prepareSelectedVideo();
   video.preload = 'auto';
   video.controls = true;
@@ -115,7 +128,7 @@ video.addEventListener('error', () => {
   videoStatus.hidden = false;
 });
 
-// A entrada começa depois das fontes: assim a tipografia não troca durante a animação.
+// Só os traços decorativos entram ao rolar; textos e ofertas já estão visíveis.
 function startSectionMotion() {
   const targets = document.querySelectorAll('.principles, .section-head, .method-grid, .featured-offer-grid, .package-grid');
   if (typeof IntersectionObserver === 'undefined') {
@@ -131,7 +144,6 @@ function startSectionMotion() {
   }, { threshold: 0.12 });
   targets.forEach(element => motionObserver.observe(element));
 }
-if (document.documentElement.classList.contains('fonts-ready')) startSectionMotion();
-else window.addEventListener('landing:fonts-ready', startSectionMotion, { once: true });
+startSectionMotion();
 
-// Links de WhatsApp funcionam sem JavaScript. Nenhuma tag de rastreamento está ativa nesta prévia.
+// Links de WhatsApp funcionam sem JavaScript. O rastreamento é tratado em tracking.js.

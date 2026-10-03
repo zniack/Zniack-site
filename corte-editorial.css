@@ -1,0 +1,80 @@
+/* Corte editorial: mesma paleta e peso de divisórias dos sites aprovados.
+   Camada visual sobre a landing existente; estados do player permanecem próprios. */
+:root {
+  --bg: #16181b;
+  --panel: #22262b;
+  --ink: #f3f4f5;
+  --muted: #b8bdc4;
+  --soft: #dee1e5;
+  --line: #41474f;
+  --control: #89939e;
+  --paper: #f0eee7;
+}
+.header { border-bottom: 1px solid var(--line); }
+.hero { padding-block: 88px 70px; }
+.hero h1 { font-size: clamp(44px, 5.3vw, 72px); }
+.hero h1::after { width: 96px; height: 1px; margin-top: 32px; background: var(--line); }
+.principles { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding-block: 24px; }
+.principles span::before { height: 1px; background: var(--muted); }
+.section-head { border-top: 1px solid var(--line); padding-top: 24px; }
+.section-head::before { content: none; }
+.featured-offer { background: var(--bg); border-block: 0; }
+.package, .package.featured { background: var(--panel); border: 1px solid var(--line); border-radius: 0; }
+.package-top { padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.package .price { font-size: 48px; font-weight: 500; }
+.button { border-color: var(--control); }
+.button.primary { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.button.secondary { background: transparent; color: var(--ink); }
+.button:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.button.primary:hover { background: var(--soft); border-color: var(--soft); color: var(--bg); }
+.variant-picker button { border-color: var(--control); }
+.variant-picker button[aria-pressed=true] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.featured-demo .video-stage { background: #101114; border-color: var(--control); }
+.timeline span { background: var(--panel); color: var(--muted); border-top: 1px solid var(--line); }
+.timeline span:first-child { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+/* A síntese mensal usa o papel da Corte; pacotes pontuais continuam equivalentes. */
+.retainer {
+  --bg: #f0eee7;
+  --ink: #16181b;
+  --muted: #565b66;
+  --soft: #333942;
+  --line: #c2c2bd;
+  --control: #747b83;
+  background: var(--bg); color: var(--ink); border: 0; padding: 38px;
+}
+.retainer :is(h3,h4,strong) { color: var(--ink); }
+.retainer :is(.retainer-options,.retainer-option) { border-color: var(--line); }
+.retainer .scope-note { color: var(--muted); }
+.retainer :is(a,button):focus-visible { outline-color: var(--ink); }
+.method-grid article { border-top: 1px solid var(--line); padding-top: 24px; }
+.method-grid article::before { content: none; }
+.insight { background: var(--panel); border-color: var(--line); }
+.about { background: transparent; border-block: 1px solid var(--line); padding-inline: 0; padding-block: 48px; }
+.about h2 { font-size: clamp(30px, 3vw, 42px); }
+.about p:not(.eyebrow) { color: var(--soft); font-size: 16px; line-height: 1.85; }
+.faq-list details, .closing, .footer { border-color: var(--line); }
+.sticky-cta { background: rgba(22,24,27,.98); border-top-color: var(--control); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline-color: var(--paper); }
+@media(hover:hover) {
+  .package:hover, .package.featured:hover { border-color: var(--control); }
+}
+@media(max-width:1000px) {
+  .hero h1 { font-size: clamp(44px, 6.1vw, 64px); }
+  .retainer { padding: 30px; }
+}
+@media(max-width:720px) {
+  .hero { padding-block: 49px 48px; }
+  .hero h1 { font-size: clamp(32px, 7.9vw, 48px); line-height: 1.1; }
+  .hero h1::after { width: 64px; margin-top: 24px; }
+  .principles { padding-block: 22px; }
+  .section-head { padding-top: 22px; }
+  .package .price { font-size: 42px; }
+  .retainer { padding: 28px; }
+  .about { padding-block: 36px; }
+  .about h2 { font-size: 30px; }
+  .about p:not(.eyebrow) { font-size: 15px; }
+}
+@media(max-width:370px) {
+  .package .price { font-size: 36px; }
+  .retainer { padding: 21px; }
+}

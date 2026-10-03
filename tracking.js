@@ -19,7 +19,10 @@
     });
   }
 
-  if (!META_PIXEL_ID) return;
+  // A revisão local preserva a origem no WhatsApp sem contaminar a campanha.
+  var localPreview = window.location.protocol === 'file:' ||
+    ['localhost', '127.0.0.1', '[::1]'].indexOf(window.location.hostname) !== -1;
+  if (!META_PIXEL_ID || localPreview) return;
   /* Código base do Pixel do Meta */
   !function (f, b, e, v, n, t, s) {
     if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
