@@ -1,0 +1,39 @@
+/* Ponte para a oferta, com a abertura aprovada da landing. */
+html[data-brand-direction="corte"] body[data-application="principal"] #criativos .criativos-intro {
+  width:100%; max-width:1050px;
+}
+html[data-brand-direction="corte"] body[data-application="principal"] section#criativos .titulo-secao {
+  font-size:clamp(42px,4.5vw,64px); line-height:1.1; letter-spacing:-.035em; margin-bottom:18px;
+}
+.criativos-intro-subtitle {
+  color:var(--brand-muted); font-size:clamp(24px,2.8vw,36px); line-height:1.3; letter-spacing:-.025em; margin:0 0 32px;
+}
+.criativos-intro-copy {
+  color:var(--brand-soft); font-size:18px; line-height:1.75; max-width:720px; margin:0 0 18px;
+}
+.criativos-intro-note {
+  color:var(--brand-muted); font-size:16px; line-height:1.75; max-width:720px; margin:0 0 30px;
+}
+.criativos-intro-link {
+  display:inline-flex; align-items:center; justify-content:space-between; gap:24px;
+  min-height:52px; padding:13px 20px; border:1px solid var(--brand-control);
+  color:var(--brand-ink); background:transparent; font-size:16px; font-weight:500;
+  line-height:1.5; text-decoration:none; transition:background-color .2s ease,border-color .2s ease;
+}
+.criativos-intro-link:hover { background:var(--brand-panel); border-color:var(--brand-ink); }
+.criativos-intro-link span { flex:none; }
+.criativos-intro-principles {
+  display:grid; grid-template-columns:1fr 1fr 1.4fr; gap:24px; list-style:none;
+  padding:24px 0 0; margin:48px 0 0; border-top:1px solid #41474f;
+  color:var(--brand-muted); font-size:14px; line-height:1.6;
+}
+@media(max-width:768px) {
+  html[data-brand-direction="corte"] body[data-application="principal"] section#criativos .titulo-secao {
+    font-size:clamp(32px,8.2vw,48px);
+  }
+  .criativos-intro-subtitle { font-size:26px; margin-bottom:26px; }
+  .criativos-intro-copy { font-size:17px; }
+  .criativos-intro-link { width:100%; max-width:390px; padding:13px 16px; gap:16px; }
+  .criativos-intro-principles { grid-template-columns:1fr; gap:12px; margin-top:36px; }
+}
+@media(prefers-reduced-motion:reduce) { .criativos-intro-link { transition:none; } }

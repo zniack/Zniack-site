@@ -66,6 +66,10 @@
     mark(profile,'flow-photo',160);
     mark(document.querySelector('#trabalho .comentario-trabalho'),'flow-item',60);
     document.querySelectorAll('#trabalho .list-item').forEach((row,index)=>mark(row,'flow-item',(index%3)*90));
+    mark(document.querySelector('#criativos .criativos-intro-subtitle'),'flow-item',60);
+    mark(document.querySelector('#criativos .criativos-intro-copy'),'flow-item',90);
+    mark(document.querySelector('#criativos .criativos-intro-note'),'flow-item',120);
+    mark(document.querySelector('#criativos .criativos-intro-principles'),'flow-item',120);
     mark(document.querySelector('.featured-project-link'),'flow-item',80);
     // Controls remain stable; only the contact introduction joins the section entrance.
     mark(document.querySelector('#contato .comentario-trabalho'),'flow-item',80);
