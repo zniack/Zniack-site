@@ -1,0 +1,28 @@
+/* Complemento da capa. Fontes, cores e estilos originais estão em custom.css. */
+.creative-cover-copy {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 100px 10% 54px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, .78));
+    color: #d9d9d9;
+    pointer-events: none;
+}
+.creative-cover-copy .titulo-secao { margin-bottom: 16px; line-height: 1.55; }
+.creative-cover-copy p { font-size: 15px; font-weight: 300; }
+.creative-cover-copy .cover-kicker {
+    margin-bottom: 14px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .62);
+}
+.creative-cover-copy .cover-subtitle { max-width: 520px; }
+@media (max-width: 768px) {
+    .creative-cover-copy { padding-bottom: 112px; }
+    .creative-cover-copy .titulo-secao { font-size: 14px; letter-spacing: .18em; }
+    .creative-cover-copy p { font-size: 13px; }
+    .creative-cover-copy .cover-kicker { font-size: 9px; margin-bottom: 10px; }
+}

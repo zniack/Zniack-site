@@ -2,23 +2,10 @@
 
         const stickyHeader = document.getElementById('sticky-header');
         const capa = document.getElementById('capa');
-        const view = document.getElementById('portfolio-view');
-        const descElement = document.getElementById('category-desc');
-        const contentArea = document.getElementById('portfolio-content-area');
 
-        let currentPlayers = [];
-        let lastScrollPosition = 0;
 
-        let hasClickedMenu = false;
 
         function updateHeaderBlur() {
-            const isModalActive = view.classList.contains('active');
-
-            if (isModalActive) {
-                stickyHeader.style.setProperty('--blur-val', '2px');
-                stickyHeader.style.setProperty('--sat-val', '0.8');
-                stickyHeader.style.setProperty('--bg-fade-col', 'rgba(37, 37, 37, 1)');
-            } else {
                 const capaH = capa.offsetHeight;
                 const scrollY = window.scrollY;
                 let blur = 0;
@@ -35,13 +22,11 @@
                 stickyHeader.style.setProperty('--blur-val', blur + 'px');
                 stickyHeader.style.setProperty('--sat-val', blur > 0 ? '0.4' : '1');
                 stickyHeader.style.setProperty('--bg-fade-col', `rgba(26, 26, 26, ${opacity})`);
-            }
-
             if (window.innerWidth <= 768) {
                 const capaBottom = capa.offsetTop + capa.offsetHeight;
                 const triggerPoint = capaBottom - stickyHeader.offsetHeight;
 
-                if (window.scrollY >= triggerPoint || isModalActive) {
+                if (window.scrollY >= triggerPoint) {
                     stickyHeader.classList.add('mobile-fixed');
                     stickyHeader.style.position = '';
                     stickyHeader.style.top = '';
@@ -63,471 +48,6 @@
         window.addEventListener('scroll', updateHeaderBlur, { passive: true });
         window.addEventListener('resize', updateHeaderBlur, { passive: true });
         updateHeaderBlur();
-
-        view.addEventListener('scroll', () => {
-            const viewH = window.innerHeight;
-            
-            document.querySelectorAll('.inline-video-wrapper').forEach(wrapper => {
-                const player = wrapper.plyrInstance;
-                if (!player) return;
-                
-                const rect = wrapper.getBoundingClientRect();
-                
-                const vidCenter = rect.top + rect.height / 2;
-                const viewCenter = viewH / 2;
-                const distFromCenter = Math.abs(vidCenter - viewCenter);
-                
-                const fadeStart = viewH * 0.25;
-                const fadeEnd = viewH * 0.6;
-                
-                if (distFromCenter > fadeStart) {
-                    let ratio = 1 - ((distFromCenter - fadeStart) / (fadeEnd - fadeStart));
-                    ratio = Math.max(0, Math.min(1, ratio));
-                    wrapper.isFading = true;
-                    
-                    const targetVol = (wrapper.baseVolume || 0.75) * ratio;
-                    if (player.playing && Math.abs(player.volume - targetVol) > 0.02) {
-                        player.volume = targetVol;
-                    }
-                } else {
-                    if (wrapper.isFading) {
-                        player.volume = wrapper.baseVolume || 0.75;
-                        wrapper.isFading = false;
-                    }
-                }
-            });
-        }, { passive: true });
-
-        const carouselData = {
-            'analises-vol': ['wELUjsyy5-8', 'lKtjZ5iy3WM', 'QrmMlRYB4Lo', '7ZmEmWEqsyk', '3AUUWBWmXpE', 'mg33hNaoqO4', 'nmSxCNGAmV8', 'UYXG_CWDNro', 'nUKCw5Ejyao', '0FwPnvvsKkE'],
-            'comentados-vol': ['Oacodzw29CE', '9EGPFtDVG3s', 'qxumGqBVclY', 'Hps6cf-9Ld4', '7wYKFmQ7TMc', 'OhN7CmFrkrM', 'OIMWARx6nZA', 'K-HN5rFeDv8', 'ZZAvKcMFano', 'wfrHj0L9ccc', 'E60hFmhy4hk'],
-            'noticias-vol': ['AkrpKrpF3dc', 'VNNOvzWHpw8', 'kMDkKOBXsxg', 'xfEOq0u8d8k', '4XrtZ5SD-jI', 'mxD0WFRvt7k', 'KErRxCP2fP0', 'zPP-6cOafdQ', '_z1GkNuudqU', 'QOziuqM_FQA', 'xYxGu5smFOg'],
-            'highlights-vol': ['KAKM9mEqtoc', 'w2WLKVPCNxY', 'kT3T1T7pbXU', 'GICsA2s6cDc', 'Rc3IYyWu2wE', 'v_ELfeP2WxY', '6NpgsBK8JPI', 'ILaJ6TaO1X0', '2E97i-ChJVI', 'BsCDkg0lMek'],
-            'aberturas-vol': ['7f7FDHkQjuQ'],
-            'publicitarios-vol': ['ELA-ucM3NMQ']
-        };
-
-        const videoStartTimes = {
-            '82Ah3XW5Jg4': 4,
-            'll3UYdXXhlE': 4,
-            'd0d43qkOE7A': 60,
-            'ewiL53kmyPI': 52
-        };
-
-        const descricoesPortfolio = {
-            'Vídeos Diários': 'Vídeos recebidos, editados e entregues em menos de 24 horas.',
-            'Highlights': 'Vídeos dinâmicos de melhores momentos.',
-            'Produções Documentais': 'Vídeos com foco em narrativa.',
-            'Aberturas e Trailers': 'Aberturas e trailers para campeonatos e eventos.',
-            'Institucionais': 'Vídeos corporativos e comunicação de marca.',
-            'Vídeos Publicitários': 'Produções voltadas para campanhas, anúncios e promoção de marcas.'
-        };
-
-        const carouselState = {};
-
-        function forceYouTubeHD(container) {
-            const t = setInterval(() => {
-                const iframe = container.querySelector('iframe');
-                if (!iframe) return;
-                clearInterval(t);
-                const send = () => {
-                    if (iframe.contentWindow) {
-                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setPlaybackQualityRange', args: ['hd1080', 'hd1080'] }), '*');
-                        iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setPlaybackQuality', args: ['hd1080'] }), '*');
-                    }
-                };
-                send(); setTimeout(send, 800); setTimeout(send, 2000);
-            }, 100);
-        }
-
-        function updateCategoryNav(name) {
-            const catNavEl = document.getElementById('category-nav');
-            if (catNavEl) {
-                catNavEl.style.display = name === 'GhostzMMOs' ? 'none' : 'flex';
-            }
-            document.querySelectorAll('.category-nav-btn').forEach(btn =>
-                btn.classList.toggle('active-cat', btn.textContent.trim() === name)
-            );
-        }
-
-        function getCarouselMetrics(isVertical = false) {
-            const m = window.innerWidth <= 768;
-            if (isVertical) {
-                return {
-                    isMobile: m,
-                    baseW: m ? 62 : 79, baseH: m ? 110 : 140,
-                    activeW: m ? 76 : 101, activeH: m ? 135 : 180,
-                    step: (m ? 62 : 79) + 15,
-                    diff: (m ? 76 : 101) - (m ? 62 : 79)
-                };
-            }
-            return {
-                isMobile: m,
-                baseW: m ? 110 : 140, baseH: m ? 62 : 79,
-                activeW: m ? 240 : 320, activeH: m ? 135 : 180,
-                step: (m ? 110 : 140) + 15,
-                diff: (m ? 240 : 320) - (m ? 110 : 140)
-            };
-        }
-
-        const localThumbs = [
-    'Tin_ogQGE-U',
-    '4minjPUiGdI', 'O03qeBRocIs', 'G4qpobpXdKo',
-    'csh7Z3dcb0g', '82Ah3XW5Jg4',
-    'll3UYdXXhlE',
-    'd0d43qkOE7A',
-    'ewiL53kmyPI', 'f-2xznYjToI',
-    'yiK_Z7XGyBA', 'qgXUQirQ7Bk', 'zmJqj7dM6Fw', '-w9xbrW4A4o'
-];
-
-        function buildInlineVideo(id, description = '', isVertical = false) {
-            const textStyle = isVertical ? 'style="flex: 1; min-width: 250px;"' : '';
-            const descHTML = description
-                ? `<div class="w-full ${isVertical ? '' : 'md:w-1/3'} flex flex-col gap-3" ${textStyle}><p class="comentario-trabalho">${description}</p></div>`
-                : `<div class="w-full ${isVertical ? '' : 'md:w-1/3'}" ${textStyle}></div>`;
-            const safeDesc = description.replace(/'/g, "\\'");
-            const startTime = videoStartTimes[id] || 0;
-
-            let coverMediaHTML = `<img src="https://img.youtube.com/vi/${id}/hqdefault.jpg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">`;
-
-            let playBtnOpacity = 'opacity-0 group-hover:opacity-50';
-
-            if (localThumbs.includes(id)) {
-                coverMediaHTML = `
-                    <img src="thumbs/${id}.jpeg" loading="lazy" class="w-full h-full object-cover absolute inset-0 pointer-events-none">
-                    <video data-src="thumbs/${id}.mp4" loop muted playsinline class="lazy-video w-full h-full object-cover absolute inset-0 pointer-events-none opacity-0"></video>
-                `;
-                playBtnOpacity = 'play-btn-animated-cover';
-            }
-
-            const videoStyle = isVertical ? 'style="aspect-ratio: 9/16; max-width: 320px;"' : '';
-            const videoContainerClasses = isVertical
-                ? 'w-full mx-auto md:mx-0'
-                : 'w-full md:w-2/3 aspect-video';
-
-            return `
-<div class="flex flex-col md:flex-row gap-6 w-full items-start inline-video-wrapper mb-24 md:mb-32" data-desc="${safeDesc}" data-start="${startTime}" data-vertical="${isVertical}">
-    <div class="spotlight-scale-target ${videoContainerClasses} bg-[#1a1a1a] ring-1 ring-inset ring-white/10 relative overflow-hidden shrink-0" ${videoStyle}>
-   <div class="absolute inset-0 z-10 cursor-pointer group flex items-center justify-center inline-cover transition-opacity duration-500 ease-in-out" data-vid="${id}">            ${coverMediaHTML}
-            <div class="play-btn-circle flex items-center justify-center rounded-full ${playBtnOpacity} transition-opacity duration-500 ease-in-out relative z-20 pointer-events-none">
-                <svg class="fill-white translate-x-[1px]" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-        </div>
-        <div class="player-mount w-full h-full absolute inset-0 z-0"></div>
-    </div>
-    ${descHTML}
-</div>`;
-        }
-
-        function handleInlineClick(id, coverEl) {
-    const wrapper = coverEl.closest('.inline-video-wrapper');
-    const desc = wrapper.getAttribute('data-desc');
-    const startTime = parseInt(wrapper.getAttribute('data-start') || '0', 10);
-    const isVertical = wrapper.getAttribute('data-vertical') === 'true';
-    if (window.innerWidth <= 768) { openLightbox(id, desc, startTime, isVertical); return; }
-
-    coverEl.classList.add('is-loading');
-
-    if (wrapper.plyrInstance) {
-        const player = wrapper.plyrInstance;
-        player.play();
-        const onPlaying = () => {
-            player.off('playing', onPlaying);
-            coverEl.classList.remove('is-loading');
-            coverEl.style.opacity = '0';
-            setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
-        };
-        player.on('playing', onPlaying);
-        return;
-    }
-
-    const mount = wrapper.querySelector('.player-mount');
-    mount.innerHTML = `<div class="js-player" data-plyr-provider="youtube" data-plyr-embed-id="${id}"></div>`;
-
-    const ytConfig = { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1, cc_load_policy: 0 };
-    if (startTime > 0) ytConfig.start = startTime;
-
-    const player = new Plyr(mount.querySelector('.js-player'), {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-        settings: ['quality', 'speed'],
-        ratio: isVertical ? '9:16' : '16:9',
-        youtube: ytConfig,
-        autoplay: true,
-        captions: { active: false }
-    });
-    player.on('ready', () => {
-        player.volume = 0.75;
-        forceYouTubeHD(mount);
-        
-        if (player.embed && player.embed.addEventListener) {
-            try {
-                if (player.embed.unloadModule) {
-                    player.embed.unloadModule('captions');
-                    player.embed.unloadModule('cc');
-                }
-                player.embed.addEventListener('onApiChange', () => {
-                    try { player.embed.setOption('captions', 'track', {}); } catch(err) {}
-                });
-            } catch (err) {}
-        }
-    });
-    const onPlaying = () => {
-        player.off('playing', onPlaying);
-        coverEl.classList.remove('is-loading');
-        coverEl.style.opacity = '0';
-        setTimeout(() => { if (player.playing) coverEl.style.display = 'none'; }, 500);
-    };
-    player.on('playing', onPlaying);
-    wrapper.plyrInstance = player;
-    wrapper.baseVolume = 0.75;
-    currentPlayers.push(player);
-}
-
-        function buildCarousel(carouselId, isVertical = false) {
-            const ids = carouselData[carouselId];
-            if (!ids || ids.length === 0) return '';
-            const itemsHTML = ids.map(id => `
-                <div class="carousel-item ${isVertical ? 'is-vertical' : ''}" data-vid="${id}" onclick="handleCarouselClick(this,'${carouselId}')">
-                    <img src="https://img.youtube.com/vi/${id}/mqdefault.jpg" alt="Vídeo" loading="lazy">
-                    <div class="carousel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-                </div>`).join('');
-            const loopHTML = ids.length >= 6 ? itemsHTML + itemsHTML : itemsHTML;
-            return `
-            <div class="vitrine-section w-full">
-                <p class="vitrine-label">mais vídeos</p>
-                <div class="flex items-center w-full gap-2 md:gap-4 relative group">
-                    <button class="carousel-nav-btn shrink-0" onclick="prevCarouselItem('${carouselId}', event)">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-                    <div class="carousel-wrapper flex-1 overflow-hidden" id="wrap-${carouselId}"
-                         onmouseenter="handleHoverIn('${carouselId}')"
-                         onmouseleave="handleHoverOut('${carouselId}')">
-                        <div class="carousel-track" id="track-${carouselId}" ${isVertical ? 'data-vertical="true"' : ''}>${loopHTML}</div>
-                    </div>
-                </div>
-            </div>`;
-        }
-
-        window.prevCarouselItem = function (id, event) {
-            event.stopPropagation();
-            const s = carouselState[id];
-            if (!s) return;
-
-            const isLoop = s.itemsCount >= 6;
-            const items = s.items;
-
-            let currentItem = s.targetEl || items.find(item => item.classList.contains('active'));
-
-            if (currentItem) {
-                let domIdx = items.indexOf(currentItem);
-                let realIdx = domIdx % s.itemsCount;
-
-                let prevRealIdx = realIdx - 1;
-                if (prevRealIdx < 0) prevRealIdx = s.itemsCount - 1;
-
-                const origEl = items[prevRealIdx];
-                const cloneEl = isLoop ? items[prevRealIdx + s.itemsCount] : null;
-
-                s.isPaused = true;
-                s.isSlidingToItem = true;
-                s.isClosing = false;
-
-                const metrics = getCarouselMetrics();
-
-                items.forEach(item => {
-                    if (item.classList.contains('active') && item !== origEl && item !== cloneEl) {
-                        item.style.width = item.style.width || metrics.activeW + 'px';
-                        item.style.height = item.style.height || metrics.activeH + 'px';
-                        item.classList.remove('active');
-                    }
-                    item.style.transition = 'none';
-                });
-
-                s.targetEl = origEl;
-                s.syncTargetEl = cloneEl;
-
-                let offset = prevRealIdx * metrics.step;
-                if (prevRealIdx >= s.itemsCount) offset += metrics.diff;
-
-                let baseX = -offset;
-
-                if (isLoop) {
-                    const LW = s.itemsCount * metrics.step + metrics.diff;
-                    s.targetX = baseX;
-                    while (s.targetX < s.pos + 10) s.targetX += LW;
-                    while (s.targetX > s.pos + LW + 10) s.targetX -= LW;
-                } else {
-                    s.targetX = baseX;
-                }
-            } else {
-                s.currentSpeed = -25;
-            }
-        };
-
-        function initCarousels() {
-            Object.keys(carouselData).forEach(id => {
-                const track = document.getElementById('track-' + id);
-                if (!track) return;
-                if (carouselState[id] && carouselState[id].rafId) cancelAnimationFrame(carouselState[id].rafId);
-                const n = carouselData[id].length;
-                carouselState[id] = {
-                    track,
-                    items: Array.from(track.children),
-                    pos: 0,
-                    baseSpeed: n >= 6 ? 0.7 : 0,
-                    currentSpeed: n >= 6 ? 0.7 : 0,
-                    isPaused: false, isHovered: false, itemsCount: n,
-                    isSlidingToItem: false, isClosing: false,
-                    targetEl: null, syncTargetEl: null, targetX: 0, rafId: null,
-                    isVertical: track.hasAttribute('data-vertical')
-                };
-                startTicker(id);
-            });
-        }
-
-        function startTicker(id) {
-            const s = carouselState[id];
-            if (!s) return;
-            function tick() {
-                const isLoop = s.itemsCount >= 6;
-                const items = s.items;
-                const metrics = getCarouselMetrics(s.isVertical);
-                let halfW = 0;
-                if (isLoop && items[s.itemsCount]) halfW = items[s.itemsCount].offsetLeft;
-
-                if (s.isSlidingToItem && s.targetEl && !s.isClosing) {
-                    if (isLoop && halfW > 0) {
-                        if (s.pos <= -halfW) { s.pos += halfW; s.targetX += halfW; }
-                        else if (s.pos > 0) { s.pos -= halfW; s.targetX -= halfW; }
-                    }
-                    const diff = s.targetX - s.pos;
-                    const spd = Math.max(-25, Math.min(25, diff * 0.08));
-                    s.pos = Math.abs(diff) < 0.5 ? s.targetX : s.pos + spd;
-
-                    let sizeOk = false;
-                    items.forEach(item => {
-                        const isTgt = item === s.targetEl || item === s.syncTargetEl;
-                        let cW = parseFloat(item.style.width) || (item.classList.contains('active') ? metrics.activeW : metrics.baseW);
-                        let cH = parseFloat(item.style.height) || (item.classList.contains('active') ? metrics.activeH : metrics.baseH);
-
-                        const tW = isTgt ? metrics.activeW : metrics.baseW;
-                        const tH = isTgt ? metrics.activeH : metrics.baseH;
-
-                        cW += (tW - cW) * 0.15; cH += (tH - cH) * 0.15;
-                        item.style.width = cW + 'px'; item.style.height = cH + 'px';
-                        if (isTgt && item === s.targetEl && Math.abs(tW - cW) < 0.5) sizeOk = true;
-                    });
-                    if (Math.abs(s.targetX - s.pos) < 0.5 && sizeOk) {
-                        s.pos = s.targetX; s.currentSpeed = 0; s.isSlidingToItem = false;
-                        items.forEach(item => {
-                            item.style.width = ''; item.style.height = '';
-                            if (item === s.targetEl || item === s.syncTargetEl) item.classList.add('active');
-                            else item.classList.remove('active');
-                        });
-                    }
-
-                } else if (s.isClosing && s.targetEl) {
-                    let done = true;
-                    items.forEach(item => {
-                        if (item === s.targetEl || item === s.syncTargetEl) {
-                            let cW = parseFloat(item.style.width) || metrics.activeW;
-                            let cH = parseFloat(item.style.height) || metrics.activeH;
-                            cW += (metrics.baseW - cW) * 0.08; cH += (metrics.baseH - cH) * 0.08;
-                            item.style.width = cW + 'px'; item.style.height = cH + 'px';
-                            if (Math.abs(metrics.baseW - cW) > 0.5) done = false;
-                        }
-                    });
-                    const ts = s.isHovered ? s.baseSpeed * 0.5 : s.baseSpeed;
-                    s.currentSpeed += (ts - s.currentSpeed) * 0.08;
-                    s.pos -= s.currentSpeed;
-                    if (isLoop && halfW > 0) {
-                        if (s.pos <= -halfW) s.pos += halfW;
-                        else if (s.pos > 0) s.pos -= halfW;
-                    }
-                    if (done) {
-                        s.isClosing = false; s.isPaused = false; s.targetEl = null; s.syncTargetEl = null;
-                        items.forEach(item => { item.style.transition = ''; item.style.width = ''; item.style.height = ''; item.classList.remove('active'); });
-                    }
-
-                } else if (!s.isPaused && isLoop && !s.isClosing) {
-                    const ts = s.isHovered ? s.baseSpeed * 0.5 : s.baseSpeed;
-                    s.currentSpeed += (ts - s.currentSpeed) * 0.05;
-                    s.pos -= s.currentSpeed;
-                    if (halfW > 0) {
-                        if (s.pos <= -halfW) s.pos += halfW;
-                        else if (s.pos > 0) s.pos -= halfW;
-                    }
-                }
-
-                s.track.style.transform = `translate3d(${s.pos}px,0,0)`;
-                s.rafId = requestAnimationFrame(tick);
-            }
-            s.rafId = requestAnimationFrame(tick);
-        }
-
-        function handleHoverIn(id) { if (carouselState[id]) carouselState[id].isHovered = true; }
-        function handleHoverOut(id) { if (carouselState[id]) carouselState[id].isHovered = false; }
-
-        function handleCarouselClick(el, id) {
-            const s = carouselState[id];
-            if (!s) return;
-            const isLoop = s.itemsCount >= 6;
-            const items = s.items;
-            const domIdx = items.indexOf(el);
-            const realIdx = domIdx % s.itemsCount;
-            const origEl = items[realIdx];
-            const cloneEl = isLoop ? items[realIdx + s.itemsCount] : null;
-
-            const videoId = el.dataset.vid;
-            const startTime = videoStartTimes[videoId] || 0;
-
-            if (s.targetEl === origEl || s.targetEl === cloneEl) { openLightbox(videoId, '', startTime, s.isVertical); return; }
-
-            s.isPaused = true; s.isSlidingToItem = true; s.isClosing = false;
-            const metrics = getCarouselMetrics(s.isVertical);
-
-            items.forEach(item => {
-                if (item.classList.contains('active') && item !== origEl && item !== cloneEl) {
-                    item.style.width = item.style.width || metrics.activeW + 'px';
-                    item.style.height = item.style.height || metrics.activeH + 'px';
-                    item.classList.remove('active');
-                }
-                item.style.transition = 'none';
-            });
-            s.targetEl = origEl; s.syncTargetEl = cloneEl;
-
-            let offset = domIdx * metrics.step;
-            if (domIdx >= s.itemsCount) offset += metrics.diff;
-            let baseX = -offset;
-
-            if (isLoop) {
-                const LW = s.itemsCount * metrics.step + metrics.diff;
-                s.targetX = baseX;
-                while (s.targetX > s.pos + 100) s.targetX -= LW;
-                while (s.targetX < s.pos - LW + 100) s.targetX += LW;
-            } else { s.targetX = baseX; }
-        }
-
-        document.addEventListener('click', e => {
-    if (!view.classList.contains('active')) return;
-    if (e.target.closest('.carousel-item') || e.target.closest('.carousel-nav-btn') || e.target.closest('.inline-cover')) return;
-
-            Object.keys(carouselState).forEach(id => {
-                const s = carouselState[id];
-                if (s && s.targetEl && !s.isClosing) {
-                    const metrics = getCarouselMetrics(s.isVertical);
-                    s.isClosing = true; s.currentSpeed = 0;
-                    s.items.forEach(item => {
-                        item.style.transition = 'none';
-                        if (item.classList.contains('active')) {
-                            item.style.width = item.style.width || metrics.activeW + 'px';
-                            item.style.height = item.style.height || metrics.activeH + 'px';
-                            item.classList.remove('active');
-                        }
-                    });
-                }
-            });
-        });
 
         const fadeObs = new IntersectionObserver((entries, obs) => {
             entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); } });
@@ -563,7 +83,8 @@ const listObs = new IntersectionObserver((entries, obs) => {
 
 document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
 
-        function triggerTransition(cb) {
+        function triggerTransition(cb, options = {}) {
+            if (window.ZniackFlow) { window.ZniackFlow.transition(cb, options); return; }
             const ov = document.getElementById('transition-overlay');
             ov.style.display = 'block';
             requestAnimationFrame(() => {
@@ -576,30 +97,25 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         }
 
         let navigationRevision = 0;
-        function restoreRouteFromUrl() {
+        function restoreRouteFromUrl(options = {}) {
             const revision = ++navigationRevision;
             const url = new URL(window.location.href);
-            const category = url.searchParams.get('cat');
-            const validCategory = category === 'GhostzMMOs' || Object.prototype.hasOwnProperty.call(descricoesPortfolio, category);
-            closeLightbox();
-            if (validCategory) {
-                openCategory(category, true);
-                updateHeaderBlur();
-                return;
-            }
-            view.classList.remove('active');
-            document.body.style.overflow = '';
-            currentPlayers.forEach(player => { try { player.pause(); } catch (_) {} });
+            // The creative portfolio is not part of this public release.
+            const hadCategory = url.searchParams.has('cat');
+            url.searchParams.delete('cat');
             let sectionId = '';
             try { sectionId = decodeURIComponent(url.hash.slice(1)); } catch (_) {}
             const candidate = document.getElementById(sectionId);
             const target = candidate && candidate.tagName === 'SECTION' ? candidate : capa;
-            window.scrollTo({ top: target.offsetTop, behavior: 'instant' });
+            if (sectionId === 'portfolio') url.hash = '';
+            if (hadCategory || url.href !== window.location.href) history.replaceState(history.state, '', url);
+            const smoothTravel = options.smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (options.smooth && window.ZniackFlow) window.ZniackFlow.travel(target.offsetTop);
+            else window.scrollTo({ top: target.offsetTop, behavior: smoothTravel ? 'smooth' : 'instant' });
             updateHeaderBlur();
             stickyHeader.style.opacity = '1';
-            // Recheck after layout without overriding subsequent navigation.
             requestAnimationFrame(() => {
-                if (revision !== navigationRevision) return;
+                if (revision !== navigationRevision || options.smooth) return;
                 window.scrollTo({ top: target.offsetTop, behavior: 'instant' });
                 updateHeaderBlur();
             });
@@ -607,352 +123,18 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
-                hasClickedMenu = true;
                 const url = new URL(window.location.href);
                 url.searchParams.delete('cat');
                 url.hash = this.getAttribute('href');
                 if (url.href !== window.location.href) history.pushState(null, '', url);
                 const revision = ++navigationRevision;
                 triggerTransition(() => {
-                    if (revision === navigationRevision) restoreRouteFromUrl();
+                    if (revision === navigationRevision) restoreRouteFromUrl({smooth:true});
                 });
             });
         });
         window.addEventListener('popstate', restoreRouteFromUrl);
         window.addEventListener('hashchange', restoreRouteFromUrl);
-
-        let lightboxPlayer = null;
-        function openLightbox(videoId, description = '', startTime = 0, isVertical = false) {
-    const lb = document.getElementById('video-lightbox');
-    if (lb.classList.contains('active')) return;
-
-    currentPlayers.forEach(p => {
-        try {
-            p.pause();
-            const playerWrapper = p.elements.container.closest('.inline-video-wrapper');
-            if (playerWrapper) {
-                const otherCover = playerWrapper.querySelector('.inline-cover');
-                if (otherCover) { otherCover.style.display = 'flex'; otherCover.style.opacity = '1'; }
-            }
-        } catch(e) {}
-    });
-    currentPlayers = [];
-
-    const wrap = document.getElementById('lightbox-player-wrap');
-    if (isVertical) {
-        wrap.style.aspectRatio = '9/16';
-        wrap.style.maxWidth = '380px';
-    } else {
-        wrap.style.aspectRatio = '16/9';
-        wrap.style.maxWidth = '100%';
-    }
-    const descEl = document.getElementById('lightbox-desc');
-    wrap.innerHTML = `<div id="lb-plyr" data-plyr-provider="youtube" data-plyr-embed-id="${videoId}"></div>`;
-
-    if (description) {
-        descEl.innerHTML = description;
-        descEl.classList.remove('hidden', 'fade-in-slow');
-        void descEl.offsetWidth;
-        descEl.classList.add('fade-in-slow');
-    } else {
-        descEl.innerHTML = '';
-        descEl.classList.add('hidden');
-        descEl.classList.remove('fade-in-slow');
-    }
-
-    lb.classList.add('active');
-    document.body.style.overflow = 'hidden';
-
-    setTimeout(() => {
-        const ytConfig = { noCookie: true, rel: 0, showinfo: 0, iv_load_policy: 3, modestbranding: 1, cc_load_policy: 0 };
-        if (startTime > 0) ytConfig.start = startTime;
-
-        lightboxPlayer = new Plyr('#lb-plyr', {
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-            settings: ['quality', 'speed'],
-            ratio: isVertical ? '9:16' : '16:9',
-            youtube: ytConfig,
-            autoplay: true,
-            captions: { active: false }
-        });
-        lightboxPlayer.on('ready', () => {
-            lightboxPlayer.volume = 0.75;
-            forceYouTubeHD(wrap);
-
-            if (lightboxPlayer.embed && lightboxPlayer.embed.addEventListener) {
-                try {
-                    if (lightboxPlayer.embed.unloadModule) {
-                        lightboxPlayer.embed.unloadModule('captions');
-                        lightboxPlayer.embed.unloadModule('cc');
-                    }
-                    lightboxPlayer.embed.addEventListener('onApiChange', () => {
-                        try { lightboxPlayer.embed.setOption('captions', 'track', {}); } catch(err) {}
-                    });
-                } catch (err) {}
-            }
-        });
-    }, 50);
-}
-
-        function closeLightbox() {
-            document.getElementById('video-lightbox').classList.remove('active');
-            document.body.style.overflow = view.classList.contains('active') ? 'hidden' : '';
-
-            if (lightboxPlayer) {
-                const fadeDuration = 600;
-                const steps = 20;
-                const stepTime = fadeDuration / steps;
-                const volStep = lightboxPlayer.volume / steps;
-                let currentVol = lightboxPlayer.volume;
-                
-                const fadeInterval = setInterval(() => {
-                    if (currentVol > volStep) {
-                        currentVol -= volStep;
-                        try { lightboxPlayer.volume = currentVol; } catch(e) {}
-                    } else {
-                        clearInterval(fadeInterval);
-                        try { lightboxPlayer.pause(); lightboxPlayer.destroy(); } catch (e) { } 
-                        lightboxPlayer = null;
-                        document.getElementById('lightbox-player-wrap').innerHTML = '';
-                    }
-                }, stepTime);
-            } else {
-                document.getElementById('lightbox-player-wrap').innerHTML = '';
-            }
-
-            const descEl = document.getElementById('lightbox-desc');
-            descEl.innerHTML = '';
-            descEl.classList.add('hidden');
-            descEl.classList.remove('fade-in-slow');
-
-            const metrics = getCarouselMetrics();
-            Object.keys(carouselState).forEach(id => {
-                const s = carouselState[id];
-                if (s && s.targetEl) {
-                    s.isClosing = true; s.currentSpeed = 0;
-                    s.items.forEach(item => {
-                        item.style.transition = 'none';
-                        if (item.classList.contains('active')) {
-                            item.style.width = item.style.width || metrics.activeW + 'px';
-                            item.style.height = item.style.height || metrics.activeH + 'px';
-                            item.classList.remove('active');
-                        }
-                    });
-                }
-            });
-        }
-        document.getElementById('portfolio-view').addEventListener('click', function(e) {
-    const cover = e.target.closest('.inline-cover');
-    if (!cover) return;
-    const id = cover.getAttribute('data-vid');
-    if (id) handleInlineClick(id, cover);
-});
-        document.getElementById('case-ghostz')?.addEventListener('click', function(e) {
-            const cover = e.target.closest('.inline-cover');
-            if (!cover) return;
-            const id = cover.getAttribute('data-vid');
-            if (id) handleInlineClick(id, cover);
-        });
-        document.getElementById('video-lightbox').addEventListener('click', function (e) { if (e.target === this || e.target.classList.contains('lightbox-inner')) closeLightbox(); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
-
-        function toggleSubCategory(id, headerEl) {
-            const body = document.getElementById('body-' + id);
-            if (!body) return;
-            const isOpen = body.classList.contains('open');
-        const indicator = headerEl.querySelector('.subcat-indicator');
-            if (isOpen) {
-                Object.keys(carouselState).forEach(cId => {
-                    const s = carouselState[cId];
-                    if (s && s.targetEl && !s.isClosing) {
-                        const metrics = getCarouselMetrics(s.isVertical);
-                        s.isClosing = true; s.currentSpeed = 0;
-                        s.items.forEach(item => {
-                            item.style.transition = 'none';
-                            if (item.classList.contains('active')) {
-                                item.style.width = item.style.width || metrics.activeW + 'px';
-                                item.style.height = item.style.height || metrics.activeH + 'px';
-                                item.classList.remove('active');
-                            }
-                        });
-                    }
-                });
-            body.classList.remove('open'); 
-            headerEl.classList.remove('open');
-            if (indicator) indicator.textContent = 'ABRIR';
-        } else { 
-            body.classList.add('open'); 
-            headerEl.classList.add('open'); 
-            if (indicator) indicator.textContent = 'FECHAR';
-        }
-        }
-
-        function buildSubCategory(id, label, videosHTML) {
-            return `
-            <div class="flex flex-col w-full border-b border-white/5 pb-4">
-                <div class="subcat-header" onclick="toggleSubCategory('${id}',this)">
-                    <span class="subcat-title">${label}</span>
-                    <span class="subcat-indicator">ABRIR</span>
-                </div>
-                <div class="subcat-body" id="body-${id}">
-                    <div class="subcat-body-inner">
-                        <div class="subcat-body-inner-pad">${videosHTML}</div>
-                    </div>
-                </div>
-            </div>`;
-        }
-
-        const spotlightItems = new Map();
-let spotlightRaf = null;
-
-function tickSpotlight() {
-    spotlightItems.forEach((state, el) => {
-        const target = state.inSpotlight ? 1 : 0.15;
-        const targetScale = state.inSpotlight ? 1 : 0.95;
-
-        state.opacity += (target - state.opacity) * 0.08;
-        state.scale += (targetScale - state.scale) * 0.08;
-
-        el.style.opacity = state.opacity;
-       const scaleEl = el.querySelector('.spotlight-scale-target');
-if (scaleEl) scaleEl.style.transform = `scale(${state.scale})`;
-
-        const player = el.plyrInstance;
-        const coverEl = el.querySelector('.inline-cover');
-
-        if (!state.inSpotlight) {
-            // Cenário A: O vídeo já está pausado. Retorna a capa instantaneamente.
-            if (player && !player.playing) {
-                if (coverEl && coverEl.style.opacity !== '1') {
-                    coverEl.style.display = 'flex';
-                    coverEl.style.opacity = '1';
-                }
-            } 
-            // Cenário B: O vídeo está rodando. Deixa encolher tocando e pausa só no final.
-            else if (state.opacity < 0.16) {
-                if (player && player.playing) {
-                    player.pause();
-                    if (coverEl) {
-                        coverEl.style.display = 'flex';
-                        void coverEl.offsetWidth; // Força reflow para a transição
-                        coverEl.style.opacity = '1';
-                    }
-                }
-            }
-        }
-    });
-    spotlightRaf = requestAnimationFrame(tickSpotlight);
-}
-
-const spotlightObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        const state = spotlightItems.get(e.target);
-        if (state) state.inSpotlight = e.isIntersecting;
-    });
-}, { root: document.getElementById('portfolio-view'), rootMargin: '-30% 0px -30% 0px', threshold: 0 });
-
-const lazyVidObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        const vid = e.target;
-        if (e.isIntersecting) {
-            if (!vid.src && vid.dataset.src) {
-                vid.src = vid.dataset.src;
-                vid.load();
-            }
-            vid.play().catch(()=>{});
-        } else {
-            if (!vid.paused) vid.pause();
-        }
-    });
-}, { root: document.getElementById('portfolio-view'), rootMargin: '100px', threshold: 0.05 });
-
-        function openCategory(name, isLoad = false) {
-            const revision = ++navigationRevision;
-            if (!view.classList.contains('active') && !isLoad) lastScrollPosition = window.scrollY;
-            if (!isLoad) {
-                const url = new URL(window.location);
-                url.searchParams.set('cat', name);
-                history.pushState({ cat: name }, '', url);
-            }
-            currentPlayers.forEach(p => { try { p.pause(); } catch (e) { } });
-            currentPlayers = [];
-            Object.keys(carouselState).forEach(id => { if (carouselState[id] && carouselState[id].rafId) cancelAnimationFrame(carouselState[id].rafId); });
-
-            const setupCategory = () => {
-                if (revision !== navigationRevision) return;
-                descElement.innerText = descricoesPortfolio[name] || '';
-                updateCategoryNav(name);
-                document.body.style.overflow = 'hidden';
-                updateHeaderBlur();
-
-                if (name === 'Vídeos Diários') {
-                    contentArea.innerHTML =
-                        buildSubCategory('analises', 'Análises',
-                            buildInlineVideo('csh7Z3dcb0g', 'Triagem e edição de 5 horas de material bruto não catalogado em uma janela de 7 horas para entrega. Catalogação e montagem em fluxo contínuo.') +
-                            buildInlineVideo('82Ah3XW5Jg4', 'Triagem de mais de 70 horas de material bruto para seleção dos trechos utilizados como b-roll.') +
-                            buildCarousel('analises-vol')) +
-                        '<div style="margin-top:6px">' + buildSubCategory('comentados', 'Comentados', buildInlineVideo('ll3UYdXXhlE', 'Montagem com alternância entre relatos e acontecimentos.') + buildCarousel('comentados-vol')) + '</div>' +
-                        '<div style="margin-top:6px">' + buildSubCategory('noticias', 'Notícias', buildInlineVideo('d0d43qkOE7A', 'Pesquisa de fontes e curadoria de mídias de apoio à narrativa visual, com prazo curto de produção.') + buildCarousel('noticias-vol')) + '</div>';
-
-                } else if (name === 'Highlights') {
-                    contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('ewiL53kmyPI', 'Edição de materiais brutos de transmissões ao vivo com foco na construção de ritmo e tom.')}
-                        ${buildInlineVideo('f-2xznYjToI', 'Edição de 16 horas de material bruto com múltiplos eventos, organizados em uma montagem não linear.')}
-                        ${buildCarousel('highlights-vol')}</div>`;
-
-                } else if (name === 'Produções Documentais') {
-                    contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('Tin_ogQGE-U', 'Definição de ritmo e sonorização para construir a atmosfera da narrativa.')}
-                        ${buildInlineVideo('yiK_Z7XGyBA', 'Seleção de trechos de outras obras como apoio visual, considerando o tom emocional de cada trecho da narrativa.')}
-                        ${buildInlineVideo('qgXUQirQ7Bk', 'Montagem documental a partir de 1h30 de gravação bruta, com pesquisa e seleção de mídias externas para compor a narrativa visual.')}</div>`;
-
-                } else if (name === 'Aberturas e Trailers') {
-                    contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('G4qpobpXdKo', 'Criação de cenas com IA e treinamento de LoRAs para 14 personagens, diante da escassez de materiais oficiais. Mais de 200 horas entre geração e pós-produção.')}
-                        ${buildInlineVideo('zmJqj7dM6Fw', 'Seleção de trechos em mais de 50 horas de transmissões ao vivo para montagem do trailer. Edição para direcionar a atenção em cenas com muitos elementos na tela e aplicação de upscale ao material.')}
-                        ${buildCarousel('aberturas-vol')}</div>`;
-
-                } else if (name === 'Institucionais') {
-                    contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('4minjPUiGdI', 'Execução integral do projeto, incluindo idealização, roteiro, curadoria de imagens e locução.')}
-                        ${buildInlineVideo('O03qeBRocIs', 'Animação de elementos gráficos para uma identidade institucional fictícia, com uso de motion design.')}</div>`;
-                } else if (name === 'Vídeos Publicitários') {
-                    contentArea.innerHTML = `<div class="flex flex-col gap-12 w-full">
-                        ${buildInlineVideo('-w9xbrW4A4o', 'Roteirização, geração de narração por IA e montagem de um anúncio fictício para a marca SilencePro, em formato de criativo para tráfego pago. Testes de variações de voz e prompts de vídeo em diferentes ferramentas de geração, com ajustes de gancho, ritmo e consistência do personagem.', true)}
-                        ${buildCarousel('publicitarios-vol', true)}</div>`;
-                } else if (name === 'GhostzMMOs') {
-                    const template = document.getElementById('ghostz-content-template');
-                    contentArea.innerHTML = template ? template.innerHTML : '';
-                }
-
-                view.scrollTop = 0; view.classList.add('active');
-                setTimeout(() => {
-                    initCarousels();
-                    if (spotlightRaf) cancelAnimationFrame(spotlightRaf);
-                    spotlightItems.clear();
-                    document.querySelectorAll('.inline-video-wrapper').forEach(el => {
-                        el.classList.add('spotlight-item');
-                        spotlightItems.set(el, { opacity: 0.15, scale: 0.95, inSpotlight: false });
-                        spotlightObs.observe(el);
-                    });
-                    document.querySelectorAll('.lazy-video').forEach(vid => {
-                        vid.addEventListener('loadeddata', () => {
-                            vid.classList.remove('opacity-0');
-                        }, { once: true });
-                        lazyVidObs.observe(vid);
-                    });
-                    initRevealText(contentArea);
-                    contentArea.querySelectorAll('.fade-up, .heavy-fade').forEach(el => fadeObs.observe(el));
-                    tickSpotlight();
-                }, 50);
-            };
-
-            if (isLoad) {
-                setupCategory();
-            } else {
-                triggerTransition(setupCategory);
-            }
-        }
 
         const capaImg = document.querySelector('.capa-img-full');
         capaImg.addEventListener('load', () => { capaImg.style.opacity = '1'; updateHeaderBlur(); });
@@ -1049,7 +231,7 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
         restoreRouteFromUrl();
         window.addEventListener('load', () => {
             // Image/font loading can affect section offsets on direct links.
-            if (!new URL(window.location.href).searchParams.has('cat')) restoreRouteFromUrl();
+            restoreRouteFromUrl();
         }, { once: true });
 
         // --- NOVAS IMPLEMENTAÇÕES (DESIGN & UX) ---
@@ -1065,7 +247,7 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
         initRevealText(document);
 
         // 2. Magnetic Buttons (Intensidade reduzida)
-        document.querySelectorAll('.category-nav-btn, button[type="submit"]').forEach(btn => {
+        document.querySelectorAll('button[type="submit"]').forEach(btn => {
             btn.classList.add('magnetic-btn');
             btn.addEventListener('mousemove', e => {
                 if (window.innerWidth <= 768) return;
@@ -1078,9 +260,3 @@ if (capaImg.complete) { capaImg.style.opacity = '1'; updateHeaderBlur(); }
                 btn.style.transform = `translate(0px, 0px)`;
             });
         });
-
-        if (typeof spotlightRaf !== 'undefined' && !spotlightRaf) {
-            spotlightRaf = requestAnimationFrame(tickSpotlight);
-        } else if (typeof spotlightRaf === 'undefined') {
-            requestAnimationFrame(tickSpotlight);
-        }

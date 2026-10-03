@@ -1,0 +1,140 @@
+(() => {
+  const preference = matchMedia('(prefers-reduced-motion: reduce)');
+  const mode = new URL(location.href).searchParams.get('motion');
+  let enabled = mode === 'completo' || (mode !== 'reduzido' && !preference.matches);
+  let travelFrame = 0;
+  let observer;
+  const elements = [];
+
+  function stopTravel() {
+    cancelAnimationFrame(travelFrame);
+    travelFrame = 0;
+    document.documentElement.classList.remove('flow-travelling');
+  }
+  function travel(top) {
+    stopTravel();
+    if(!enabled) { window.scrollTo({top,behavior:'instant'}); return; }
+    const from = window.scrollY;
+    const distance = top-from;
+    if(Math.abs(distance)<2) return;
+    const start = performance.now();
+    const duration = Math.min(900, 550 + Math.abs(distance)*.07);
+    document.documentElement.classList.add('flow-travelling');
+    function tick(now) {
+      const progress = Math.min(1,(now-start)/duration);
+      const ease = 1-Math.pow(1-progress,4);
+      window.scrollTo({top:from+distance*ease,behavior:'instant'});
+      if(progress<1) travelFrame = requestAnimationFrame(tick);
+      else stopTravel();
+    }
+    travelFrame=requestAnimationFrame(tick);
+  }
+  function transition(callback) { stopTravel(); callback(); }
+  function stopNavigation() { stopTravel(); }
+  window.ZniackFlow = {transition,travel,stopTravel};
+  window.addEventListener('popstate',stopNavigation);
+  window.addEventListener('hashchange',stopNavigation);
+  window.addEventListener('wheel',stopNavigation,{passive:true});
+  window.addEventListener('touchstart',stopNavigation,{passive:true});
+  window.addEventListener('pointerdown',stopNavigation,{passive:true,capture:true});
+  window.addEventListener('keydown',event=>{
+    if(['ArrowUp','ArrowDown','PageUp','PageDown','Home','End'].includes(event.key)) stopTravel();
+  });
+  window.addEventListener('pagehide',stopNavigation);
+
+  function mark(element,kind,delay=0) {
+    if(!element) return;
+    element.classList.add(kind);
+    element.style.setProperty('--flow-delay',`${delay}ms`);
+    elements.push(element);
+  }
+  function start() {
+    const body=document.body;
+    document.querySelectorAll('#main-scroll h2.titulo-secao').forEach(heading=>{
+      const inner=document.createElement('span');
+      inner.className='flow-title-inner';
+      inner.append(...heading.childNodes);
+      heading.append(inner);
+      mark(heading,'flow-title');
+    });
+    mark(document.querySelector('#capa h1'),'flow-item',100);
+    mark(document.querySelector('#capa .cover-kicker'),'flow-item',40);
+    const about=document.querySelector('#sobre .texto-corpo');
+    mark(about,'flow-item',90);
+    const profile=document.getElementById('perfil-img');
+    mark(profile?.parentElement.parentElement,'flow-portrait');
+    mark(profile,'flow-photo',160);
+    mark(document.querySelector('#trabalho .comentario-trabalho'),'flow-item',60);
+    document.querySelectorAll('#trabalho .list-item').forEach((row,index)=>mark(row,'flow-item',(index%3)*90));
+    mark(document.querySelector('.featured-project-link'),'flow-item',80);
+    // Controls remain stable; only the contact introduction joins the section entrance.
+    mark(document.querySelector('#contato .comentario-trabalho'),'flow-item',80);
+    observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(!entry.isIntersecting) return;
+        entry.target.classList.add('flow-in');
+        entry.target.addEventListener('transitionend',()=>entry.target.style.setProperty('--flow-delay','0ms'),{once:true});
+        observer.unobserve(entry.target);
+      });
+    },{threshold:.04,rootMargin:'0px 0px -5% 0px'});
+    body.classList.toggle('flow-on',enabled);
+    body.classList.toggle('flow-reduced',!enabled);
+    elements.forEach(element=>{
+      if(enabled) observer.observe(element);
+      else element.classList.add('flow-in');
+    });
+
+    const header=document.getElementById('sticky-header');
+    const links=[...header.querySelectorAll('a[href^="#"]')];
+    const sections=[...document.querySelectorAll('#main-scroll > section')];
+    const indicator=document.createElement('span');
+    indicator.className='flow-nav-indicator'; indicator.setAttribute('aria-hidden','true');
+    header.append(indicator);
+    let current='';
+    function showIndicator(id,force=false) {
+      if(!force&&id===current) return;
+      current=id;
+      const link=links.find(item=>item.getAttribute('href')===`#${id}`);
+      if(!link) { indicator.style.opacity='0'; return; }
+      const rootRect=header.getBoundingClientRect();
+      const rect=link.getBoundingClientRect();
+      indicator.style.width=`${rect.width}px`;
+      indicator.style.transform=`translate3d(${rect.left-rootRect.left}px,${rect.bottom-rootRect.top+6}px,0)`;
+      indicator.style.opacity='1';
+    }
+    let pending=false;
+    function onScroll() {
+      if(pending) return;
+      pending=true;
+      requestAnimationFrame(()=>{
+        pending=false;
+        const threshold=innerHeight*.42;
+        let active='capa';
+        sections.forEach(section=>{if(section.getBoundingClientRect().top<=threshold) active=section.id;});
+        showIndicator(active);
+        const cover=document.getElementById('capa');
+        if(enabled&&cover) {
+          const top=cover.getBoundingClientRect().top;
+          if(top>-innerHeight&&top<innerHeight) {
+            const image=cover.querySelector('.capa-img-full');
+            if(image) image.style.setProperty('--cover-drift',`${Math.max(0,Math.min(18,-top/innerHeight*18))}px`);
+          }
+        }
+      });
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',()=>showIndicator(current,true),{passive:true});
+    onScroll();
+
+    preference.addEventListener('change',()=>{
+      if(mode==='completo'||mode==='reduzido') return;
+      enabled=!preference.matches;
+      stopNavigation();
+      body.classList.toggle('flow-on',enabled);
+      body.classList.toggle('flow-reduced',!enabled);
+      if(!enabled) { observer.disconnect(); elements.forEach(element=>element.classList.add('flow-in')); }
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start);
+  else start();
+})();

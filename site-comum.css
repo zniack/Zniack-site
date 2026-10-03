@@ -1,0 +1,130 @@
+/* Mesmo sistema visual, conteúdo próprio de cada posicionamento. */
+html[data-brand-direction="corte"] body[data-application] section:not(#capa) {
+  padding-top:110px; padding-bottom:110px;
+}
+html[data-brand-direction="corte"] body[data-application] section:not(#capa) .titulo-secao {
+  border-top:1px solid #41474f; padding-top:24px; margin-bottom:32px;
+  font-size:clamp(30px,3vw,42px); font-weight:600; line-height:1.2;
+}
+html[data-brand-direction="corte"] body[data-application] section:not(#capa) .titulo-secao::before,
+html[data-brand-direction="corte"] body[data-application] .case-intro::before,
+html[data-brand-direction="corte"] body[data-application] #portfolio-content-area .case-intro h2.titulo-secao::before { content:none; }
+html[data-brand-direction="corte"] body[data-application] .header-sticky { gap:clamp(22px,3vw,42px); }
+html[data-brand-direction="corte"] body[data-application] #sobre .texto-corpo { max-width:610px; font-size:17px; line-height:1.85; }
+html[data-brand-direction="corte"] body[data-application] #sobre .nome-foto { margin-top:18px; font-size:15px; }
+html[data-brand-direction="corte"] body[data-application] #trabalho .list-container {
+  display:flex; flex-direction:column; gap:0; width:100%; max-width:1050px;
+}
+html[data-brand-direction="corte"] body[data-application] #trabalho .list-item {
+  display:grid; grid-template-columns:minmax(180px,.38fr) minmax(0,1fr);
+  gap:40px; padding:24px 0; margin:0; border-top:1px solid #41474f; font-size:16px; line-height:1.8;
+}
+html[data-brand-direction="corte"] body[data-application] #trabalho .list-item b { display:block; margin:0; padding:0; font-size:21px; font-weight:500; line-height:1.4; }
+html[data-brand-direction="corte"] body[data-application] #trabalho .method-copy { color:var(--brand-soft); font-size:16px; line-height:1.8; }
+html[data-brand-direction="corte"] body[data-application] #trabalho .comentario-trabalho { max-width:700px; }
+html[data-brand-direction="corte"] body[data-application] #contato .contact-editorial {
+  display:grid; width:100%; max-width:1050px; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:90px; align-items:start;
+}
+html[data-brand-direction="corte"] body[data-application] #contato .direct-contact {
+  grid-column:1; grid-row:1; align-self:start; gap:24px; border-top:1px solid #41474f; padding-top:24px;
+}
+html[data-brand-direction="corte"] body[data-application] #contato .direct-contact h4 { font-size:18px; font-weight:500; letter-spacing:0; text-transform:none; color:var(--brand-ink)!important; }
+html[data-brand-direction="corte"] body[data-application] #contato #contact-form {
+  grid-column:2; grid-row:1; gap:24px; padding-top:24px; border-top:1px solid #41474f;
+}
+html[data-brand-direction="corte"] body[data-application] #contato .form-heading { font-size:18px; font-weight:500; margin:0 0 8px; }
+html[data-brand-direction="corte"] body[data-application] #contato>.w-full>.comentario-trabalho { max-width:700px; margin-bottom:40px; }
+html[data-brand-direction="corte"] body[data-application] #contato #wa-link {
+  width:100%; max-width:none; min-height:48px; font-size:16px; font-weight:400; padding:8px 0;
+  border-top:0; border-bottom:1px solid var(--brand-control);
+}
+html[data-brand-direction="corte"] body[data-application] #contato #wa-link>span:nth-of-type(2) { display:none; }
+html[data-brand-direction="corte"] body[data-application] #contato #copy-email { font-size:16px; font-weight:400; min-height:44px; padding:10px 0; text-align:left; }
+html[data-brand-direction="corte"] body[data-application] #contato #contact-form :is(input,textarea) { font-size:16px; padding:12px 0; }
+html[data-brand-direction="corte"] body[data-application] #contato #contact-form button[type="submit"] { min-height:48px; min-width:130px; font-size:14px; margin-top:0; }
+html[data-brand-direction="corte"] body[data-application] .portfolio-modal { padding-top:112px; }
+html[data-brand-direction="corte"] body[data-application] .refined-portfolio-top { display:flex; justify-content:space-between; align-items:center; gap:25px; max-width:1050px; margin-bottom:28px; padding-bottom:15px; border-bottom:1px solid #41474f; }
+html[data-brand-direction="corte"] body[data-application] .refined-portfolio-top>span { font-size:12px; color:var(--brand-muted); letter-spacing:.03em; }
+html[data-brand-direction="corte"] body[data-application] .refined-return,
+html[data-brand-direction="corte"] body[data-application] .portfolio-return { display:inline-flex; align-items:center; min-height:44px; padding:0; margin:0; font:500 14px Manrope,sans-serif; text-transform:none; letter-spacing:0; color:var(--brand-ink); background:transparent; border:0; text-shadow:none; }
+html[data-brand-direction="corte"] body[data-application] #category-nav { max-width:1050px; gap:8px; margin-bottom:24px; }
+html[data-brand-direction="corte"] body[data-application] #category-desc { max-width:720px; font-size:16px; line-height:1.8; margin-bottom:32px; }
+html[data-brand-direction="corte"] body[data-application] .case-intro { max-width:1050px; padding-top:24px; border-top:1px solid #41474f; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-content-area .case-intro h2.titulo-secao { border:0; padding-top:0; font-size:clamp(30px,3vw,42px); line-height:1.2; margin-bottom:24px; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-content-area .inline-video-wrapper>p { color:var(--brand-soft); font-size:16px; line-height:1.8; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-content-area .inline-video-wrapper .comentario-trabalho { color:var(--brand-soft); font-size:16px; line-height:1.8; }
+html[data-brand-direction="corte"] body[data-application] .play-btn-circle { opacity:1; border:1px solid rgba(255,255,255,.78); background:rgba(16,17,20,.78); }
+html[data-brand-direction="corte"] body[data-application] .play-btn-circle svg { opacity:1; }
+html[data-brand-direction="corte"] body[data-application] #category-nav .category-nav-btn { font-family:Manrope,sans-serif; text-transform:none; letter-spacing:0; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 34px; width:100%; max-width:1050px;
+}
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid .portfolio-box {
+  display:grid; grid-template-columns:112px minmax(0,1fr) 20px; align-items:center; gap:22px;
+  width:100%; height:auto; min-height:148px; padding:24px 0; border:0; border-top:1px solid #41474f;
+  border-radius:0; background:transparent; text-align:left; text-transform:none; transition:color .15s;
+}
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid .portfolio-box:hover { background:transparent; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid .brand-category-thumb { display:block; width:112px; height:70px; aspect-ratio:auto; object-fit:cover; filter:none; border:1px solid #41474f; opacity:1; position:static; }
+html[data-brand-direction="corte"] body[data-application="principal"] #portfolio-grid .brand-category-thumb { width:72px; height:128px; object-fit:contain; justify-self:center; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid .category-copy { display:block; padding:0; background:none; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid .brand-category-label { display:block; font:500 18px/1.35 Manrope,sans-serif; color:var(--brand-ink); padding:0; letter-spacing:0; white-space:normal; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid .category-description { display:block; font:400 13px/1.65 Manrope,sans-serif; color:var(--brand-muted); margin-top:9px; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid .category-arrow { color:var(--brand-muted); font-size:20px; padding:0; background:none; }
+html[data-brand-direction="corte"] body[data-application] #portfolio-grid .portfolio-box:hover .category-arrow { color:var(--brand-ink); }
+html[data-brand-direction="corte"] body[data-application] .portfolio-note { max-width:700px; font-size:15px; color:var(--brand-muted); line-height:1.7; margin:-10px 0 30px; }
+html[data-brand-direction="corte"] body[data-application] .portfolio-experiment { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(280px,1fr); gap:34px; max-width:1050px; align-items:start; }
+html[data-brand-direction="corte"] body[data-application] .portfolio-experiment #portfolio-grid { grid-template-columns:1fr; }
+html[data-brand-direction="corte"] body[data-application] .portfolio-experiment #portfolio-grid .portfolio-box { grid-template-columns:minmax(0,1fr) 20px; min-height:94px; padding:22px 0; }
+html[data-brand-direction="corte"] body[data-application] .portfolio-experiment #portfolio-grid .brand-category-thumb { display:none; }
+.portfolio-mural { margin:0; overflow:hidden; min-width:0; }
+.mural-window { overflow:hidden; border:1px solid #41474f; background:#22262b; padding:12px 0; display:grid; gap:12px; }
+.mural-track { display:flex; width:max-content; animation:zniack-mural 92s linear infinite; animation-play-state:paused; }
+.mural-track:nth-child(2) { animation-direction:reverse; animation-duration:112s; }
+.mural-group { display:flex; flex-shrink:0; gap:12px; padding-right:12px; }
+.mural-frame { display:block; width:240px; height:135px; object-fit:cover; }
+.portfolio-mural[data-portrait="true"] .mural-frame { width:110px; height:195px; }
+.portfolio-mural[data-running="true"] .mural-track { animation-play-state:running; }
+.portfolio-mural:hover .mural-track,.portfolio-mural:focus-within .mural-track { animation-play-state:paused; }
+.mural-caption { display:flex; gap:15px; align-items:center; justify-content:space-between; margin-top:14px; font:400 12px/1.6 Manrope,sans-serif; color:#b8bdc4; }
+.mural-toggle { flex-shrink:0; background:transparent; color:#f3f4f5; font:500 12px Manrope,sans-serif; border:1px solid #59616b; padding:8px 12px; min-height:44px; }
+.mural-toggle:focus-visible,.portfolio-box:focus-visible { outline:2px solid #f3f4f5; outline-offset:5px; }
+@keyframes zniack-mural { to { transform:translateX(-50%); } }
+@media(max-width:1000px) {
+ html[data-brand-direction="corte"] body[data-application] #portfolio-grid { gap:0 24px; }
+ html[data-brand-direction="corte"] body[data-application] #portfolio-grid .portfolio-box { grid-template-columns:85px minmax(0,1fr) 16px; gap:15px; }
+ html[data-brand-direction="corte"] body[data-application] #portfolio-grid .brand-category-thumb { width:85px; height:53px; }
+ html[data-brand-direction="corte"] body[data-application] .portfolio-experiment { grid-template-columns:minmax(0,1.25fr) minmax(250px,1fr); gap:24px; }
+}
+@media(max-width:768px) {
+ html[data-brand-direction="corte"] body[data-application] section:not(#capa) { padding-top:110px; padding-bottom:78px; }
+ html[data-brand-direction="corte"] body[data-application] section:not(#capa) .titulo-secao { font-size:30px; padding-top:24px; margin-bottom:28px; }
+ html[data-brand-direction="corte"] body[data-application] .header-sticky { gap:8px 18px; padding:13px 18px; flex-wrap:wrap; }
+ html[data-brand-direction="corte"] body[data-application] .header-sticky .nav-link { font-size:12px; letter-spacing:0; line-height:1.5; text-transform:none; min-height:28px; display:flex; align-items:center; }
+ html[data-brand-direction="corte"] body[data-application] #sobre .texto-corpo { font-size:16px; line-height:1.8; }
+ html[data-brand-direction="corte"] body[data-application] #sobre>div>div:last-child { width:208px; align-self:flex-start; margin-top:0; }
+ html[data-brand-direction="corte"] body[data-application] #sobre>div>div:last-child>div { width:208px; height:260px; aspect-ratio:4/5; }
+ html[data-brand-direction="corte"] body[data-application] #trabalho .list-item { grid-template-columns:1fr; gap:12px; padding:24px 0; }
+ html[data-brand-direction="corte"] body[data-application] #trabalho .list-item b { font-size:19px; }
+ html[data-brand-direction="corte"] body[data-application] #contato .contact-editorial { display:flex; flex-direction:column; gap:42px; }
+ html[data-brand-direction="corte"] body[data-application] .portfolio-modal { padding-top:118px; }
+ html[data-brand-direction="corte"] body[data-application] .refined-portfolio-top { gap:14px; margin-bottom:21px; padding-bottom:11px; }
+ html[data-brand-direction="corte"] body[data-application] .refined-portfolio-top>span { display:none; }
+ html[data-brand-direction="corte"] body[data-application] #portfolio-grid { grid-template-columns:1fr; }
+ html[data-brand-direction="corte"] body[data-application] #portfolio-grid .portfolio-box { grid-template-columns:85px minmax(0,1fr) 16px; gap:16px; min-height:123px; padding:22px 0; }
+ html[data-brand-direction="corte"] body[data-application] #portfolio-grid .brand-category-label { font-size:17px; }
+ html[data-brand-direction="corte"] body[data-application="principal"] #portfolio-grid .brand-category-thumb { width:55px; height:98px; }
+ html[data-brand-direction="corte"] body[data-application] .portfolio-experiment { grid-template-columns:1fr; gap:25px; }
+ .mural-frame { width:176px; height:99px; }
+ .portfolio-mural[data-portrait="true"] .mural-frame { width:76px; height:135px; }
+ .mural-caption { align-items:flex-start; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .mural-track { animation-name:none!important; }
+ /* Reduced motion stays static until the visitor explicitly tries this study. */
+ .portfolio-mural[data-manual-motion="true"] .mural-track { animation-name:zniack-mural!important; }
+}
+
+/* O endereço continua copiável; a indicação permanece discreta. */
+html[data-brand-direction="corte"] #copy-email .email-address { display:block; }
+html[data-brand-direction="corte"] #copy-email .email-copy-hint { display:block; margin-top:4px; color:var(--brand-muted); font:400 12px/1.4 Manrope,sans-serif; letter-spacing:0; }

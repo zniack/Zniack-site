@@ -1,0 +1,57 @@
+/* Proposta local: Corte editorial, mesma D1, família e paleta aprovadas. */
+html[data-brand-direction="corte"] body[data-refinamento="corte"] section:not(#capa) { padding-top:110px; padding-bottom:110px; }
+html[data-brand-direction="corte"] body[data-refinamento="corte"] section:not(#capa) .titulo-secao { border-top:0; padding-top:24px; position:relative; margin-bottom:32px; }
+html[data-brand-direction="corte"] body[data-refinamento="corte"] section:not(#capa) .titulo-secao::before { content:""; position:absolute; top:0; left:0; width:112px; height:5px; background:var(--brand-ink); }
+html[data-brand-direction="corte"] .cover-work-link { display:inline-flex; pointer-events:auto; margin-top:28px; padding:10px 0; color:var(--brand-ink); border-bottom:1px solid var(--brand-ink); font-size:16px; font-weight:500; text-decoration:none; }
+html[data-brand-direction="corte"] #trabalho .method-editorial { max-width:1050px; gap:0; }
+html[data-brand-direction="corte"] #trabalho .list-item { display:grid; grid-template-columns:minmax(180px,.38fr) minmax(0,1fr); gap:40px; padding:24px 0; border-top:1px solid var(--brand-line); }
+html[data-brand-direction="corte"] #trabalho .list-item b { font-size:21px; line-height:1.4; padding:0; margin:0; display:block; }
+html[data-brand-direction="corte"] #trabalho .method-copy { color:var(--brand-soft); font-size:16px; line-height:1.8; }
+html[data-brand-direction="corte"] #trabalho .comentario-trabalho { max-width:700px; margin-bottom:40px; }
+html[data-brand-direction="corte"] #portfolio-grid:has(>.portfolio-box:only-child) { max-width:1050px; }
+html[data-brand-direction="corte"] #portfolio-grid .portfolio-box.refined-project { display:grid; grid-template-columns:290px minmax(0,1fr); align-items:center; gap:62px; padding:38px 0; border:0; border-top:1px solid var(--brand-line); border-bottom:1px solid var(--brand-line); background:transparent; text-transform:none; }
+html[data-brand-direction="corte"] #portfolio-grid .refined-project:hover { background:transparent; }
+html[data-brand-direction="corte"] #portfolio-grid .refined-project .project-poster { display:block; width:100%; aspect-ratio:9/16; object-fit:contain; background:var(--brand-panel); border:0; }
+html[data-brand-direction="corte"] #portfolio-grid .refined-project .project-copy { padding:0; background:transparent; white-space:normal; }
+html[data-brand-direction="corte"] .project-eyebrow { display:block; color:var(--brand-muted); font-size:13px; letter-spacing:.04em; margin-bottom:18px; }
+html[data-brand-direction="corte"] .project-name { display:block; font-size:clamp(32px,3.4vw,44px); font-weight:600; line-height:1.15; margin-bottom:22px; letter-spacing:-.03em; }
+html[data-brand-direction="corte"] .project-description { display:block; font-size:19px; color:var(--brand-soft); line-height:1.65; max-width:510px; margin-bottom:28px; }
+html[data-brand-direction="corte"] .project-context { display:block; color:var(--brand-muted); font-size:14px; line-height:1.6; max-width:450px; margin-bottom:28px; }
+html[data-brand-direction="corte"] .project-action { display:inline-block; color:var(--brand-ink); font-size:16px; border-bottom:1px solid var(--brand-control); padding:10px 0; }
+html[data-brand-direction="corte"] .case-intro { padding-top:30px; border-top:0; position:relative; max-width:1050px; }
+html[data-brand-direction="corte"] .case-intro::before { content:""; position:absolute; top:0; left:0; width:112px; height:5px; background:var(--brand-ink); }
+html[data-brand-direction="corte"] .case-intro .titulo-secao { border-top:0; padding-top:0; font-size:clamp(32px,3.4vw,44px); line-height:1.15; margin-bottom:22px; }
+html[data-brand-direction="corte"] .case-intro p { max-width:650px; }
+html[data-brand-direction="corte"] .portfolio-return { color:var(--brand-ink); background:transparent; padding:12px 0; min-height:44px; border:0; border-bottom:1px solid var(--brand-control); align-self:flex-start; font:500 16px Manrope,sans-serif; margin-bottom:24px; }
+html[data-brand-direction="corte"] #contato .contact-editorial { display:grid; max-width:1050px; grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); gap:90px; }
+html[data-brand-direction="corte"] .direct-contact { grid-column:1; grid-row:1; align-self:start; border-top:1px solid var(--brand-line); padding-top:24px; }
+html[data-brand-direction="corte"] #contact-form { grid-column:2; grid-row:1; gap:24px; border-top:1px solid var(--brand-line); padding-top:24px; }
+html[data-brand-direction="corte"] .form-heading { font-size:18px; font-weight:500; margin:0 0 8px; }
+html[data-brand-direction="corte"] #contato .direct-contact h4 { font-size:18px; font-weight:500; text-transform:none; letter-spacing:0; }
+html[data-brand-direction="corte"] #contato #wa-link { min-height:48px; border-bottom:1px solid var(--brand-control); padding:8px 0; }
+html[data-brand-direction="corte"] #contato #wa-link>span:nth-of-type(2) { display:none; }
+html[data-brand-direction="corte"] #contato #copy-email { padding:10px 0; min-height:44px; font-size:16px; }
+html[data-brand-direction="corte"] #contato .comentario-trabalho { max-width:700px; margin-bottom:40px; }
+html[data-brand-direction="corte"] #sobre .texto-corpo { max-width:610px; }
+@media(max-width:768px) {
+ html[data-brand-direction="corte"] body[data-refinamento="corte"] section:not(#capa) { padding-top:110px; padding-bottom:78px; }
+ html[data-brand-direction="corte"] #trabalho .list-item { grid-template-columns:1fr; gap:12px; padding:24px 0; }
+ html[data-brand-direction="corte"] #trabalho .list-item b { font-size:19px; }
+ html[data-brand-direction="corte"] #portfolio-grid .portfolio-box.refined-project { grid-template-columns:1fr; gap:30px; padding:30px 0; }
+ html[data-brand-direction="corte"] #portfolio-grid .refined-project .project-poster { width:min(78%,265px); justify-self:start; }
+ html[data-brand-direction="corte"] #portfolio-grid .refined-project .project-copy { display:contents; }
+ html[data-brand-direction="corte"] .refined-project .project-eyebrow { order:-3; margin:0; }
+ html[data-brand-direction="corte"] .refined-project .project-name { order:-2; margin:0; }
+ html[data-brand-direction="corte"] .refined-project .project-poster { order:-1; }
+ html[data-brand-direction="corte"] .refined-project .project-description { margin:0; }
+ html[data-brand-direction="corte"] .refined-project .project-context { margin:0; }
+ html[data-brand-direction="corte"] .refined-project .project-action { justify-self:start; }
+ html[data-brand-direction="corte"] #portfolio-grid .refined-project .project-description { font-size:17px; }
+ html[data-brand-direction="corte"] #contato .contact-editorial { display:flex; flex-direction:column; gap:42px; }
+ html[data-brand-direction="corte"] .direct-contact { order:-1; }
+ html[data-brand-direction="corte"] #sobre>div>div:last-child { width:208px; align-self:flex-start; margin-top:0; }
+ html[data-brand-direction="corte"] #sobre>div>div:last-child>div { width:208px; aspect-ratio:4/5; }
+ html[data-brand-direction="corte"] .header-sticky { gap:12px; padding:12px 18px; flex-wrap:wrap; }
+ html[data-brand-direction="corte"] .header-sticky .nav-link { font-size:12px; letter-spacing:0; text-transform:none; min-height:44px; display:flex; align-items:center; }
+}
+@media(prefers-reduced-motion:reduce) { .cover-work-link { transition:none; } }
