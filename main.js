@@ -120,7 +120,7 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
                 updateHeaderBlur();
             });
         }
-        document.querySelectorAll('.nav-link').forEach(link => {
+        document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 const url = new URL(window.location.href);
