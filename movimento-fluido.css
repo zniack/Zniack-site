@@ -1,0 +1,63 @@
+/* This layer changes motion only, inside the separate complete-site study. */
+body.flow-on { --flow-ease:cubic-bezier(.16,1,.3,1); --flow-fade:cubic-bezier(.8,0,.75,1); }
+html.flow-travelling,html.flow-travelling body,html.flow-travelling #main-scroll { scroll-snap-type:none!important; scroll-behavior:auto!important; }
+body.flow-on #transition-overlay { display:none!important; pointer-events:none!important; }
+body.flow-on #main-scroll .flow-title { overflow:hidden; }
+body.flow-on #main-scroll .flow-title-inner { display:block; transform:translate3d(0,108%,0); opacity:0; transition:transform .88s var(--flow-ease),opacity .88s var(--flow-fade); transition-delay:var(--flow-delay,0ms); }
+body.flow-on #main-scroll .flow-title.flow-in .flow-title-inner { transform:translate3d(0,0,0); opacity:1; }
+body.flow-on .flow-title-inner .reveal-text { transform:none!important; opacity:1!important; transition:none!important; }
+html[data-brand-direction="corte"] body.flow-on #main-scroll .flow-item { opacity:0; transform:translate3d(0,32px,0); transition:opacity .92s var(--flow-fade),transform .92s var(--flow-ease); transition-delay:var(--flow-delay,0ms); }
+html[data-brand-direction="corte"] body.flow-on #main-scroll .flow-item.flow-in { opacity:1; transform:translate3d(0,0,0); }
+body.flow-on .flow-portrait { opacity:0; transition:opacity 1.1s var(--flow-fade); }
+body.flow-on .flow-portrait.flow-in { opacity:1; }
+body.flow-on #perfil-img.flow-photo { transform:translate3d(0,20px,0) scale(1.045); opacity:1; transition:transform 1.1s var(--flow-ease),filter .7s var(--flow-ease); }
+body.flow-on #perfil-img.flow-photo.flow-in { transform:translate3d(0,0,0) scale(1); opacity:1; }
+body.flow-on #capa { overflow:hidden; }
+body.flow-on .capa-img-full { transform:translate3d(0,var(--cover-drift,0px),0) scale(1.025); animation:flow-cover 1.3s var(--flow-ease) both,flow-cover-opacity 1.3s var(--flow-fade) both; }
+@keyframes flow-cover { from { transform:scale(1.065); } to { transform:translate3d(0,var(--cover-drift,0px),0) scale(1.025); } }
+@keyframes flow-cover-opacity { from { opacity:0; } to { opacity:1; } }
+body.flow-on #portfolio-grid .portfolio-box { --flow-hover-x:0px; --flow-hover-y:0px; }
+html[data-brand-direction="corte"] body.flow-on #portfolio-grid.portfolio-minimal .portfolio-box { transition:transform .75s var(--flow-ease),opacity .75s var(--flow-fade),background-color .55s var(--flow-ease),border-color .55s var(--flow-ease); transition-delay:0ms; }
+html[data-brand-direction="corte"] body.flow-on #portfolio-grid.portfolio-minimal .portfolio-box.flow-category { transition-delay:var(--flow-delay,0ms); }
+html[data-brand-direction="corte"] body.flow-on #portfolio-grid.portfolio-minimal .portfolio-box.flow-category:not(.flow-in) { opacity:0; transform:translate3d(0,24px,0); transition-delay:var(--flow-delay,0ms); }
+@media(hover:hover) and (pointer:fine) {
+ html[data-brand-direction="corte"] body.flow-on #portfolio-grid.portfolio-minimal .portfolio-box.flow-in:hover { transform:translate3d(calc(6px + var(--flow-hover-x)),var(--flow-hover-y),0); background:#282e35; border-color:#89939e; transition-delay:0ms; }
+ body.flow-on .featured-project-link.flow-in:hover .featured-project-image { transform:scale(1.035); }
+ body.flow-on #perfil-img.flow-photo.flow-in:hover { transform:scale(1.02); }
+}
+body.flow-on .featured-project-link { overflow:hidden; }
+body.flow-on .featured-project-link.flow-item .featured-project-image { transform:scale(1.045); }
+body.flow-on .featured-project-link.flow-item.flow-in .featured-project-image { transform:scale(1); }
+body.flow-on .featured-project-image { transition:transform 1.05s var(--flow-ease),filter .8s var(--flow-ease)!important; transform-origin:center; }
+body.flow-on .featured-project-link.flow-in:focus-visible .featured-project-image { transform:scale(1.035); }
+body.flow-on .flow-nav-indicator { position:absolute; left:0; top:0; height:1px; background:#89939e; opacity:0; pointer-events:none; transition:transform .68s var(--flow-ease),width .68s var(--flow-ease),opacity .35s ease; }
+body #portfolio-view { transition:none!important; animation:none!important; }
+body #portfolio-view.active { opacity:1!important; }
+body .flow-catalog-intro { animation:none!important; }
+/* 60fps reference: 15 frames out, 30 in, with the final 5 outgoing frames overlapping. */
+html.flow-catalog-travel { view-transition-name:none; }
+html.flow-catalog-travel,html.flow-catalog-travel body,html.flow-catalog-travel #main-scroll { scroll-snap-type:none!important;scroll-behavior:auto!important; }
+html.flow-catalog-travel #portfolio-content-area { view-transition-name:flow-catalog-content; }
+html.flow-catalog-travel::view-transition { pointer-events:none; }
+html.flow-catalog-travel::view-transition-group(flow-catalog-content) { animation:none; }
+html.flow-catalog-travel::view-transition-image-pair(flow-catalog-content) { isolation:auto; }
+html.flow-catalog-travel::view-transition-old(flow-catalog-content),
+html.flow-catalog-travel::view-transition-new(flow-catalog-content) { mix-blend-mode:normal; }
+html.flow-catalog-travel::view-transition-old(flow-catalog-content) { animation:flow-page-out 250ms cubic-bezier(.4,0,.6,1) both; }
+html.flow-catalog-travel::view-transition-new(flow-catalog-content) { animation:flow-page-in 500ms cubic-bezier(.16,1,.3,1) 166.667ms both; }
+.flow-chrome-copy { position:fixed;inset:0;z-index:1000;pointer-events:none; }
+#main-scroll.flow-main-out { position:relative;z-index:95;pointer-events:none;transform:translate3d(0,var(--flow-main-offset,0px),0); }
+body.flow-on #main-scroll .flow-catalog-settled .flow-title-inner,
+html[data-brand-direction="corte"] body.flow-on #main-scroll .flow-catalog-settled .flow-item,
+html[data-brand-direction="corte"] body.flow-on #main-scroll .flow-catalog-settled .flow-category,
+body.flow-on #main-scroll .flow-catalog-settled .flow-portrait,
+body.flow-on #main-scroll .flow-catalog-settled .flow-photo { opacity:1!important;transform:none!important;transition:none!important; }
+@keyframes flow-page-out { from { opacity:1; } to { opacity:0; } }
+@keyframes flow-page-in { from { opacity:0; } to { opacity:1; } }
+@media(max-width:768px) {
+ html[data-brand-direction="corte"] body.flow-on #main-scroll .flow-item { transform:translate3d(0,22px,0); }
+ html[data-brand-direction="corte"] body.flow-on #main-scroll .flow-item.flow-in { transform:translate3d(0,0,0); }
+ body.flow-on #perfil-img.flow-photo { transform:translate3d(0,14px,0) scale(1.035); }
+ body.flow-on #perfil-img.flow-photo.flow-in { transform:translate3d(0,0,0) scale(1); }
+}
+body.flow-reduced .flow-nav-indicator { display:none; }

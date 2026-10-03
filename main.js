@@ -561,7 +561,8 @@ const listObs = new IntersectionObserver((entries, obs) => {
 
 document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
 
-        function triggerTransition(cb) {
+        function triggerTransition(cb, options = {}) {
+            if (window.ZniackFlow) { window.ZniackFlow.transition(cb, options); return; }
             const ov = document.getElementById('transition-overlay');
             ov.style.display = 'block';
             requestAnimationFrame(() => {
@@ -574,7 +575,7 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
         }
 
         let navigationRevision = 0;
-        function restoreRouteFromUrl() {
+        function restoreRouteFromUrl(options = {}) {
             const revision = ++navigationRevision;
             const url = new URL(window.location.href);
             const category = url.searchParams.get('cat');
@@ -597,12 +598,14 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
             try { sectionId = decodeURIComponent(url.hash.slice(1)); } catch (_) {}
             const candidate = document.getElementById(sectionId);
             const target = candidate && candidate.tagName === 'SECTION' ? candidate : capa;
-            window.scrollTo({ top: target.offsetTop, behavior: 'instant' });
+            const smoothTravel = options.smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (options.smooth && window.ZniackFlow) window.ZniackFlow.travel(target.offsetTop);
+            else window.scrollTo({ top: target.offsetTop, behavior: smoothTravel ? 'smooth' : 'instant' });
             updateHeaderBlur();
             stickyHeader.style.opacity = '1';
             // Recheck after layout without overriding subsequent navigation.
             requestAnimationFrame(() => {
-                if (revision !== navigationRevision) return;
+                if (revision !== navigationRevision || options.smooth) return;
                 window.scrollTo({ top: target.offsetTop, behavior: 'instant' });
                 updateHeaderBlur();
             });
@@ -611,14 +614,15 @@ document.querySelectorAll('.heavy-fade').forEach(el => listObs.observe(el));
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 hasClickedMenu = true;
+                const leavingCategory = view.classList.contains('active');
                 const url = new URL(window.location.href);
                 url.searchParams.delete('cat');
                 url.hash = this.getAttribute('href');
                 if (url.href !== window.location.href) history.pushState(null, '', url);
                 const revision = ++navigationRevision;
                 triggerTransition(() => {
-                    if (revision === navigationRevision) restoreRouteFromUrl();
-                });
+                    if (revision === navigationRevision) restoreRouteFromUrl({smooth:!leavingCategory});
+                }, {catalog:leavingCategory});
             });
         });
         window.addEventListener('popstate', restoreRouteFromUrl);
@@ -926,6 +930,7 @@ const lazyVidObs = new IntersectionObserver((entries) => {
 
                 view.scrollTop = 0; view.classList.add('active');
                 setTimeout(() => {
+                    if (revision !== navigationRevision || !view.classList.contains('active')) return;
                     initCarousels();
                     if (spotlightRaf) cancelAnimationFrame(spotlightRaf);
                     spotlightItems.clear();
@@ -949,7 +954,7 @@ const lazyVidObs = new IntersectionObserver((entries) => {
             if (isLoad) {
                 setupCategory();
             } else {
-                triggerTransition(setupCategory);
+                triggerTransition(setupCategory, {catalog:true});
             }
         }
 

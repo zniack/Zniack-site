@@ -1,6 +1,6 @@
         @font-face {
             font-family: 'Skyer';
-            src: url('skyer.otf') format('opentype'), url('skyer.ttf') format('truetype');
+            src: url('skyer.otf') format('opentype');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
