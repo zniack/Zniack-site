@@ -14,10 +14,12 @@
 .hero { padding-block: 88px 70px; }
 .hero h1 { font-size: clamp(44px, 5.3vw, 72px); }
 .hero h1::after { width: 96px; height: 1px; margin-top: 32px; background: var(--line); }
-.principles { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding-block: 24px; }
+.principles { border-top: 1px solid var(--line); border-bottom: 0; padding-block: 24px 18px; }
 .principles span::before { height: 1px; background: var(--muted); }
 .section-head { border-top: 1px solid var(--line); padding-top: 24px; }
 .section-head::before { content: none; }
+#pacotes { padding-top: 36px; }
+#pacotes .section-head { border-top: 0; padding-top: 0; }
 .featured-offer { background: var(--bg); border-block: 0; }
 .package, .package.featured { background: var(--panel); border: 1px solid var(--line); border-radius: 0; }
 .package-top { padding-bottom: 18px; border-bottom: 1px solid var(--line); }
@@ -66,7 +68,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline-color: va
   .hero { padding-block: 49px 48px; }
   .hero h1 { font-size: clamp(32px, 7.9vw, 48px); line-height: 1.1; }
   .hero h1::after { width: 64px; margin-top: 24px; }
-  .principles { padding-block: 22px; }
+  .principles { padding-block: 22px 14px; }
+  #pacotes { padding-top: 28px; }
   .section-head { padding-top: 22px; }
   .package .price { font-size: 42px; }
   .retainer { padding: 28px; }
