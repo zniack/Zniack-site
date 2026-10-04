@@ -4,7 +4,7 @@
 // 2) Pixel da Meta: registra PageView ao abrir a página e o evento padrão Contact
 //    em cada clique para o WhatsApp.
 (function () {
-  var META_PIXEL_ID = '2618110078639649';
+  var META_PIXEL_ID = '4027703487536896';
 
   var links = Array.prototype.slice.call(document.querySelectorAll('a[data-whatsapp]'));
   var params = new URLSearchParams(window.location.search);
@@ -36,6 +36,11 @@
   links.forEach(function (link) {
     link.addEventListener('click', function () {
       window.fbq('track', 'Contact', { content_name: link.dataset.whatsapp, content_category: 'whatsapp' });
+      // Identifica a intenção de contato no Clarity, sem chamar o clique de lead.
+      if (typeof window.clarity === 'function') {
+        window.clarity('event', 'whatsapp_click');
+        window.clarity('event', 'whatsapp_' + link.dataset.whatsapp);
+      }
     });
   });
 })();
