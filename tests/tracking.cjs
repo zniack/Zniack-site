@@ -35,7 +35,7 @@ for (const link of publicVisit.waLinks) {
   assert.equal(queue.at(-1)[2].content_category, 'whatsapp');
   assert.deepEqual(publicVisit.clarityEvents.at(-2), ['event', 'whatsapp_click']);
   assert.deepEqual(publicVisit.clarityEvents.at(-1), ['event', 'whatsapp_' + link.dataset.whatsapp]);
-  assert.equal(new URL(link.href).pathname, '/5564992112376');
+  assert.equal(new URL(link.href).pathname, '/5564992907301');
 }
 assert(!queue.some(args => args[1] === 'Lead'), 'Clique não equivale a mensagem recebida');
 const noClarity = run({withClarity: false});
