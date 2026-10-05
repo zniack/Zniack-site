@@ -1,0 +1,13 @@
+.case-demo-link{margin-top:25px;gap:30px;min-height:48px;font-size:14px}
+.case-demo-caption{display:block;margin-top:10px!important;font-size:11px!important;color:var(--muted)!important;line-height:1.7!important}
+.case-entry{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:60px;align-items:center;max-width:1160px}
+.case-entry-copy{min-width:0}.case-entry-eyebrow{font-size:11px;letter-spacing:.12em;color:var(--brand-muted,#b8bdc4);margin:0 0 20px}
+html[data-brand-direction="corte"] body[data-application="principal"] #case-gancho .titulo-secao{font-size:clamp(34px,3.5vw,48px);font-weight:500;line-height:1.15;letter-spacing:-.035em}
+.case-entry-description{font-size:17px;line-height:1.8;color:var(--brand-soft,#b8bdc4);max-width:610px;margin:0 0 26px}
+.case-entry-films{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;text-decoration:none;color:var(--brand-ink,#f3f4f5)}
+.case-entry-films figure{margin:0;min-width:0}.case-entry-films img{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover;border:1px solid #41474f}
+.case-entry-films figcaption{font-size:10px;letter-spacing:.08em;color:var(--brand-muted,#b8bdc4);margin-top:10px}
+.case-entry a:focus-visible{outline:2px solid currentColor;outline-offset:5px}
+@media(max-width:900px){.case-entry{gap:30px}.case-entry-films{gap:9px}}
+@media(max-width:768px){.case-entry{grid-template-columns:1fr;gap:36px}.case-entry-films{max-width:480px;width:100%}.case-entry-description{font-size:16px}.case-entry .criativos-intro-link{width:100%}}
+@media(max-width:720px){.case-demo-link{width:100%;font-size:13px}}
