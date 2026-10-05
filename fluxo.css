@@ -1,0 +1,79 @@
+/* Os pacotes antecedem o método e a demonstração completa dos ganchos. */
+.all-packages { grid-template-columns: repeat(3,minmax(0,1fr)); align-items: stretch; gap: 24px; }
+.all-packages .package { padding: 30px 26px; display: flex; flex-direction: column; }
+.all-packages .package .button { margin-top: auto; }
+.all-packages .package-intro { min-height: 0; }
+.all-packages .package-top { min-height: 54px; }
+.all-packages .package h3 { font-size: 30px; line-height: 1.18; }
+@media(min-width:1101px) { .all-packages .package-intro { min-height: 4.95em; } }
+.all-packages .deliverables { margin-top: 16px; }
+.all-packages .deadline { margin-bottom: 24px; }
+
+/* Uma única demonstração: explicação e vídeo, sem espaços reservados. */
+.examples-section .featured-demo {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 240px;
+  align-items: center;
+  gap: 28px 40px;
+  padding: 28px;
+  width: min(880px,100%);
+  margin-inline: auto;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.examples-section .featured-demo-copy {
+  display: block;
+  position: static;
+  padding: 0;
+  margin: 0;
+  max-width: 440px;
+}
+.examples-section .featured-demo-copy h3 { font-size: 32px; line-height: 1.2; margin-bottom: 16px; }
+.examples-section .featured-demo-copy p { margin: 0; font-size: 15px; line-height: 1.75; color: var(--muted); }
+.examples-section .featured-demo-copy .eyebrow { font-size: 12px; margin-bottom: 12px; }
+.examples-section .featured-demo .demo-panel {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  width: min(240px,100%);
+  margin-inline: auto;
+  gap: 12px;
+}
+.examples-section .featured-demo .variant-picker { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.examples-section .variant-picker button { min-height: 44px; padding: 10px 8px; font-size: 12px; }
+.examples-section .featured-demo .video-stage { width: 100%; }
+.examples-section .featured-demo #variant-label { font-size: 11px; line-height: 1.5; letter-spacing: .025em; color: var(--muted); }
+.examples-section .featured-demo .variant-content { min-height: 33px; display: grid; place-items: center; }
+.examples-section .segment-controls { margin: 30px 0 0; width: min(420px,100%); }
+.examples-section .timeline { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.examples-section .timeline span { display: grid; place-items: start center; padding: 14px 0 0; border-top: 1px solid var(--line); background: transparent; color: var(--muted); font-size: 11px; line-height: 1.5; letter-spacing: .025em; }
+.examples-section .timeline span:first-child { background: transparent; border-color: var(--control); color: var(--ink); }
+.examples-section .featured-demo:hover { transform: none; border-color: var(--line); }
+
+@media(max-width:1100px) {
+  .all-packages { grid-template-columns: 1fr; }
+  .all-packages .package { display: block; padding: 30px; }
+  .all-packages .package .button { margin-top: 18px; }
+  .all-packages .package-top { min-height: 0; }
+  .all-packages .package h3 { font-size: 32px; }
+  .examples-section .featured-demo { gap: 28px; }
+}
+@media(max-width:820px) {
+  .examples-section .featured-demo { grid-template-columns: 1fr; }
+  .examples-section .featured-demo-copy { max-width: none; }
+  .examples-section .featured-demo .demo-panel { width: min(288px,100%); gap: 16px; }
+}
+@media(max-width:720px) {
+  .all-packages { gap: 22px; }
+  .all-packages .package { padding: 24px; }
+  .examples-section .featured-demo { padding: 24px; gap: 28px; }
+  .examples-section .featured-demo-copy h3 { font-size: 25px; margin-bottom: 12px; }
+  .examples-section .featured-demo-copy p { font-size: 15px; }
+  .examples-section .segment-controls { margin-top: 22px; }
+  .examples-section .timeline { gap: 8px; }
+  .examples-section .timeline span { font-size: 10px; }
+}
+@media(max-width:370px) {
+  .examples-section .featured-demo { padding: 20px; }
+  .examples-section .variant-picker button { padding-inline: 4px; font-size: 11px; }
+}
