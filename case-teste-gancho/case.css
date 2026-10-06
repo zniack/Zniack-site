@@ -20,7 +20,7 @@ dialog{border:1px solid #89939e;background:var(--bg);color:var(--ink);padding:18
 .case-contact{background:var(--paper);color:var(--bg);border-top:0}.case-contact-inner{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:50px;align-items:end}.case-contact .eyebrow{color:#575c64;margin-bottom:20px}.case-contact h2{max-width:760px}.case-contact-copy{color:#575c64;max-width:650px;margin-top:22px;font-size:16px;line-height:1.8}.case-contact-button{background:var(--bg);color:var(--paper);border-color:var(--bg);margin:0;min-height:52px;white-space:nowrap}.case-contact-button:hover{background:#292d33;border-color:#292d33}
 @media(max-width:760px){.case-contact-inner{grid-template-columns:1fr;gap:26px}.case-contact-copy{font-size:15px;margin-top:19px}.case-contact-button{width:100%;white-space:normal}}
 
-/* Quatro leituras; a comparação dos primeiros dias é a entrada principal. */
-.three-periods{grid-template-columns:repeat(4,minmax(0,1fr));max-width:780px}
+/* Três recortes; o acumulado é a entrada principal. */
+.three-periods{grid-template-columns:repeat(3,minmax(0,1fr));max-width:600px}
 .click-table{font-variant-numeric:tabular-nums;table-layout:fixed;max-width:780px}.click-table th,.click-table td{padding-right:12px}.click-table th:first-child{width:24%}
-@media(max-width:760px){.three-periods{grid-template-columns:repeat(2,minmax(0,1fr))}.day-table{min-width:0;table-layout:fixed;font-size:11px}.day-table th,.day-table td{padding:12px 5px 12px 0;overflow-wrap:normal}.day-table th:first-child{width:24%}.click-table{font-size:12px}.click-table th,.click-table td{padding:12px 5px 12px 0}.click-table th:first-child{width:23%}}
+@media(max-width:760px){.three-periods{grid-template-columns:repeat(3,minmax(0,1fr))}.day-table{min-width:0;table-layout:fixed;font-size:11px}.day-table th,.day-table td{padding:12px 5px 12px 0;overflow-wrap:normal}.day-table th:first-child{width:24%}.click-table{font-size:12px}.click-table th,.click-table td{padding:12px 5px 12px 0}.click-table th:first-child{width:23%}}
