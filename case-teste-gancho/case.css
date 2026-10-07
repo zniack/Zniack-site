@@ -24,3 +24,5 @@ dialog{border:1px solid #89939e;background:var(--bg);color:var(--ink);padding:18
 .three-periods{grid-template-columns:repeat(3,minmax(0,1fr));max-width:600px}
 .click-table{font-variant-numeric:tabular-nums;table-layout:fixed;max-width:780px}.click-table th,.click-table td{padding-right:12px}.click-table th:first-child{width:24%}
 @media(max-width:760px){.three-periods{grid-template-columns:repeat(3,minmax(0,1fr))}.day-table{min-width:0;table-layout:fixed;font-size:11px}.day-table th,.day-table td{padding:12px 5px 12px 0;overflow-wrap:normal}.day-table th:first-child{width:24%}.click-table{font-size:12px}.click-table th,.click-table td{padding:12px 5px 12px 0}.click-table th:first-child{width:23%}}
+
+.creative-context{font-size:13px;line-height:1.75;color:var(--muted);margin-top:18px}
