@@ -1,0 +1,24 @@
+/* Abertura compacta só em celular; textos de apoio seguem após a vitrine. */
+@media (max-width:480px) {
+  body[data-application=landing] .header { height:68px; }
+  body[data-application=landing] .hero-vitrine { grid-template-columns:minmax(0,1fr); gap:0; padding-block:22px 30px; }
+  body[data-application=landing] .hero-vitrine :is(.hero-eyebrow,h1,.lead,.actions,.hero-showcase,.hero-input-note,.micro) { grid-column:1; }
+  body[data-application=landing] .hero-vitrine .hero-copy { display:contents; }
+  body[data-application=landing] .hero-eyebrow { grid-row:1; margin-bottom:10px; }
+  body[data-application=landing] .hero-vitrine h1 { grid-row:2; margin-bottom:14px; }
+  body[data-application=landing] .hero-vitrine .lead { grid-row:3; line-height:1.6; margin-bottom:16px; }
+  body[data-application=landing] .hero-vitrine .actions { grid-row:4; display:grid; grid-template-columns:minmax(0,1fr) 108px; gap:12px; margin-bottom:10px; }
+  body[data-application=landing] .hero-vitrine .actions .button { padding:10px 13px; min-height:54px; gap:10px; line-height:1.4; }
+  body[data-application=landing] .hero-vitrine .actions .text-link { font-size:12px; line-height:1.5; min-height:44px; }
+  body[data-application=landing] .hero-vitrine .actions .text-link span { margin-left:4px; }
+  body[data-application=landing] .hero-showcase { grid-row:5; }
+  body[data-application=landing] .showcase-grid-heading { min-height:36px; margin-bottom:6px; }
+  body[data-application=landing] .showcase-card figcaption { margin-bottom:8px; }
+  body[data-application=landing] .hero-vitrine .hero-input-note { grid-row:6; margin:18px 0 0; }
+  body[data-application=landing] .hero-vitrine .micro { grid-row:7; margin-top:8px; }
+}
+@media (max-width:340px) {
+  body[data-application=landing] .hero-vitrine h1 { font-size:32px; }
+  body[data-application=landing] .hero-vitrine .lead { font-size:14px; }
+  body[data-application=landing] .hero-vitrine .actions { grid-template-columns:minmax(0,1fr) 94px; gap:10px; }
+}
