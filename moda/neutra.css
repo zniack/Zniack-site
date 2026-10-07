@@ -1,0 +1,14 @@
+.showcase-card button.showcase-card-film{width:100%;padding:0;color:#fff;cursor:pointer;text-align:left;font:inherit}
+.ad-watch{position:absolute;inset:auto 0 0;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 5px;background:linear-gradient(transparent,#080a0ded);color:white;font-size:10px;line-height:1.5;pointer-events:none}
+.showcase-card button.showcase-card-film:hover .ad-watch{text-decoration:underline;text-underline-offset:3px}
+.showcase-card button.showcase-card-film:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+#ad-dialog{width:min(470px,calc(100% - 28px));max-height:94dvh;overflow:auto;padding:18px;background:#16181b;color:#edf0f3;border:1px solid #58616a}
+#ad-dialog::backdrop{background:#000c}
+.ad-dialog-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+.ad-dialog-top h2{font-size:20px;letter-spacing:-.025em;margin:0}
+.ad-dialog-top button{background:transparent;border:1px solid #58616a;color:inherit;min-height:44px;padding:10px 13px;cursor:pointer;font:inherit;font-size:12px}
+#ad-full-video{display:block;aspect-ratio:9/16;width:min(100%,calc(65dvh * .5625));max-height:65dvh;margin-inline:auto;background:#101214;object-fit:contain}
+.ad-dialog-bottom{margin-top:14px}
+.ad-dialog-bottom .button{font-size:13px;min-height:48px;padding:11px 15px}
+#ad-status{font-size:13px;margin:12px 0 0;color:#c4cbd1}
+@media(max-width:480px){.ad-watch{font-size:9px;padding:10px 3px;gap:5px}#ad-dialog{padding:14px}}
