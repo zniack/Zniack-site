@@ -1,0 +1,25 @@
+.hook-demo-trigger { display:inline-flex; align-items:center; gap:9px; min-height:44px; font-size:13px; margin:4px 0 12px; text-underline-offset:5px; }
+.hook-demo-dialog { width:min(820px,calc(100% - 40px)); max-width:none; max-height:calc(100dvh - 40px); padding:0; margin:auto; border:1px solid var(--line); background:var(--panel); color:var(--ink); overflow:auto; overscroll-behavior:contain; }
+.hook-demo-dialog::backdrop { background:rgba(8,10,13,.78); }
+.hook-demo-dialog .hook-demo-bar { display:flex; justify-content:flex-end; padding:12px 18px 0; }
+.hook-demo-close { display:inline-flex; align-items:center; gap:10px; min-height:44px; padding:8px 6px; border:0; background:none; color:var(--muted); font:inherit; font-size:13px; cursor:pointer; }
+.hook-demo-close span { font-size:24px; line-height:1; }
+.hook-demo-dialog .featured-demo { width:100%; padding:12px 28px 28px; border:0; background:transparent; gap:28px; }
+.hook-demo-dialog .featured-demo-copy { max-width:none; }
+.hook-demo-dialog .case-demo-link { margin-top:20px; font-size:13px; min-height:44px; display:inline-flex; align-items:center; }
+.hook-demo-dialog .segment-controls { margin-top:22px; }
+.hook-demo-dialog :focus-visible { outline:2px solid currentColor; outline-offset:4px; }
+html.hook-demo-open body { overflow:hidden; }
+@media(max-width:700px) {
+ .hook-demo-dialog { width:calc(100% - 24px); max-height:calc(100dvh - 24px); }
+ .hook-demo-dialog .hook-demo-bar { padding:6px 14px 0; }
+ .hook-demo-dialog .featured-demo { display:grid; grid-template-columns:1fr; gap:14px; padding:6px 20px 20px; }
+ .hook-demo-dialog .featured-demo-copy { display:contents; }
+ .hook-demo-dialog .featured-demo-copy .eyebrow { order:0; margin:0; }
+ .hook-demo-dialog .featured-demo-copy h3 { order:1; font-size:25px; margin:0; }
+ .hook-demo-dialog .featured-demo-copy > p:not(.eyebrow) { order:2; font-size:14px; line-height:1.65; }
+ .hook-demo-dialog .featured-demo .demo-panel { order:3; width:min(210px,calc(42dvh * 9 / 16),100%); gap:10px; }
+ .hook-demo-dialog .segment-controls { order:4; width:100%; margin:0; }
+ .hook-demo-dialog .case-demo-link { order:5; margin:0; justify-self:start; }
+ .hook-demo-dialog .variant-picker button { padding-inline:3px; font-size:11px; }
+}

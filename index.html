@@ -87,7 +87,12 @@
   <script src="main.js?v=20260930-1" defer></script>
   <script src="sticky-cta.js?v=20260927a" defer></script>
   <script src="tracking.js?v=20261004-pixel-zniack" defer></script>
-<link rel="stylesheet" href="fluxo.css?v=20261004-gancho-2"><link rel="stylesheet" href="entrada-case.css?v=20261005-publicacao">
+<link rel="stylesheet" href="fluxo.css?v=20261004-gancho-2">
+<link rel="stylesheet" href="vitrine.css?v=20261007-videos">
+<script>document.documentElement.dataset.vitrine = new URLSearchParams(location.search).get("vitrine") === "sequencia" ? "sequencia" : "grade";</script>
+<script src="vitrine.js?v=20261007-publicacao" defer></script><link rel="stylesheet" href="entrada-case.css?v=20261005-publicacao">
+<link rel="stylesheet" href="exemplo-pacote.css?v=7">
+<script src="exemplo-pacote.js?v=7" defer></script>
 </head>
 <body data-application="landing">
   <a class="skip" href="#conteudo">Ir para o conteúdo</a>
@@ -96,15 +101,43 @@
     <a href="#pacotes" class="header-link">Conhecer os pacotes <span aria-hidden="true">↓</span></a>
   </header>
   <main id="conteudo">
-    <section id="inicio" class="hero wrap">
-      <div class="hero-copy">
-        <h1><a class="hero-title-link" href="#pacotes">Criativos prontos<br>para anunciar.</a><br><span><a class="hero-subtitle-link" href="#pacotes">Do conceito à entrega.</a></span></h1>
-        <p class="lead">Seu produto é o ponto de partida. Eu assumo a direção criativa e a produção dos anúncios — do conceito e do roteiro à entrega final — criando variações para renovar campanhas e desenvolver novas abordagens.</p>
-        <p class="hero-input-note">Você envia os materiais que tiver — ou a produção parte do zero.</p>
-        <div class="actions"><a class="button primary" data-whatsapp="geral" href="https://wa.me/5564992907301?text=Quero%20conversar%20sobre%20os%20pacotes%20de%20criativos." target="_blank" rel="noopener noreferrer">Conversar no WhatsApp <span aria-hidden="true">↗</span></a><a class="text-link" href="#pacotes">Ver entregas e valores <span aria-hidden="true">↓</span></a></div>
-        <p class="micro">Você fala diretamente com Felipe, da direção à entrega.</p>
-      </div>
-    </section>
+    <section id="inicio" class="hero hero-vitrine wrap">
+  <div class="hero-copy">
+    <p class="hero-eyebrow">CRIATIVOS PARA MÍDIA PAGA</p>
+    <h1><a class="hero-title-link" href="#pacotes">Seu produto é bom.<br>Faça o anúncio mostrar isso.</a></h1>
+    <p class="lead">Eu assumo o conceito, o roteiro e a produção para transformar sua oferta em anúncios prontos para a próxima campanha.</p>
+    <p class="hero-input-note">Você envia os materiais que tiver — ou a produção parte do zero.</p>
+    <div class="actions"><a class="button primary" data-whatsapp="geral" href="https://wa.me/5564992907301?text=Quero%20conversar%20sobre%20os%20pacotes%20de%20criativos." target="_blank" rel="noopener noreferrer">Quero anúncios para meu produto <span aria-hidden="true">↗</span></a><a class="text-link" href="#pacotes">Ver pacotes e valores <span aria-hidden="true">↓</span></a></div>
+    <p class="micro">Você fala diretamente com Felipe, da direção à entrega.</p>
+  </div>
+  <div class="hero-showcase" aria-label="Prévia visual dos formatos de criativos">
+    <div class="showcase-sequence">
+      <div class="showcase-heading"><div><p class="showcase-kicker">FORMATOS EM AÇÃO</p><h2 id="showcase-name">Motion</h2></div><span class="showcase-counter" id="showcase-counter">01 / 03</span></div>
+      <div class="showcase-panels"><div class="showcase-panel" data-panel="motion" >
+    <img src="media/showcase/motion-20261007.webp" alt="Primeiro frame da montagem de Motion" width="960" height="568" decoding="async">
+    <video muted playsinline preload="none" data-showcase-video="motion" data-src="media/showcase/motion-20261007.mp4" aria-hidden="true" tabindex="-1"></video>
+</div>
+<div class="showcase-panel" data-panel="narrado" hidden>
+    <img loading="lazy" src="media/showcase/narrado-20261007.webp" alt="Primeiro frame da montagem de Narrado" width="960" height="568" decoding="async">
+    <video muted playsinline preload="none" data-showcase-video="narrado" data-src="media/showcase/narrado-20261007.mp4" aria-hidden="true" tabindex="-1"></video>
+</div>
+<div class="showcase-panel" data-panel="ugc" hidden>
+    <img loading="lazy" src="media/showcase/ugc-20261007.webp" alt="Primeiro frame da montagem de Estilo UGC" width="960" height="568" decoding="async">
+    <video muted playsinline preload="none" data-showcase-video="ugc" data-src="media/showcase/ugc-20261007.mp4" aria-hidden="true" tabindex="-1"></video>
+</div></div>
+      <div class="showcase-progress" aria-hidden="true"><span id="showcase-progress"></span></div>
+      <div class="showcase-bottom"><div class="showcase-picker" role="group" aria-label="Escolher formato da prévia"><button type="button" data-showcase-format="motion" aria-pressed="true">Motion</button><button type="button" data-showcase-format="narrado" aria-pressed="false">Narrado</button><button type="button" data-showcase-format="ugc" aria-pressed="false">Estilo UGC</button></div><button type="button" class="showcase-pause" data-showcase-pause hidden aria-pressed="false" aria-label="Pausar prévia"><span aria-hidden="true">Ⅱ</span><span class="showcase-pause-text">Pausar</span></button></div>
+    </div>
+    <div class="showcase-grid">
+      <div class="showcase-grid-heading"><p class="showcase-kicker">FORMATOS EM AÇÃO</p><button type="button" class="showcase-pause" data-grid-pause hidden aria-pressed="false" aria-label="Pausar prévias"><span aria-hidden="true">Ⅱ</span><span class="showcase-pause-text">Pausar</span></button></div>
+      <div class="showcase-cards"><figure class="showcase-card"><figcaption>Motion</figcaption><div class="showcase-card-film"><img loading="eager" src="media/showcase/motion-20261007.webp" alt="Primeiro frame da montagem de Motion" width="320" height="568" decoding="async"><video muted playsinline loop preload="none" data-grid-video="motion" data-src="media/showcase/motion-20261007.mp4" aria-hidden="true" tabindex="-1"></video></div><p>Anúncios com animação e elementos gráficos.</p></figure>
+<figure class="showcase-card"><figcaption>Narrado</figcaption><div class="showcase-card-film"><img loading="eager" src="media/showcase/narrado-20261007.webp" alt="Primeiro frame da montagem de Narrado" width="320" height="568" decoding="async"><video muted playsinline loop preload="none" data-grid-video="narrado" data-src="media/showcase/narrado-20261007.mp4" aria-hidden="true" tabindex="-1"></video></div><p>Cenas de produto ou personagem com narração.</p></figure>
+<figure class="showcase-card"><figcaption>Estilo UGC</figcaption><div class="showcase-card-film"><img loading="eager" src="media/showcase/ugc-20261007.webp" alt="Primeiro frame da montagem de Estilo UGC" width="320" height="568" decoding="async"><video muted playsinline loop preload="none" data-grid-video="ugc" data-src="media/showcase/ugc-20261007.mp4" aria-hidden="true" tabindex="-1"></video></div><p>Apresentação com linguagem próxima e natural.</p></figure></div>
+    </div>
+    <p class="showcase-caption">Diferentes nichos. Uma direção para cada oferta.<span>Prévia sem áudio.</span></p>
+    <noscript><p class="showcase-caption">Veja a demonstração completa pelo link no pacote Teste de Gancho.</p></noscript>
+  </div>
+</section>
 
     <div class="principles wrap"><a href="#pacotes"><span>Direção criativa</span></a><a href="#pacotes"><span>Produção completa</span></a><a href="#pacotes"><span>Variações prontas para anunciar</span></a></div>
 
@@ -115,6 +148,7 @@
             <h3>Teste de Gancho</h3><p class="package-intro">Uma versão-base e duas novas aberturas, mantendo o corpo e a chamada para ação consistentes.</p>
             <div class="price">R$ 350 <span>por pacote</span><small>Pix ou cartão em até 6x</small></div>
             <ul class="deliverables"><li><b>1</b><span>formato à escolha: Motion, Criativo narrado ou Estilo UGC</span></li><li><b>1</b><span>versão-base com o conceito central</span></li><li><b>2</b><span>novas variações de gancho</span></li><li><b>3</b><span>vídeos finalizados, prontos para anunciar</span></li></ul>
+            <a class="text-link hook-demo-trigger" href="case-teste-gancho/index.html" data-open-hook-demo aria-haspopup="dialog" aria-controls="exemplos">Ver os 3 ganchos na prática <span aria-hidden="true">↗</span></a>
             <p class="package-detail"><strong>2 rodadas de revisão incluídas:</strong> uma no roteiro e outra na versão-base, antes de produzir os dois novos ganchos. Legendas e trilha sonora incluídas.</p>
             <p class="deadline"><strong>48 horas para entregar o pacote.</strong> A partir do alinhamento do briefing.</p>
             <a class="button secondary" data-whatsapp="teste" href="https://wa.me/5564992907301?text=Quero%20conversar%20sobre%20o%20Teste%20de%20Gancho%20de%20R%24%20350." target="_blank" rel="noopener noreferrer">Quero o Teste de Gancho <span aria-hidden="true">↗</span></a>
@@ -156,14 +190,30 @@
       <div class="section-head"><div><p class="eyebrow">02 — COMO AS DECISÕES SÃO TOMADAS</p><h2>Da hipótese<br>ao próximo teste.</h2></div><p>Oferta, público, objetivo e dados disponíveis ajudam a decidir qual mensagem ou apresentação merece ser testada.</p></div>
       <div class="method-grid"><article><span class="step">01</span><h3>Entender o contexto</h3><p>Reunir oferta, público, objetivo, materiais e dados disponíveis antes de decidir o que produzir.</p></article><article><span class="step">02</span><h3>Definir uma hipótese</h3><p>Escolher o que queremos testar: gancho, ângulo, argumento, benefício ou forma de apresentar a oferta.</p></article><article><span class="step">03</span><h3>Produzir e preparar o teste</h3><p>Transformar a direção em roteiros, peças e variações identificadas. Quando os resultados estão disponíveis, eles ajudam a formular o próximo plano de ação.</p></article></div>
       <div class="insight"><span class="tiny">BRIEFING PRONTO</span><p>Se você, sua agência ou seu gestor já tiver briefing, roteiro ou direcionamento criativo definido, parto direto para a produção seguindo esse material e o escopo combinado.</p></div>
-    </section>
+    </section><section class="about wrap"><img src="assets/felipe.webp" alt="Felipe Souza, responsável pelo Zniack" width="600" height="722" loading="lazy"><div><p class="eyebrow">QUEM CONDUZ O SEU PROJETO</p><h2>Felipe Souza.<br><span>Direção e produção.</span></h2><p>Sou Felipe Souza e trabalho com direção criativa e produção de anúncios para mídia paga, do conceito e do roteiro à entrega final.</p><p>A partir do produto e do contexto da campanha, desenvolvo a mensagem, os criativos e suas variações para explorar novas abordagens e renovar campanhas.</p><p>Você pode chegar apenas com o produto ou com um briefing já definido. Quando há dados disponíveis, eles ajudam a orientar o que testar e as próximas decisões criativas.</p><a class="text-link" data-whatsapp="geral" href="https://wa.me/5564992907301?text=Quero%20conversar%20sobre%20os%20pacotes%20de%20criativos." target="_blank" rel="noopener noreferrer">Conversar sobre meu projeto ↗</a></div></section>
 
-    <section id="exemplos" class="section wrap examples-section">
-      <div class="section-head"><div><p class="eyebrow">03 — EXEMPLO VISUAL</p><h2>Três ganchos para<br>o mesmo anúncio.</h2></div><p>A direção de cada projeto parte do seu produto e do contexto da campanha.</p></div>
-      <div class="examples-grid">
-        <article class="featured-demo" aria-labelledby="hook-demo-title">
+    <section id="duvidas" class="section wrap faq-section">
+      <div><p class="eyebrow">03 — ANTES DE COMEÇAR</p><h2>Dúvidas<br> frequentes.</h2><p>Escopo e expectativas alinhados desde o primeiro contato.</p></div>
+      <div class="faq-list">
+        <details open><summary>O que preciso enviar? Vou ter que gravar?</summary><p>Para começar a conversa, basta dizer o que você vende. Se hoje você tem apenas o produto, tudo bem. Oferta, briefing, anúncios anteriores, dados, fotos, vídeos e arquivos da marca ajudam como referência quando existem, mas não são obrigatórios.</p><p>Você só grava se quiser participar do anúncio. Quando não há materiais, assumo o conceito, o roteiro, as cenas, a narração e a finalização.</p></details>
+        <details><summary>O que eu recebo na prática?</summary><p>Os criativos finalizados, prontos para uso no escopo acordado. Os vídeos incluem edição, legendas e trilha sonora. No Teste de Gancho, são três criativos no formato escolhido: uma versão-base e duas variações de gancho. Na Validação Criativa, são nove criativos: Motion, Criativo narrado e Estilo UGC, cada um com uma versão-base e duas variações de gancho. No Escala 3-3-3, são nove conceitos completos e distintos distribuídos nesses três formatos.</p><p>Cada conceito é entregue em 9:16 e em uma adaptação para Feed (1:1 ou 4:5, conforme a necessidade da campanha). As quantidades dos pacotes se referem aos criativos, não ao total de arquivos exportados. Outras proporções ou adaptações especiais podem ser orçadas separadamente.</p><p>Sou responsável por garantir os direitos de uso dos elementos utilizados na produção para o escopo acordado. A documentação de licença de uso das trilhas sonoras acompanha a entrega.</p></details>
+        <details><summary>Como funcionam os prazos de entrega?</summary><p>O prazo começa no alinhamento do briefing: 48 horas no Teste de Gancho e 72 horas na Validação Criativa. No Escala 3-3-3, a entrega completa leva 6 dias corridos, em lotes de 3 criativos a cada 48 horas. Nos Retainers Criativos, combinamos os dias de entrega no fechamento, conforme a frequência semanal escolhida.</p><p>O tempo aguardando suas respostas ou aprovações não entra na contagem. Mudanças de escopo têm prazo combinado antes da execução.</p></details>
+        <details><summary>Como funcionam a aprovação e os ajustes?</summary><p>O Teste de Gancho inclui duas rodadas de revisão: a primeira para validar o roteiro; a segunda após a produção da versão-base. Com essa base aprovada, produzo as duas novas variações de gancho.</p><p>A Validação Criativa inclui três rodadas de revisão. O Escala 3-3-3 inclui seis rodadas: duas para cada formato — Estilo UGC, Criativo narrado e Motion. Em cada grupo, uma rodada valida os roteiros ou a estrutura e outra valida a produção. São duas rodadas por grupo, não por peça.</p><p>Você reúne os ajustes de cada etapa em um retorno. Mudanças de conceito após aprovação ou entregas adicionais são combinadas separadamente.</p></details>
+        <details><summary>Quais são as formas de pagamento?</summary><p>Pix ou cartão de crédito, com parcelamento em até 6x. As condições são confirmadas no fechamento.</p></details>
+        <details><summary>E se eu ainda não tiver anúncios ou métricas?</summary><p>Começamos pelo produto e pelo contexto que você já conhece. Público, oferta e primeira direção criativa podem ser alinhados na conversa. Quando não há histórico de campanha, a produção parte de uma hipótese inicial.</p></details>
+        <details><summary>Como minhas métricas entram no trabalho?</summary><p>Elas ajudam a formular e priorizar hipóteses criativas: qual mensagem explorar, o que manter e qual variação testar. Analiso os números em relação ao objetivo e ao histórico da campanha. Um indicador isolado não explica sozinho o desempenho.</p><p>A produção parte dessa direção. Análises posteriores e ciclos contínuos de acompanhamento são definidos na proposta.</p></details>
+        <details><summary>Se eu contratar, vou vender mais?</summary><p>O trabalho busca melhorar a forma de apresentar sua oferta e criar novas possibilidades de teste. Vendas também dependem do produto, preço, público, investimento, página de destino e atendimento, por isso nenhum pacote garante aumento de vendas. No Escala 3-3-3, o nome se refere ao volume de criativos produzidos.</p><p>Assumo a responsabilidade pela direção e execução criativa dentro do escopo contratado. Se a gestão de tráfego também for contratada, atuo nas decisões de campanha definidas na proposta.</p></details>
+        <details><summary>Você também faz a gestão do tráfego?</summary><p>Sim, sob consulta. Conversamos sobre sua necessidade e definimos o escopo na proposta.</p></details>
+        <details><summary>Existem outros pacotes?</summary><p>Sim. Teste de Gancho, Validação Criativa e Escala 3-3-3 são os pacotes de entrega pontual apresentados na página. Para produção contínua, há também os Retainers Criativos. Outros pacotes e propostas personalizadas estão disponíveis sob consulta, conforme sua oferta, os formatos necessários e o momento da campanha.</p></details>
+      </div>
+    </section>
+    <section class="closing wrap"><p class="eyebrow">VAMOS COMEÇAR PELO SEU PRODUTO</p><h2>Conte o que você vende.<br><span>A direção começa aí.</span></h2><p>Você pode chegar apenas com o produto.<br>O restante é alinhado na conversa.</p><a class="button primary" data-whatsapp="geral" href="https://wa.me/5564992907301?text=Quero%20conversar%20sobre%20os%20pacotes%20de%20criativos." target="_blank" rel="noopener noreferrer">Conversar no WhatsApp <span aria-hidden="true">↗</span></a></section>
+  </main>
+  <dialog id="exemplos" class="hook-demo-dialog examples-section" aria-labelledby="hook-demo-title">
+    <div class="hook-demo-bar"><button type="button" class="hook-demo-close" data-close-hook-demo autofocus aria-label="Fechar comparação de ganchos">Fechar <span aria-hidden="true">×</span></button></div>
+<article class="featured-demo" aria-labelledby="hook-demo-title">
             <div class="featured-demo-copy"><p class="eyebrow">TESTE DE GANCHO</p><h3 id="hook-demo-title">Uma base.<br>Duas novas aberturas.</h3><p>Compare as três aberturas. O corpo do vídeo e a chamada para ação permanecem iguais.</p>
-            <a class="button secondary case-demo-link" href="case-teste-gancho/index.html">Ver o case completo <span aria-hidden="true">↗</span></a><p class="case-demo-caption">Veja o case: hipóteses, atenção e o que aprendemos com os três ganchos.</p>
+            <a class="text-link case-demo-link" href="case-teste-gancho/index.html">Ver o case completo <span aria-hidden="true">↗</span></a>
             <div class="segment-controls">
               <div class="timeline" aria-label="Estrutura mantida entre os três arquivos"><span>GANCHO VARIA</span><span>CORPO MANTIDO</span><span>CTA MANTIDO</span></div>
             </div>
@@ -181,27 +231,8 @@
             </div>
 
         </article>
+  </dialog>
 
-      </div>
-          </section><section class="about wrap"><img src="assets/felipe.webp" alt="Felipe Souza, responsável pelo Zniack" width="600" height="722" loading="lazy"><div><p class="eyebrow">QUEM CONDUZ O SEU PROJETO</p><h2>Felipe Souza.<br><span>Direção e produção.</span></h2><p>Sou Felipe Souza e trabalho com direção criativa e produção de anúncios para mídia paga, do conceito e do roteiro à entrega final.</p><p>A partir do produto e do contexto da campanha, desenvolvo a mensagem, os criativos e suas variações para explorar novas abordagens e renovar campanhas.</p><p>Você pode chegar apenas com o produto ou com um briefing já definido. Quando há dados disponíveis, eles ajudam a orientar o que testar e as próximas decisões criativas.</p><a class="text-link" data-whatsapp="geral" href="https://wa.me/5564992907301?text=Quero%20conversar%20sobre%20os%20pacotes%20de%20criativos." target="_blank" rel="noopener noreferrer">Conversar sobre meu projeto ↗</a></div></section>
-
-    <section id="duvidas" class="section wrap faq-section">
-      <div><p class="eyebrow">04 — ANTES DE COMEÇAR</p><h2>Dúvidas<br> frequentes.</h2><p>Escopo e expectativas alinhados desde o primeiro contato.</p></div>
-      <div class="faq-list">
-        <details open><summary>O que preciso enviar? Vou ter que gravar?</summary><p>Para começar a conversa, basta dizer o que você vende. Se hoje você tem apenas o produto, tudo bem. Oferta, briefing, anúncios anteriores, dados, fotos, vídeos e arquivos da marca ajudam como referência quando existem, mas não são obrigatórios.</p><p>Você só grava se quiser participar do anúncio. Quando não há materiais, assumo o conceito, o roteiro, as cenas, a narração e a finalização.</p></details>
-        <details><summary>O que eu recebo na prática?</summary><p>Os criativos finalizados, prontos para uso no escopo acordado. Os vídeos incluem edição, legendas e trilha sonora. No Teste de Gancho, são três criativos no formato escolhido: uma versão-base e duas variações de gancho. Na Validação Criativa, são nove criativos: Motion, Criativo narrado e Estilo UGC, cada um com uma versão-base e duas variações de gancho. No Escala 3-3-3, são nove conceitos completos e distintos distribuídos nesses três formatos.</p><p>Cada conceito é entregue em 9:16 e em uma adaptação para Feed (1:1 ou 4:5, conforme a necessidade da campanha). As quantidades dos pacotes se referem aos criativos, não ao total de arquivos exportados. Outras proporções ou adaptações especiais podem ser orçadas separadamente.</p><p>Sou responsável por garantir os direitos de uso dos elementos utilizados na produção para o escopo acordado. A documentação de licença de uso das trilhas sonoras acompanha a entrega.</p></details>
-        <details><summary>Como funcionam os prazos de entrega?</summary><p>O prazo começa no alinhamento do briefing: 48 horas no Teste de Gancho e 72 horas na Validação Criativa. No Escala 3-3-3, a entrega completa leva 6 dias corridos, em lotes de 3 criativos a cada 48 horas. Nos Retainers Criativos, combinamos os dias de entrega no fechamento, conforme a frequência semanal escolhida.</p><p>O tempo aguardando suas respostas ou aprovações não entra na contagem. Mudanças de escopo têm prazo combinado antes da execução.</p></details>
-        <details><summary>Como funcionam a aprovação e os ajustes?</summary><p>O Teste de Gancho inclui duas rodadas de revisão: a primeira para validar o roteiro; a segunda após a produção da versão-base. Com essa base aprovada, produzo as duas novas variações de gancho.</p><p>A Validação Criativa inclui três rodadas de revisão. O Escala 3-3-3 inclui seis rodadas: duas para cada formato — Estilo UGC, Criativo narrado e Motion. Em cada grupo, uma rodada valida os roteiros ou a estrutura e outra valida a produção. São duas rodadas por grupo, não por peça.</p><p>Você reúne os ajustes de cada etapa em um retorno. Mudanças de conceito após aprovação ou entregas adicionais são combinadas separadamente.</p></details>
-        <details><summary>Quais são as formas de pagamento?</summary><p>Pix ou cartão de crédito, com parcelamento em até 6x. As condições são confirmadas no fechamento.</p></details>
-        <details><summary>E se eu ainda não tiver anúncios ou métricas?</summary><p>Começamos pelo produto e pelo contexto que você já conhece. Público, oferta e primeira direção criativa podem ser alinhados na conversa. Quando não há histórico de campanha, a produção parte de uma hipótese inicial.</p></details>
-        <details><summary>Como minhas métricas entram no trabalho?</summary><p>Elas ajudam a formular e priorizar hipóteses criativas: qual mensagem explorar, o que manter e qual variação testar. Analiso os números em relação ao objetivo e ao histórico da campanha. Um indicador isolado não explica sozinho o desempenho.</p><p>A produção parte dessa direção. Análises posteriores e ciclos contínuos de acompanhamento são definidos na proposta.</p></details>
-        <details><summary>Se eu contratar, vou vender mais?</summary><p>O trabalho busca melhorar a forma de apresentar sua oferta e criar novas possibilidades de teste. Vendas também dependem do produto, preço, público, investimento, página de destino e atendimento, por isso nenhum pacote garante aumento de vendas. No Escala 3-3-3, o nome se refere ao volume de criativos produzidos.</p><p>Assumo a responsabilidade pela direção e execução criativa dentro do escopo contratado. Se a gestão de tráfego também for contratada, atuo nas decisões de campanha definidas na proposta.</p></details>
-        <details><summary>Você também faz a gestão do tráfego?</summary><p>Sim, sob consulta. Conversamos sobre sua necessidade e definimos o escopo na proposta.</p></details>
-        <details><summary>Existem outros pacotes?</summary><p>Sim. Teste de Gancho, Validação Criativa e Escala 3-3-3 são os pacotes de entrega pontual apresentados na página. Para produção contínua, há também os Retainers Criativos. Outros pacotes e propostas personalizadas estão disponíveis sob consulta, conforme sua oferta, os formatos necessários e o momento da campanha.</p></details>
-      </div>
-    </section>
-    <section class="closing wrap"><p class="eyebrow">VAMOS COMEÇAR PELO SEU PRODUTO</p><h2>Conte o que você vende.<br><span>A direção começa aí.</span></h2><p>Você pode chegar apenas com o produto.<br>O restante é alinhado na conversa.</p><a class="button primary" data-whatsapp="geral" href="https://wa.me/5564992907301?text=Quero%20conversar%20sobre%20os%20pacotes%20de%20criativos." target="_blank" rel="noopener noreferrer">Conversar no WhatsApp <span aria-hidden="true">↗</span></a></section>
-  </main>
   <div class="sticky-cta" id="sticky-cta" hidden><p><strong>Fale direto com Felipe</strong>Pacotes a partir de R$ 350</p><a class="button primary" data-whatsapp="geral" href="https://wa.me/5564992907301?text=Quero%20conversar%20sobre%20os%20pacotes%20de%20criativos." target="_blank" rel="noopener noreferrer">WhatsApp <span aria-hidden="true">↗</span></a></div>
   <footer class="wrap footer"><a class="logo" href="#inicio" aria-label="Zniack, início"><span class="signature-d1"><img src="assets/zniack-d1-branco.svg" alt="Zniack" width="1754" height="361" decoding="async" loading="lazy"></span></a><span>Felipe Souza · Creative Performance</span><a href="mailto:contato@zniack.com">contato@zniack.com</a></footer>
 </body>
