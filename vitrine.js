@@ -22,7 +22,8 @@
   const covers = [...showcase.querySelectorAll(grid ? '.showcase-card-film img' : '.showcase-panel:not([hidden]) img')];
   // Uma capa indisponível não deve impedir a reprodução dos vídeos.
   const coversReady = Promise.all(covers.map(image => image.decode().catch(() => undefined)));
-  const pausedForPreference = () => !explicitPlayback && (reduced.matches || constrained || root.classList.contains('motion-off'));
+  // Movimento reduzido simplifica transições no CSS; os vídeos sem áudio continuam automáticos.
+  const pausedForPreference = () => !explicitPlayback && (constrained || root.classList.contains('motion-off'));
   const allowed = () => ready && inView && !document.hidden && !root.classList.contains('hook-demo-open') && !pausedByUser && !pausedForPreference();
   const activeVideos = () => grid ? videos : videos.filter(v => v.dataset.showcaseVideo === selected);
   const stopped = () => pausedByUser || pausedForPreference() || activeVideos().every(video => unavailable.has(video));
