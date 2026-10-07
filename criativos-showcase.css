@@ -1,0 +1,8 @@
+#criativos .hero-showcase{--muted:var(--brand-muted,#b8bdc4);--line:#41474f;--ink:var(--brand-ink,#f3f4f5)}
+html[data-brand-direction="corte"] body[data-application="principal"] #criativos .criativos-intro{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);align-items:center;gap:36px 52px;max-width:1160px}
+.criativos-showcase-copy{min-width:0}
+#criativos .criativos-intro-principles{grid-column:1/-1;margin-top:0}
+#criativos .hero-showcase .showcase-card p{font-size:11px;line-height:1.6}
+#criativos .hero-showcase .showcase-caption{font-size:11px;line-height:1.7}
+@media(max-width:1000px){html[data-brand-direction="corte"] body[data-application="principal"] #criativos .criativos-intro{gap:32px;grid-template-columns:1fr}#criativos .hero-showcase{max-width:640px}#criativos .criativos-intro-principles{margin-top:0}}
+@media(max-width:480px){#criativos .hero-showcase .showcase-card p{font-size:10px}#criativos .hero-showcase .showcase-caption{font-size:10px}}

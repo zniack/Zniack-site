@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" data-brand-direction="corte">
+<html lang="pt-br" data-brand-direction="corte" data-vitrine="grade">
 
 <head>
     <meta charset="UTF-8">
@@ -33,6 +33,8 @@
 <link rel="stylesheet" href="movimento-fluido.css?v=20261002-publicacao">
 <link rel="stylesheet" href="criativos-intro.css?v=20261003-1">
 <link rel="stylesheet" href="entrada-case.css?v=20261005-publicacao">
+<link rel="stylesheet" href="vitrine.css?v=20261007-publicacao">
+<link rel="stylesheet" href="criativos-showcase.css?v=20261007-publicacao">
 </head>
 
 <body class="noise" data-application="principal" data-refinamento="corte">
@@ -40,10 +42,10 @@
     <div id="transition-overlay"></div>
 
     <header id="sticky-header" class="header-sticky">
-        <a href="#sobre" class="nav-link">Quem sou eu</a>
-        <a href="#trabalho" class="nav-link">Como trabalho</a>
-        <a href="#case-gancho" class="nav-link">Cases</a>
         <a href="#criativos" class="nav-link">Criativos</a>
+        <a href="#case-gancho" class="nav-link">Cases</a>
+        <a href="#trabalho" class="nav-link">Como trabalho</a>
+        <a href="#sobre" class="nav-link">Quem sou eu</a>
         <a href="#contato" class="nav-link">Contato</a>
     </header>
 
@@ -53,25 +55,42 @@
             <div class="creative-cover-copy"><p class="cover-kicker">Creative Performance</p><h1 class="titulo-secao reveal-processed">Direção criativa e produção<br>para mídia paga</h1><p class="cover-subtitle">Do conceito à entrega.</p></div>
         </section>
 
-        <section id="sobre">
-            <div class="flex flex-col md:flex-row gap-12 items-start w-full fade-up">
-                <div class="w-full max-w-[600px]">
-                    <h2 class="titulo-secao">Quem sou eu</h2>
-                    <div class="texto-corpo">
-                        Sou Felipe Souza e trabalho com direção criativa e produção de anúncios para mídia paga, do conceito e do roteiro à entrega final.<br><br>
-                        A partir do produto e do contexto da campanha, desenvolvo a mensagem, os criativos e suas variações para explorar novas abordagens e renovar campanhas.<br><br>
-                        Você pode chegar apenas com o produto ou com um briefing já definido. Quando há dados disponíveis, eles ajudam a orientar o que testar e as próximas decisões criativas.
-                    </div>
+        <section id="criativos" aria-labelledby="criativos-titulo">
+            <div class="criativos-intro w-full">
+                <div class="criativos-showcase-copy">
+                <h2 id="criativos-titulo" class="titulo-secao">Criativos prontos<br>para anunciar.</h2>
+                <p class="criativos-intro-subtitle">Do conceito à entrega.</p>
+                <p class="criativos-intro-copy">Seu produto é o ponto de partida. Eu assumo a direção criativa e a produção dos anúncios — do conceito e do roteiro à entrega final — criando variações para renovar campanhas e desenvolver novas abordagens.</p>
+                <p class="criativos-intro-note">Você envia os materiais que tiver — ou a produção parte do zero.</p>
+                <a class="criativos-intro-link" href="https://criativos.zniack.com/">Ver pacotes, entregas e valores <span aria-hidden="true">↗</span></a>
                 </div>
-                <div class="flex flex-col items-center flex-none mt-8 md:mt-0 w-full md:w-auto">
-                    <div
-                        class="w-full aspect-[4/5] md:w-[280px] md:h-[340px] bg-[#1a1a1a] border border-white/10 overflow-hidden flex items-center justify-center text-white/30 text-xs relative">
-                        <img src="main.webp" loading="lazy" id="perfil-img" alt="Felipe Souza Zniack"
-                            class="w-full h-full object-cover object-center saturate-[.0] hover:saturate-100 transition-all duration-700 opacity-0">
-                    </div>
-                    <span class="nome-foto">Felipe Souza</span>
-                    <span class="signature"><span class="signature-d1"><img src="assets/zniack-d1-branco.svg" alt="Zniack" width="1754" height="361"></span></span>
+                <div class="hero-showcase" aria-label="Exemplos dos formatos de criativos">    <div class="showcase-grid">
+      <div class="showcase-grid-heading"><p class="showcase-kicker">FORMATOS EM AÇÃO</p><button type="button" class="showcase-pause" data-grid-pause hidden aria-pressed="false" aria-label="Pausar prévias"><span aria-hidden="true">Ⅱ</span><span class="showcase-pause-text">Pausar</span></button></div>
+      <div class="showcase-cards"><figure class="showcase-card"><figcaption>Motion</figcaption><div class="showcase-card-film"><img loading="eager" src="media/showcase/motion-20261007.webp" alt="Primeiro frame da montagem de Motion" width="320" height="568" decoding="async"><video muted playsinline loop preload="none" data-grid-video="motion" data-src="media/showcase/motion-20261007.mp4" aria-hidden="true" tabindex="-1"></video></div><p>Anúncios com animação e elementos gráficos.</p></figure>
+<figure class="showcase-card"><figcaption>Narrado</figcaption><div class="showcase-card-film"><img loading="eager" src="media/showcase/narrado-20261007.webp" alt="Primeiro frame da montagem de Narrado" width="320" height="568" decoding="async"><video muted playsinline loop preload="none" data-grid-video="narrado" data-src="media/showcase/narrado-20261007.mp4" aria-hidden="true" tabindex="-1"></video></div><p>Cenas de produto ou personagem com narração.</p></figure>
+<figure class="showcase-card"><figcaption>Estilo UGC</figcaption><div class="showcase-card-film"><img loading="eager" src="media/showcase/ugc-20261007.webp" alt="Primeiro frame da montagem de Estilo UGC" width="320" height="568" decoding="async"><video muted playsinline loop preload="none" data-grid-video="ugc" data-src="media/showcase/ugc-20261007.mp4" aria-hidden="true" tabindex="-1"></video></div><p>Apresentação com linguagem próxima e natural.</p></figure></div>
+    </div>    <p class="showcase-caption">Diferentes nichos. Uma direção para cada oferta.<span>Prévia sem áudio.</span></p></div>
+                <ul class="criativos-intro-principles" aria-label="O que a produção inclui">
+                    <li>Direção criativa</li>
+                    <li>Produção completa</li>
+                    <li>Variações prontas para anunciar</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="case-gancho" aria-labelledby="case-gancho-titulo">
+            <div class="case-entry w-full fade-up">
+                <div class="case-entry-copy">
+                    <p class="case-entry-eyebrow">CASE 01 · TESTE DE GANCHO</p>
+                    <h2 id="case-gancho-titulo" class="titulo-secao">Como funciona<br>o Teste de Gancho.</h2>
+                    <p class="case-entry-description">Três aberturas de um mesmo anúncio. Sete dias de acompanhamento mostram por que a primeira leitura não fecha a resposta.</p>
+                    <a class="criativos-intro-link" href="case-teste-gancho/index.html">Ver o case completo <span aria-hidden="true">↗</span></a>
                 </div>
+                <a class="case-entry-films" href="case-teste-gancho/index.html" aria-label="Ver a comparação dos ganchos A, B e C">
+                    <figure><img src="case-teste-gancho/assets/gancho-a-first.webp" alt="Gancho A: contraste com uma cena de produto" width="720" height="1280" loading="lazy"><figcaption>GANCHO A</figcaption></figure>
+                    <figure><img src="case-teste-gancho/assets/gancho-b-first.webp" alt="Gancho B: abertura em formato de reportagem" width="720" height="1280" loading="lazy"><figcaption>GANCHO B</figcaption></figure>
+                    <figure><img src="case-teste-gancho/assets/gancho-c-first.webp" alt="Gancho C: diagnóstico de uma campanha" width="720" height="1280" loading="lazy"><figcaption>GANCHO C</figcaption></figure>
+                </a>
             </div>
         </section>
 
@@ -93,34 +112,25 @@
             </div>
         </section>
 
-        <section id="case-gancho" aria-labelledby="case-gancho-titulo">
-            <div class="case-entry w-full fade-up">
-                <div class="case-entry-copy">
-                    <p class="case-entry-eyebrow">CASE 01 · TESTE DE GANCHO</p>
-                    <h2 id="case-gancho-titulo" class="titulo-secao">Como funciona<br>o Teste de Gancho.</h2>
-                    <p class="case-entry-description">Três aberturas de um mesmo anúncio. Sete dias de acompanhamento mostram por que a primeira leitura não fecha a resposta.</p>
-                    <a class="criativos-intro-link" href="case-teste-gancho/index.html">Ver o case completo <span aria-hidden="true">↗</span></a>
+        <section id="sobre">
+            <div class="flex flex-col md:flex-row gap-12 items-start w-full fade-up">
+                <div class="w-full max-w-[600px]">
+                    <h2 class="titulo-secao">Quem sou eu</h2>
+                    <div class="texto-corpo">
+                        Sou Felipe Souza e trabalho com direção criativa e produção de anúncios para mídia paga, do conceito e do roteiro à entrega final.<br><br>
+                        A partir do produto e do contexto da campanha, desenvolvo a mensagem, os criativos e suas variações para explorar novas abordagens e renovar campanhas.<br><br>
+                        Você pode chegar apenas com o produto ou com um briefing já definido. Quando há dados disponíveis, eles ajudam a orientar o que testar e as próximas decisões criativas.
+                    </div>
                 </div>
-                <a class="case-entry-films" href="case-teste-gancho/index.html" aria-label="Ver a comparação dos ganchos A, B e C">
-                    <figure><img src="case-teste-gancho/assets/gancho-a-first.webp" alt="Gancho A: contraste com uma cena de produto" width="720" height="1280" loading="lazy"><figcaption>GANCHO A</figcaption></figure>
-                    <figure><img src="case-teste-gancho/assets/gancho-b-first.webp" alt="Gancho B: abertura em formato de reportagem" width="720" height="1280" loading="lazy"><figcaption>GANCHO B</figcaption></figure>
-                    <figure><img src="case-teste-gancho/assets/gancho-c-first.webp" alt="Gancho C: diagnóstico de uma campanha" width="720" height="1280" loading="lazy"><figcaption>GANCHO C</figcaption></figure>
-                </a>
-            </div>
-        </section>
-
-        <section id="criativos" aria-labelledby="criativos-titulo">
-            <div class="criativos-intro w-full">
-                <h2 id="criativos-titulo" class="titulo-secao">Criativos prontos<br>para anunciar.</h2>
-                <p class="criativos-intro-subtitle">Do conceito à entrega.</p>
-                <p class="criativos-intro-copy">Seu produto é o ponto de partida. Eu assumo a direção criativa e a produção dos anúncios — do conceito e do roteiro à entrega final — criando variações para renovar campanhas e desenvolver novas abordagens.</p>
-                <p class="criativos-intro-note">Você envia os materiais que tiver — ou a produção parte do zero.</p>
-                <a class="criativos-intro-link" href="https://criativos.zniack.com/">Ver pacotes, entregas e valores <span aria-hidden="true">↗</span></a>
-                <ul class="criativos-intro-principles" aria-label="O que a produção inclui">
-                    <li>Direção criativa</li>
-                    <li>Produção completa</li>
-                    <li>Variações prontas para anunciar</li>
-                </ul>
+                <div class="flex flex-col items-center flex-none mt-8 md:mt-0 w-full md:w-auto">
+                    <div
+                        class="w-full aspect-[4/5] md:w-[280px] md:h-[340px] bg-[#1a1a1a] border border-white/10 overflow-hidden flex items-center justify-center text-white/30 text-xs relative">
+                        <img src="main.webp" loading="lazy" id="perfil-img" alt="Felipe Souza Zniack"
+                            class="w-full h-full object-cover object-center saturate-[.0] hover:saturate-100 transition-all duration-700 opacity-0">
+                    </div>
+                    <span class="nome-foto">Felipe Souza</span>
+                    <span class="signature"><span class="signature-d1"><img src="assets/zniack-d1-branco.svg" alt="Zniack" width="1754" height="361"></span></span>
+                </div>
             </div>
         </section>
 
@@ -185,6 +195,7 @@
     </main>
     <script src="main.js?v=20261003-menu-criativos" defer></script>
 <script src="movimento-fluido.js?v=20261003-criativos" defer></script>
+<script src="vitrine.js?v=20261007-publicacao" defer></script>
 </body>
 
 </html>
